@@ -1,6 +1,6 @@
 "GameInfo"
 {
-	game 		"My First Episodic Mod"
+	game 		"blamod"
 	title 		"HALF-LIFE'"
 	title2		""
 
