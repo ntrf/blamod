@@ -1104,10 +1104,10 @@ void CC_Nodamage_f()
 	if (!pPlayer)
 		return;
 	pPlayer->ToggleFlag(FL_NODAMAGE);
-	if(!(pPlayer->GetFlags() & FL_NODAMAGE))
-		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage OFF\n");
-	else
+	if(pPlayer->GetFlags() & FL_NODAMAGE)
 		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage ON\n");
+	else
+		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage OFF\n");
 }
 
 static ConCommand bla_nodamage("bla_nodamage", CC_Nodamage_f,
