@@ -1414,8 +1414,15 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 // Purpose: 
 // Input  : &info - 
 //-----------------------------------------------------------------------------
+static ConVar bla_damagefx("bla_damagefx", "0", 
+						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE, 
+						   "Add effects like ear ringing when the player "
+						   "takes damage caused by an explosion.");
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 {
+	if (!bla_damagefx.GetBool())
+		return;
+
 	float lastDamage = info.GetDamage();
 
 	float distanceFromPlayer = 9999.0f;
