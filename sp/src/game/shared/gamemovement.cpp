@@ -2345,6 +2345,11 @@ void CGameMovement::PlaySwimSound()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+static ConVar bla_pogo("bla_pogo", "1",
+					   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+					   "Keep jumping when jump button is down. This removes "
+					   "the need for external scripts like AutoHotkey.");
+
 bool CGameMovement::CheckJumpButton( void )
 {
 	if (player->pl.deadflag)
@@ -2398,7 +2403,7 @@ bool CGameMovement::CheckJumpButton( void )
 		return false;
 #endif
 
-	if ( mv->m_nOldButtons & IN_JUMP )
+	if (!bla_pogo.GetBool() && mv->m_nOldButtons & IN_JUMP )
 		return false;		// don't pogo stick
 
 	// Cannot jump will in the unduck transition.
