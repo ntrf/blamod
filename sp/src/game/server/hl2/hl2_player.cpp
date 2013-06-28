@@ -2584,6 +2584,9 @@ bool CHL2_Player::ShouldKeepLockedAutoaimTarget( EHANDLE hLockedTarget )
 //			bSuppressSound - 
 // Output : int
 //-----------------------------------------------------------------------------
+static ConVar bla_autowepswitch("bla_autowepswitch", "0",
+								FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+								"Switch weapon on ammunition depletion.");
 int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 {
 	// Don't try to give the player invalid ammo indices.
@@ -2612,7 +2615,7 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 	// If I was dry on ammo for my best weapon and justed picked up ammo for it,
 	// autoswitch to my best weapon now.
 	//
-	if (bCheckAutoSwitch)
+	if (bla_autowepswitch.GetBool() && bCheckAutoSwitch)
 	{
 		CBaseCombatWeapon *pWeapon = g_pGameRules->GetNextBestWeapon(this, GetActiveWeapon());
 
@@ -3157,6 +3160,14 @@ float CHL2_Player::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 //-----------------------------------------------------------------------------
 // Purpose: Force the player to drop any physics objects he's carrying
 //-----------------------------------------------------------------------------
+static ConVar bla_itemflying("bla_itemflying", "1",
+							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							 "Don't force the player to drop objects he is "
+							 "carrying. This allows to continuously jump on "
+							 "an object which causes the player to be boosted "
+							 "up on every jump, ultimately allowing him to "
+							 "fly.");
+
 void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis )
 {
 	if ( PhysIsInCallback() )
@@ -3178,7 +3189,8 @@ void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis
 #endif
 
 	// Drop any objects being handheld.
-	ClearUseEntity();
+	if (!bla_itemflying.GetBool())
+		ClearUseEntity();
 
 	// Then force the physcannon to drop anything it's holding, if it's our active weapon
 	PhysCannonForceDrop( GetActiveWeapon(), NULL );
@@ -3212,7 +3224,7 @@ void CHL2_Player::UpdateClientData( void )
 
 		// If we're poisoned, but it wasn't this frame, don't send the indicator
 		// Without this check, any damage that occured to the player while they were
-		// recovering from a poison bite would register as poisonous as well and flash
+		// recovering from a poison bite wouldnN register as poisonous as well and flash
 		// the whole screen! -- jdw
 		if ( visibleDamageBits & DMG_POISON )
 		{
