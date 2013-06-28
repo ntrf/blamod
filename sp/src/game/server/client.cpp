@@ -1079,27 +1079,14 @@ void CC_Player_NoClip( void )
 		Vector forward, right, up;
 
 		AngleVectors ( pl->v_angle, &forward, &right, &up);
-		
-		// Try to move into the world
-		if ( !FindPassableSpace( pPlayer, forward, 1, oldorigin ) )
-		{
-			if ( !FindPassableSpace( pPlayer, right, 1, oldorigin ) )
-			{
-				if ( !FindPassableSpace( pPlayer, right, -1, oldorigin ) )		// left
-				{
-					if ( !FindPassableSpace( pPlayer, up, 1, oldorigin ) )	// up
-					{
-						if ( !FindPassableSpace( pPlayer, up, -1, oldorigin ) )	// down
-						{
-							if ( !FindPassableSpace( pPlayer, forward, -1, oldorigin ) )	// back
-							{
-								Msg( "Can't find the world\n" );
-							}
-						}
-					}
-				}
-			}
-		}
+
+		if (!FindPassableSpace(pPlayer, forward, 1, oldorigin) &&
+		    !FindPassableSpace(pPlayer, right, 1, oldorigin) && 
+		    !FindPassableSpace(pPlayer, right, -1, oldorigin) && // left
+		    !FindPassableSpace(pPlayer, up, 1, oldorigin) && // up
+		    !FindPassableSpace(pPlayer, up, -1, oldorigin) && // down
+		    !FindPassableSpace(pPlayer, forward, -1, oldorigin)) // back
+		    Msg("Can't find the world\n");
 
 		pPlayer->SetAbsOrigin( oldorigin );
 	}
