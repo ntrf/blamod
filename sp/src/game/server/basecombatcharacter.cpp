@@ -2459,6 +2459,11 @@ int CBaseCombatCharacter::OnTakeDamage( const CTakeDamageInfo &info )
 	}
 }
 
+static ConVar bla_damagefraction("bla_damagefraction", "15", 
+								 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+								 "Fraction by which damage dealt to the "
+								 "player should be reduced. The value must "
+								 "lie in the range 1.0 to 100.0.");
 
 int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
@@ -2493,12 +2498,22 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if ( flIntegerDamage <= 0 )
 			return 0;
 
-		m_iHealth -= flIntegerDamage;
+        // This method also deals damage to NPCs so make sure only player
+        // damage is reduced. For now, just reduce damage by a factor of 15.
+        if (!IsPlayer())
+             m_iHealth -= flIntegerDamage;
+        else if (!(GetFlags() & FL_NODAMAGE))
+        {
+			float flDamageFraction = clamp(
+				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
+			DevMsg("CBaseCombatCharacter::OnTakeDamage_Alive - dmg "
+			       "fraction: %.2f", flDamageFraction);
+			m_iHealth -= flIntegerDamage / flDamageFraction;
+		}
 	}
 
 	return 1;
 }
-
 
 int CBaseCombatCharacter::OnTakeDamage_Dying( const CTakeDamageInfo &info )
 {
@@ -2510,7 +2525,14 @@ int CBaseCombatCharacter::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 	// do the damage
 	if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 	{
-		m_iHealth -= info.GetDamage();
+	    if (!IsPlayer())
+	         m_iHealth -= info.GetDamage();
+	    else if (!(GetFlags() & FL_NODAMAGE)) 
+	    {
+	        float flDamageFraction = clamp(
+				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
+	        m_iHealth -= info.GetDamage() / flDamageFraction;
+	    }
 	}
 
 	return 1;

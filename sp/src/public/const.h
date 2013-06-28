@@ -135,6 +135,7 @@
 #define FL_DISSOLVING			(1<<28) // We're dissolving!
 #define FL_TRANSRAGDOLL			(1<<29) // In the process of turning into a client side ragdoll.
 #define FL_UNBLOCKABLE_BY_PLAYER (1<<30) // pusher that can't be blocked by the player
+#define FL_NODAMAGE				(1<<31) // no damage flag
 #else
 #define	FL_ONGROUND				(1<<0)	// At rest / on the ground
 #define FL_DUCKING				(1<<1)	// Player flag -- Player is fully crouched

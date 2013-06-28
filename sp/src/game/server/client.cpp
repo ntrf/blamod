@@ -1109,6 +1109,26 @@ static ConCommand noclip("noclip", CC_Player_NoClip, "Toggle. Player becomes non
 
 
 //------------------------------------------------------------------------------
+// Toggles no damage flag
+//------------------------------------------------------------------------------
+void CC_Nodamage_f()
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+	pPlayer->ToggleFlag(FL_NODAMAGE);
+	if(!(pPlayer->GetFlags() & FL_NODAMAGE))
+		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage OFF\n");
+	else
+		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage ON\n");
+}
+
+static ConCommand bla_nodamage("bla_nodamage", CC_Nodamage_f,
+							   "Toggle: Don't take damage (physics still "
+							   "apply)");
+
+
+//------------------------------------------------------------------------------
 // Sets client to godmode
 //------------------------------------------------------------------------------
 void CC_God_f (void)
