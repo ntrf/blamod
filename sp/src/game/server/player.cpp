@@ -1590,6 +1590,12 @@ const impactdamagetable_t &CBasePlayer::GetPhysicsImpactDamageTable()
 }
 
 
+static ConVar bla_damageforcelimit(
+	"bla_damageforcelimit", "650.0", 
+	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
+	"Set the maximum force in z-direction applied to a player caused by "
+	"damage.");
+
 int CBasePlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
 	// set damage type sustained
@@ -1598,7 +1604,7 @@ int CBasePlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if ( !BaseClass::OnTakeDamage_Alive( info ) )
 		return 0;
 
-	CBaseEntity * attacker = info.GetAttacker();
+	CBaseEntity *attacker = info.GetAttacker();
 
 	if ( !attacker )
 		return 0;
@@ -1613,12 +1619,14 @@ int CBasePlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if ( info.GetInflictor() && (GetMoveType() == MOVETYPE_WALK) && 
 		( !attacker->IsSolidFlagSet(FSOLID_TRIGGER)) )
 	{
-		Vector force = vecDir * -DamageForce( WorldAlignSize(), info.GetBaseDamage() );
-		if ( force.z > 250.0f )
-		{
-			force.z = 250.0f;
-		}
-		ApplyAbsVelocityImpulse( force );
+		Vector force = -vecDir * DamageForce(
+			WorldAlignSize(), info.GetBaseDamage());
+		float flDamageForceLimit = clamp(bla_damageforcelimit.GetFloat(), 
+		                                 250.0f, 1000.0f);
+
+		if (force.z > flDamageForceLimit)
+			force.z = flDamageForceLimit;
+		ApplyAbsVelocityImpulse(force);
 	}
 
 	// fire global game event
