@@ -540,6 +540,7 @@ CPPFILES= \
     weapons_resource.cpp \
     weapon_selection.cpp \
     WorldDimsProxy.cpp \
+    bla/hud_speedmeter.cpp \
 
 
 LIBFILES = \
@@ -600,7 +601,6 @@ $(OBJ_DIR)/_other_deps.P : $(OTHER_DEPENDENCIES)
 	$(GEN_OTHER_DEPS)
 
 -include $(OBJ_DIR)/_other_deps.P
-
 
 
 ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
@@ -4632,6 +4632,14 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/WorldDimsProxy.o : $(PWD)/WorldDimsProxy.cpp $(THIS_MAKEFILE) $(MAKEFILE_BASE)
+	$(PRE_COMPILE_FILE)
+	$(COMPILE_FILE) $(POST_COMPILE_FILE)
+
+ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
+-include $(OBJ_DIR)/hud_speedmeter.P
+endif
+
+$(OBJ_DIR)/hud_speedmeter.o : $(PWD)/bla/hud_speedmeter.cpp $(THIS_MAKEFILE) $(MAKEFILE_BASE)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
