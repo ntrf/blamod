@@ -761,19 +761,6 @@ Vector CGameMovement::GetPlayerViewOffset( bool ducked ) const
 	return ducked ? VEC_DUCK_VIEW_SCALED( player ) : VEC_VIEW_SCALED( player );
 }
 
-#if 0
-//-----------------------------------------------------------------------------
-// Traces player movement + position
-//-----------------------------------------------------------------------------
-inline void CGameMovement::TracePlayerBBox( const Vector& start, const Vector& end, unsigned int fMask, int collisionGroup, trace_t& pm )
-{
-	VPROF( "CGameMovement::TracePlayerBBox" );
-
-	Ray_t ray;
-	ray.Init( start, end, GetPlayerMins(), GetPlayerMaxs() );
-	UTIL_TraceRay( ray, fMask, mv->m_nPlayerHandle.Get(), collisionGroup, &pm );
-}
-#endif
 
 CBaseHandle CGameMovement::TestPlayerPosition( const Vector& pos, int collisionGroup, trace_t& pm )
 {
@@ -789,124 +776,6 @@ CBaseHandle CGameMovement::TestPlayerPosition( const Vector& pos, int collisionG
 		return INVALID_EHANDLE_INDEX;
 	}
 }
-
-
-/*
-
-// FIXME FIXME:  Does this need to be hooked up?
-bool CGameMovement::IsWet() const
-{
-	return ((pev->flags & FL_INRAIN) != 0) || (m_WetTime >= gpGlobals->time);
-}
-
-//-----------------------------------------------------------------------------
-// Plants player footprint decals
-//-----------------------------------------------------------------------------
-
-#define PLAYER_HALFWIDTH 12
-void CGameMovement::PlantFootprint( surfacedata_t *psurface )
-{
-	// Can't plant footprints on fake materials (ladders, wading)
-	if ( psurface->gameMaterial != 'X' )
-	{
-		int footprintDecal = -1;
-
-		// Figure out which footprint type to plant...
-		// Use the wet footprint if we're wet...
-		if (IsWet())
-		{
-			footprintDecal = DECAL_FOOTPRINT_WET;
-		}
-		else
-		{	   
-			// FIXME: Activate this once we decide to pull the trigger on it.
-			// NOTE: We could add in snow, mud, others here
-//			switch(psurface->gameMaterial)
-//			{
-//			case 'D':
-//				footprintDecal = DECAL_FOOTPRINT_DIRT;
-//				break;
-//			}
-		}
-
-		if (footprintDecal != -1)
-		{
-			Vector right;
-			AngleVectors( pev->angles, 0, &right, 0 );
-
-			// Figure out where the top of the stepping leg is 
-			trace_t tr;
-			Vector hipOrigin;
-			VectorMA( pev->origin, 
-				m_IsFootprintOnLeft ? -PLAYER_HALFWIDTH : PLAYER_HALFWIDTH,
-				right, hipOrigin );
-
-			// Find where that leg hits the ground
-			UTIL_TraceLine( hipOrigin, hipOrigin + Vector(0, 0, -COORD_EXTENT * 1.74), 
-							MASK_SOLID_BRUSHONLY, edict(), COLLISION_GROUP_NONE, &tr);
-
-			unsigned char mType = TEXTURETYPE_Find( &tr );
-
-			// Splat a decal
-			CPVSFilter filter( tr.endpos );
-			te->FootprintDecal( filter, 0.0f, &tr.endpos, &right, ENTINDEX(tr.u.ent), 
-							   gDecals[footprintDecal].index, mType );
-
-		}
-	}
-
-	// Switch feet for next time
-	m_IsFootprintOnLeft = !m_IsFootprintOnLeft;
-}
-
-#define WET_TIME			    5.f	// how many seconds till we're completely wet/dry
-#define DRY_TIME			   20.f	// how many seconds till we're completely wet/dry
-
-void CBasePlayer::UpdateWetness()
-{
-	// BRJ 1/7/01
-	// Check for whether we're in a rainy area....
-	// Do this by tracing a line straight down with a size guaranteed to
-	// be larger than the map
-	// Update wetness based on whether we're in rain or not...
-
-	trace_t tr;
-	UTIL_TraceLine( pev->origin, pev->origin + Vector(0, 0, -COORD_EXTENT * 1.74), 
-					MASK_SOLID_BRUSHONLY, edict(), COLLISION_GROUP_NONE, &tr);
-	if (tr.surface.flags & SURF_WET)
-	{
-		if (! (pev->flags & FL_INRAIN) )
-		{
-			// Transition...
-			// Figure out how wet we are now (we were drying off...)
-			float wetness = (m_WetTime - gpGlobals->time) / DRY_TIME;
-			if (wetness < 0.0f)
-				wetness = 0.0f;
-
-			// Here, wet time represents the time at which we get totally wet
-			m_WetTime = gpGlobals->time + (1.0 - wetness) * WET_TIME; 
-
-			pev->flags |= FL_INRAIN;
-		}
-	}
-	else
-	{
-		if ((pev->flags & FL_INRAIN) != 0)
-		{
-			// Transition...
-			// Figure out how wet we are now (we were getting more wet...)
-			float wetness = 1.0f + (gpGlobals->time - m_WetTime) / WET_TIME;
-			if (wetness > 1.0f)
-				wetness = 1.0f;
-
-			// Here, wet time represents the time at which we get totally dry
-			m_WetTime = gpGlobals->time + wetness * DRY_TIME; 
-
-			pev->flags &= ~FL_INRAIN;
-		}
-	}
-}
-*/
 
 
 //-----------------------------------------------------------------------------
@@ -1265,9 +1134,9 @@ void CGameMovement::StartGravity( void )
 //-----------------------------------------------------------------------------
 void CGameMovement::CheckWaterJump( void )
 {
-	Vector	flatforward;
+	Vector flatforward;
 	Vector forward;
-	Vector	flatvelocity;
+	Vector flatvelocity;
 	float curspeed;
 
 	AngleVectors( mv->m_vecViewAngles, &forward );  // Determine movement angles
@@ -1640,11 +1509,7 @@ void CGameMovement::Friction( void )
 			}
 			else
 			{
-#if defined ( TF_DLL ) || defined ( TF_CLIENT_DLL )
-				control = (speed < sv_stopspeed.GetFloat()) ? sv_stopspeed.GetFloat() : speed;
-#else
 				control = (speed < sv_stopspeed.GetFloat()) ? (sv_stopspeed.GetFloat() * 2.0f) : speed;
-#endif
 			}
 		}
 		else
@@ -2084,7 +1949,7 @@ void CGameMovement::FullWalkMove( )
 			mv->m_nOldButtons &= ~IN_JUMP;
 		}
 
-		// Fricion is handled before we add in any base velocity. That way, if we are on a conveyor, 
+		// Friction is handled before we add in any base velocity. That way, if we are on a conveyor, 
 		//  we don't slow when standing still, relative to the conveyor.
 		if (player->GetGroundEntity() != NULL)
 		{
@@ -2349,7 +2214,9 @@ static ConVar bla_pogo("bla_pogo", "1",
 					   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
 					   "Keep jumping when jump button is down. This removes "
 					   "the need for external scripts like AutoHotkey.");
-
+static ConVar bla_movement("bla_movement", "0",
+						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+						   "Set movement physics.\n0: ABH, 1: bunny-hopping");
 bool CGameMovement::CheckJumpButton( void )
 {
 	if (player->pl.deadflag)
@@ -2406,7 +2273,7 @@ bool CGameMovement::CheckJumpButton( void )
 	if (!bla_pogo.GetBool() && mv->m_nOldButtons & IN_JUMP )
 		return false;		// don't pogo stick
 
-	// Cannot jump will in the unduck transition.
+	// Cannot jump while in the unduck transition.
 	if ( player->m_Local.m_bDucking && (  player->GetFlags() & FL_DUCKING ) )
 		return false;
 
@@ -2467,30 +2334,48 @@ bool CGameMovement::CheckJumpButton( void )
 #if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
 	if ( gpGlobals->maxClients == 1 )
 	{
-		CHLMoveData *pMoveData = ( CHLMoveData* )mv;
+		CHLMoveData *pMoveData = (CHLMoveData *)mv;
 		Vector vecForward;
-		AngleVectors( mv->m_vecViewAngles, &vecForward );
+		AngleVectors(mv->m_vecViewAngles, &vecForward);
 		vecForward.z = 0;
-		VectorNormalize( vecForward );
-		
-		// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
-		// to not accumulate over time.
-		float flSpeedBoostPerc = ( !pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked ) ? 0.5f : 0.1f;
-		float flSpeedAddition = fabs( mv->m_flForwardMove * flSpeedBoostPerc );
-		float flMaxSpeed = mv->m_flMaxSpeed + ( mv->m_flMaxSpeed * flSpeedBoostPerc );
-		float flNewSpeed = ( flSpeedAddition + mv->m_vecVelocity.Length2D() );
+		VectorNormalize(vecForward);
+		float flBoost;
+		int iMovement;
 
-		// If we're over the maximum, we want to only boost as much as will get us to the goal speed
-		if ( flNewSpeed > flMaxSpeed )
+		iMovement = bla_movement.GetInt();
+		if (iMovement < 0 || iMovement > 1)
+			iMovement = 0;
+
+		if (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
+			flBoost = 0.5f;
+		else
+			flBoost = 0.1f;
+
+		if (iMovement == 0) // ABH
 		{
-			flSpeedAddition -= flNewSpeed - flMaxSpeed;
+			// We give a certain percentage of the current forward movement as 
+			// a bonus to the jump speed.  That bonus is clipped to not 
+			// accumulate over time.
+			float flSpeedAddition = fabs(mv->m_flForwardMove * flBoost);
+			float flMaxSpeed = mv->m_flMaxSpeed + mv->m_flMaxSpeed * flBoost;
+			float flNewSpeed = flSpeedAddition + mv->m_vecVelocity.Length2D();
+
+			// If we're over the maximum, we want to only boost as much as will 
+			// get us to the goal speed
+			if (flNewSpeed > flMaxSpeed)
+				flSpeedAddition -= flNewSpeed - flMaxSpeed;
+
+			if (mv->m_flForwardMove < 0.0f)
+				flSpeedAddition *= -1.0f;
+
+			vecForward *= flSpeedAddition;
 		}
-
-		if ( mv->m_flForwardMove < 0.0f )
-			flSpeedAddition *= -1.0f;
-
-		// Add it on
-		VectorAdd( (vecForward*flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity );
+		else // good ol' bunny-hopping
+		{
+			for (int iAxis = 0; iAxis < 2 ; iAxis++)
+				vecForward[iAxis] *= (mv->m_flForwardMove * flBoost);
+		}
+		VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
 	}
 #endif
 
