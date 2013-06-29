@@ -2506,8 +2506,6 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
         {
 			float flDamageFraction = clamp(
 				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
-			DevMsg("CBaseCombatCharacter::OnTakeDamage_Alive - dmg "
-			       "fraction: %.2f", flDamageFraction);
 			m_iHealth -= flIntegerDamage / flDamageFraction;
 		}
 	}
