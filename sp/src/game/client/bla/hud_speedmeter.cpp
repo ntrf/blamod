@@ -32,22 +32,20 @@ public:
         SetLabelText(L"UPS");
         SetDisplayValue(0);
     }
+    virtual bool ShouldDraw()
+    {
+        return bla_speedmeter.GetBool() && CHudElement::ShouldDraw();
+    }
     virtual void OnThink();
-    virtual bool ShouldDraw();
 };
 
 DECLARE_HUDELEMENT(CHudSpeedMeter);
 
-CHudSpeedMeter::CHudSpeedMeter(const char *pElementName) : 
+CHudSpeedMeter::CHudSpeedMeter(const char *pElementName) :
     CHudElement(pElementName), CHudNumericDisplay(NULL, "HudSpeedmeter")
 {
     SetParent(g_pClientMode->GetViewport());
     SetHiddenBits(HIDEHUD_PLAYERDEAD);
-}
-
-bool CHudSpeedMeter::ShouldDraw()
-{
-    return bla_speedmeter.GetBool();
 }
 
 void CHudSpeedMeter::OnThink()
