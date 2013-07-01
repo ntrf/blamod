@@ -59,4 +59,8 @@ sp/game/mod_episodic/maps
 sp/game/mod_episodic/save
 sp/game/mod_episodic/sound
 sp/game/mod_episodic/modelsounds.cache
+sp/game/mod_episodic/*.txt
+sp/game/mod_episodic/*.cfg
+sp/game/mod_episodic/voice_ban.dt
+sp/game/mod_episodic/cfg/autoexec.cfg
 
