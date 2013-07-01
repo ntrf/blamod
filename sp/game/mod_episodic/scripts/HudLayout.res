@@ -34,11 +34,27 @@
 		"digit_xpos" "60"
 		"digit_ypos" "-1"
 	}
-	// TODO: move this to the bottom center
 	HudSpeedMeter
 	{
 	  "fieldName" "HudSpeedMeter"
-		"xpos"	"c-57"
+		"xpos"	"328"
+		"ypos"	"432"
+		"wide"	"114"
+		"tall"  "36"
+		"visible" "1"
+		"enabled" "1"
+
+		"PaintBackgroundType"	"2"
+		
+		"text_xpos" "8"
+		"text_ypos" "20"
+		"digit_xpos" "50"
+		"digit_ypos" "2"
+	}
+	HudTimer
+	{
+	  "fieldName" "HudTimer"
+		"xpos"	"464"
 		"ypos"	"432"
 		"wide"	"114"
 		"tall"  "36"
@@ -86,7 +102,6 @@
 		"digit_xpos" "50"
 		"digit_ypos" "-1"
 	}
-
 	HudAmmo	[$WIN32]
 	{
 		"fieldName" "HudAmmo"
@@ -125,7 +140,6 @@
 		"digit2_xpos" "120"
 		"digit2_ypos" "14"
 	}
-
 	HudAmmoSecondary	[$WIN32]
 	{
 		"fieldName" "HudAmmoSecondary"

@@ -606,6 +606,7 @@ CPPFILES= \
     weapon_cubemap.cpp \
     weight_button.cpp \
     world.cpp \
+    bla/timer.cpp \
 
 
 LIBFILES = \
@@ -5211,10 +5212,18 @@ $(OBJ_DIR)/world.o : $(PWD)/world.cpp $(THIS_MAKEFILE) $(MAKEFILE_BASE)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
+# BLAMOD ADDITIONS
+
+ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
+-include $(OBJ_DIR)/timer.P
+endif
+
+$(OBJ_DIR)/timer.o : $(PWD)/bla/timer.cpp $(THIS_MAKEFILE) $(MAKEFILE_BASE)
+	$(PRE_COMPILE_FILE)
+	$(COMPILE_FILE) $(POST_COMPILE_FILE)
+
 # Uncomment this, and set FILENAME to file you want built without optimizations enabled.
 # $(OBJ_DIR)/FILENAME.o : CFLAGS := $(subst -O2,-O0,$(CFLAGS))
 
 # Uncomment this to disable optimizations for the entire project.
 # $(OBJ_DIR)/%.o : CFLAGS := $(subst -O2,-O0,$(CFLAGS))
-
-

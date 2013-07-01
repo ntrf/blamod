@@ -15,6 +15,8 @@
 #include <vgui_controls/Panel.h>
 #include <vgui_controls/Label.h>
 
+#define VGUI_ANIMATE(anim) \
+        g_pClientMode->GetViewportAnimationController()->StartAnimationSequence((anim))
 
 inline int PanelTop(vgui::Panel *pPanel)	{int x,y,w,h; pPanel->GetBounds(x,y,w,h); return y;}
 inline int PanelLeft(vgui::Panel *pPanel)	{int x,y,w,h; pPanel->GetBounds(x,y,w,h); return x;}

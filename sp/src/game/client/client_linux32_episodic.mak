@@ -541,6 +541,7 @@ CPPFILES= \
     weapon_selection.cpp \
     WorldDimsProxy.cpp \
     bla/hud_speedmeter.cpp \
+    bla/hud_timer.cpp \
 
 
 LIBFILES = \
@@ -601,6 +602,7 @@ $(OBJ_DIR)/_other_deps.P : $(OTHER_DEPENDENCIES)
 	$(GEN_OTHER_DEPS)
 
 -include $(OBJ_DIR)/_other_deps.P
+
 
 
 ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
@@ -4635,6 +4637,8 @@ $(OBJ_DIR)/WorldDimsProxy.o : $(PWD)/WorldDimsProxy.cpp $(THIS_MAKEFILE) $(MAKEF
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
+# BLAMOD ADDITIONS
+
 ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/hud_speedmeter.P
 endif
@@ -4643,10 +4647,16 @@ $(OBJ_DIR)/hud_speedmeter.o : $(PWD)/bla/hud_speedmeter.cpp $(THIS_MAKEFILE) $(M
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
+ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
+-include $(OBJ_DIR)/hud_timer.P
+endif
+
+$(OBJ_DIR)/hud_timer.o : $(PWD)/bla/hud_timer.cpp $(THIS_MAKEFILE) $(MAKEFILE_BASE)
+	$(PRE_COMPILE_FILE)
+	$(COMPILE_FILE) $(POST_COMPILE_FILE)
+
 # Uncomment this, and set FILENAME to file you want built without optimizations enabled.
 # $(OBJ_DIR)/FILENAME.o : CFLAGS := $(subst -O2,-O0,$(CFLAGS))
 
 # Uncomment this to disable optimizations for the entire project.
 # $(OBJ_DIR)/%.o : CFLAGS := $(subst -O2,-O0,$(CFLAGS))
-
-

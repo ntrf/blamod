@@ -1127,6 +1127,15 @@ private:
 	// Player name
 	char					m_szNetname[MAX_PLAYER_NAME_LENGTH];
 
+	// blamod
+	Vector m_vecStartPosition;
+	Vector m_vecGoalPosition;
+	bool m_bSpawnedInsideTimerRadius;
+
+public:
+	void SetStartPosition(Vector start);
+	void SetGoalPosition(Vector goal) { m_vecGoalPosition = goal; }
+
 protected:
 	// HACK FOR TF2 Prediction
 	friend class CTFGameMovementRecon;

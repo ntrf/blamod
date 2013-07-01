@@ -70,6 +70,8 @@
 #include "vote_controller.h"
 #include "ai_speech.h"
 
+#include "bla/timer.h"
+
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
 #endif
@@ -1414,10 +1416,10 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 // Purpose: 
 // Input  : &info - 
 //-----------------------------------------------------------------------------
-static ConVar bla_damagefx("bla_damagefx", "0", 
-						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE, 
-						   "Add effects like ear ringing when the player "
-						   "takes damage caused by an explosion.");
+ConVar bla_damagefx("bla_damagefx", "0", 
+				    FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+				    "Add effects like ear ringing when the player "
+				    "takes damage caused by an explosion.");
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 {
 	if (!bla_damagefx.GetBool())
@@ -4508,6 +4510,20 @@ void CBasePlayer::ForceOrigin( const Vector &vecOrigin )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+static ConVar bla_timerradius("bla_timerradius", "250.0",
+							  FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							  "Radius around the start/goal position in game "
+							  "units where the on-screen timer starts/stops.");
+void CBasePlayer::SetStartPosition(Vector start)
+{
+	m_vecStartPosition = start;
+	Vector origin = GetLocalOrigin();
+	float radius = clamp(bla_timerradius.GetFloat(), 100.0f, 1000.0f);
+	m_bSpawnedInsideTimerRadius = origin.DistTo(start) <= radius;
+	DevMsg("ClientActive: start position is %.2f, %.2f, %.2f\n", 
+	       start.x, start.y, start.z);
+}
+
 void CBasePlayer::PostThink()
 {
 	m_vecSmoothedVelocity = m_vecSmoothedVelocity * SMOOTHING_FACTOR + GetAbsVelocity() * ( 1 - SMOOTHING_FACTOR );
@@ -4595,7 +4611,7 @@ void CBasePlayer::PostThink()
 
 		SetSimulationTime( gpGlobals->curtime );
 
-		//Let the weapon update as well
+		// Let the weapon update as well
 		VPROF_SCOPE_BEGIN( "CBasePlayer::PostThink-Weapon_FrameUpdate" );
 		Weapon_FrameUpdate();
 		VPROF_SCOPE_END();
@@ -4612,6 +4628,22 @@ void CBasePlayer::PostThink()
 			m_Local.m_vecPunchAngleVel.Init();
 		}
 
+		// Check if we went outside the start position hull radius or if we
+		// entered the goal hull radius. In every session the timer can always
+		// only be started once. 
+		Vector origin = GetLocalOrigin();
+		float radius = clamp(bla_timerradius.GetFloat(), 100.0f, 1000.0f);
+		if (!timer()->IsRunning())
+		{
+			vec_t distStart = origin.DistTo(m_vecStartPosition);
+			if ((distStart > radius && m_bSpawnedInsideTimerRadius) ||
+		     	(distStart <= radius && !m_bSpawnedInsideTimerRadius))
+		     	timer()->Start();
+		}
+		// else if (origin.DistTo(m_vecGoalPosition) < radius && 
+		//          timer()->IsRunning())
+		// 	timer()->Stop();
+
 		VPROF_SCOPE_BEGIN( "CBasePlayer::PostThink-PostThinkVPhysics" );
 		PostThinkVPhysics();
 		VPROF_SCOPE_END();
@@ -4621,7 +4653,6 @@ void CBasePlayer::PostThink()
 	// Even if dead simulate entities
 	SimulatePlayerSimulatedEntities();
 #endif
-
 }
 
 // handles touching physics objects
@@ -6803,34 +6834,6 @@ void CBasePlayer::UpdateClientData( void )
 		}
 	}
 
-#if 0 // BYE BYE!!
-	// Update Flashlight
-	if ((m_flFlashLightTime) && (m_flFlashLightTime <= gpGlobals->curtime))
-	{
-		if (FlashlightIsOn())
-		{
-			if (m_iFlashBattery)
-			{
-				m_flFlashLightTime = FLASH_DRAIN_TIME + gpGlobals->curtime;
-				m_iFlashBattery--;
-				
-				if (!m_iFlashBattery)
-					FlashlightTurnOff();
-			}
-		}
-		else
-		{
-			if (m_iFlashBattery < 100)
-			{
-				m_flFlashLightTime = FLASH_CHARGE_TIME + gpGlobals->curtime;
-				m_iFlashBattery++;
-			}
-			else
-				m_flFlashLightTime = 0;
-		}
-	}
-#endif 
-
 	CheckTrainUpdate();
 
 	// Update all the items
@@ -6850,6 +6853,9 @@ void CBasePlayer::UpdateClientData( void )
 		m_Local.m_iHideHUD |= HIDEHUD_BONUS_PROGRESS;
 	if ( ( m_iBonusChallenge != 0 )&& ( m_Local.m_iHideHUD & HIDEHUD_BONUS_PROGRESS ) )
 		m_Local.m_iHideHUD &= ~HIDEHUD_BONUS_PROGRESS;
+
+	// Send timer update to the HUD.
+	timer()->DispatchTimeMessage();
 
 	// Let any global rules update the HUD, too
 	g_pGameRules->UpdateClientData( this );

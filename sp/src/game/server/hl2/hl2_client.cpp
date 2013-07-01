@@ -23,6 +23,7 @@
 #include "game.h"
 #include "player_resource.h"
 #include "engine/IEngineSound.h"
+#include "bla/timer.h"
 
 #include "tier0/vprof.h"
 
@@ -48,6 +49,20 @@ void ClientPutInServer( edict_t *pEdict, const char *playername )
 	pPlayer->SetPlayerName( playername );
 }
 
+static CBaseEntity *FindEntityByName(const char *pszClassName)
+{
+	#define SF_PLAYER_START_MASTER 1
+
+	CBaseEntity *pStart = gEntList.FindEntityByClassname(NULL, pszClassName);
+	CBaseEntity *pStartFirst = pStart;
+	while (pStart)
+	{
+		if (pStart->HasSpawnFlags(SF_PLAYER_START_MASTER))
+			return pStart;
+		pStart = gEntList.FindEntityByClassname(pStart, pszClassName);
+	}
+	return pStartFirst;
+}
 
 void ClientActive( edict_t *pEdict, bool bLoadGame )
 {
@@ -65,6 +80,11 @@ void ClientActive( edict_t *pEdict, bool bLoadGame )
 	{
 		pPlayer->Spawn();
 	}
+
+	// Make sure the timer isn't running and request that it sends the map
+	// record to the HUD.
+	timer()->Init();
+	timer()->DispatchTimeToBeatMessage();
 }
 
 
@@ -120,6 +140,10 @@ void ClientGamePrecache( void )
 	
 	CBaseEntity::PrecacheScriptSound( "Geiger.BeepHigh" );
 	CBaseEntity::PrecacheScriptSound( "Geiger.BeepLow" );
+
+	// blamod
+	CBaseEntity::PrecacheScriptSound("blamod.StartTimer");
+	CBaseEntity::PrecacheScriptSound("blamod.StopTimer");
 }
 
 
