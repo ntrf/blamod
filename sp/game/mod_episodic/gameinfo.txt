@@ -1,13 +1,14 @@
 "GameInfo"
 {
 	game 		"blamod"
-	title 		"HALF-LIFE'"
+    gamelogo    "0"
+	title 		"blamod"
 	title2		""
 
 	type		singleplayer_only
 
-	developer		CZF
-	developer_url 	http://sourceruns.org
+	developer		sourceruns
+	developer_url 	https://github.com/nkoep/blamod
 	icon 			resource/sourceruns
 
 	FileSystem
@@ -19,8 +20,8 @@
 			gamebin										|gameinfo_path|bin
 
 			// Mount VPKs.
-			game+mod			"../Half-Life 2/ep2/ep2_sound_vo_english.vpk"
-			game+mod			"../Half-Life 2/ep2/ep2_pak.vpk"
+			game				"../Half-Life 2/ep2/ep2_sound_vo_english.vpk"
+			game				"../Half-Life 2/ep2/ep2_pak.vpk"
 			game				"../Half-Life 2/episodic/ep1_sound_vo_english.vpk"
 			game				"../Half-Life 2/episodic/ep1_pak.vpk"
 			game				"../Half-Life 2/hl2/hl2_sound_vo_english.vpk"

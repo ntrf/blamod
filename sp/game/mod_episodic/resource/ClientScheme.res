@@ -631,9 +631,9 @@ Scheme
 		{
 			"1"
 			{
-				"name"  "HL2EP2"
-				"tall"			"34"
-				"tall_hidef"	"48"
+				"name"  "Tahoma"
+				"tall"			"20"
+				"tall_hidef"	"0"
 				"weight" "0"
 				"additive" "0"
 				"antialias" "1"
