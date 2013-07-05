@@ -1,4 +1,4 @@
-"Resource/HudLayout.res"
+"resource/HudLayout.res"
 {
 	HudHealth [$WIN32]
 	{
@@ -37,7 +37,7 @@
 	HudSpeedMeter
 	{
 	  "fieldName" "HudSpeedMeter"
-		"xpos"	"328"
+		"xpos"	"c-57"
 		"ypos"	"432"
 		"wide"	"114"
 		"tall"  "36"
@@ -54,8 +54,8 @@
 	HudTimer
 	{
 	  "fieldName" "HudTimer"
-		"xpos"	"464"
-		"ypos"	"432"
+		"xpos"	"r130"
+		"ypos"	"36"
 		"wide"	"114"
 		"tall"  "36"
 		"visible" "1"
