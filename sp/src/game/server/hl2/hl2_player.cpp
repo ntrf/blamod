@@ -3205,6 +3205,7 @@ void CHL2_Player::InputForceDropPhysObjects( inputdata_t &data )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+extern ConVar bla_damagefx;
 void CHL2_Player::UpdateClientData( void )
 {
 	if (m_DmgTake || m_DmgSave || m_bitsHUDDamage != m_bitsDamageType)
@@ -3236,15 +3237,19 @@ void CHL2_Player::UpdateClientData( void )
 		}
 
 		CSingleUserRecipientFilter user( this );
-		user.MakeReliable();
-		UserMessageBegin( user, "Damage" );
-			WRITE_BYTE( m_DmgSave );
-			WRITE_BYTE( m_DmgTake );
-			WRITE_LONG( visibleDamageBits );
-			WRITE_FLOAT( damageOrigin.x );	//BUG: Should be fixed point (to hud) not floats
-			WRITE_FLOAT( damageOrigin.y );	//BUG: However, the HUD does _not_ implement bitfield messages (yet)
-			WRITE_FLOAT( damageOrigin.z );	//BUG: We use WRITE_VEC3COORD for everything else
-		MessageEnd();
+
+		if (!(GetFlags() & FL_NODAMAGE) && bla_damagefx.GetBool())
+		{
+			user.MakeReliable();
+			UserMessageBegin( user, "Damage" );
+				WRITE_BYTE( m_DmgSave );
+				WRITE_BYTE( m_DmgTake );
+				WRITE_LONG( visibleDamageBits );
+				WRITE_FLOAT( damageOrigin.x );	//BUG: Should be fixed point (to hud) not floats
+				WRITE_FLOAT( damageOrigin.y );	//BUG: However, the HUD does _not_ implement bitfield messages (yet)
+				WRITE_FLOAT( damageOrigin.z );	//BUG: We use WRITE_VEC3COORD for everything else
+			MessageEnd();
+		}
 	
 		m_DmgTake = 0;
 		m_DmgSave = 0;

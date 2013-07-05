@@ -2499,7 +2499,7 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			return 0;
 
         // This method also deals damage to NPCs so make sure only player
-        // damage is reduced. For now, just reduce damage by a factor of 15.
+        // damage is reduced.
         if (!IsPlayer())
              m_iHealth -= flIntegerDamage;
         else if (!(GetFlags() & FL_NODAMAGE))
