@@ -1055,6 +1055,10 @@ bool CBasePlayer::ShouldTakeDamageInCommentaryMode( const CTakeDamageInfo &input
 	return true;
 }
 
+static ConVar bla_punchangle("bla_punchangle", "0",
+							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							 "Apply punch effect to view angle when player "
+							 "takes damage.");
 int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 {
 	// have suit diagnose the problem - ie: report damage type
@@ -1357,7 +1361,8 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			flPunch = RandomFloat( -5, -7 );
 	}
 
-	m_Local.m_vecPunchAngle.SetX( flPunch );
+	if (bla_punchangle.GetBool())
+		m_Local.m_vecPunchAngle.SetX( flPunch );
 
 	if (fTookDamage && !ftrivial && fmajor && flHealthPrev >= 75) 
 	{
@@ -4640,9 +4645,9 @@ void CBasePlayer::PostThink()
 		     	(distStart <= radius && !m_bSpawnedInsideTimerRadius))
 		     	timer()->Start();
 		}
-		// else if (origin.DistTo(m_vecGoalPosition) < radius && 
-		//          timer()->IsRunning())
-		// 	timer()->Stop();
+		else if (origin.DistTo(m_vecGoalPosition) < radius && 
+		         timer()->IsRunning())
+			timer()->Stop();
 
 		VPROF_SCOPE_BEGIN( "CBasePlayer::PostThink-PostThinkVPhysics" );
 		PostThinkVPhysics();
