@@ -55,11 +55,6 @@ public:
 			return;
 		pPlayer->SetStartPosition(m_vStart);
 		pPlayer->SetGoalPosition(m_vGoal);
-
-		if (gpGlobals->eLoadType == MapLoad_NewGame)
-		{
-		}
-		DevMsg("Start spot: %s\n", STRING(gpGlobals->startspot));
 	}
 
 	void Start()
@@ -75,7 +70,7 @@ public:
 		m_bIsRunning = false;
 		DispatchStateChangeMessage();
 		float flSecondsTime = GetCurrentTime();
-		if (flSecondsTime < m_flSecondsRecord)
+		if (flSecondsTime < m_flSecondsRecord || m_flSecondsRecord == 0.0f)
 		{
 			m_flSecondsRecord = flSecondsTime;
 			DevMsg("New map record: %.4f seconds\n", m_flSecondsRecord);
