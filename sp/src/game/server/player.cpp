@@ -1581,7 +1581,9 @@ bool CBasePlayer::IsDead() const
 static float DamageForce( const Vector &size, float damage )
 { 
 	float force = damage * ((32 * 32 * 72.0) / (size.x * size.y * size.z)) * 5;
-	
+	// FIXME: blamod previously scaled this force by 3/4 and set the force
+	//		  limit to 900. why was that?
+
 	if ( force > 1000.0) 
 	{
 		force = 1000.0;
@@ -7973,6 +7975,9 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropInt			( SENDINFO( m_nWaterLevel ), 2, SPROP_UNSIGNED ),
 		SendPropFloat		( SENDINFO( m_flLaggedMovementValue ), 0, SPROP_NOSCALE ),
+
+		// blamod
+		SendPropInt(SENDINFO(m_fBlaFlags), -1, SPROP_UNSIGNED),
 
 	END_SEND_TABLE()
 

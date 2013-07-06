@@ -846,6 +846,7 @@ public:
 	CNetworkVarEmbedded( CPlayerState, pl );
 
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_fFlags );
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_fBlaFlags );
 
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_vecViewOffset );
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_flFriction );
@@ -1131,8 +1132,15 @@ private:
 	Vector m_vecStartPosition;
 	Vector m_vecGoalPosition;
 	bool m_bSpawnedInsideTimerRadius;
+	CNetworkVar(int, m_fBlaFlags);
 
 public:
+	int GetBlaFlags() const;
+	void ToggleBlaFlag(int flagToToggle)
+	{
+		m_fBlaFlags ^= flagToToggle;
+	}
+
 	void SetStartPosition(Vector start);
 	void SetGoalPosition(Vector goal) { m_vecGoalPosition = goal; }
 

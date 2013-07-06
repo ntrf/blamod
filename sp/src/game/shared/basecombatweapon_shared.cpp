@@ -2285,7 +2285,8 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 	if ( UsesClipsForAmmo1() )
 	{
 		info.m_iShots = MIN( info.m_iShots, m_iClip1 );
-		m_iClip1 -= info.m_iShots;
+		if (!(pPlayer->GetBlaFlags() & FL_BLA_INFAMMO))
+			m_iClip1 -= info.m_iShots;
 	}
 	else
 	{

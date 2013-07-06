@@ -80,7 +80,8 @@ void CHLMachineGun::PrimaryAttack( void )
 	{
 		if ( iBulletsToFire > m_iClip1 )
 			iBulletsToFire = m_iClip1;
-		m_iClip1 -= iBulletsToFire;
+		if (!(pPlayer->GetBlaFlags() & FL_BLA_INFAMMO))
+			m_iClip1 -= iBulletsToFire;
 	}
 
 	m_iPrimaryAttacks++;

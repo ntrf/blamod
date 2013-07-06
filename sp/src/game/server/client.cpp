@@ -1104,8 +1104,8 @@ void CC_Nodamage_f()
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	pPlayer->ToggleFlag(FL_NODAMAGE);
-	if(pPlayer->GetFlags() & FL_NODAMAGE)
+	pPlayer->ToggleBlaFlag(FL_BLA_NODAMAGE);
+	if (pPlayer->GetBlaFlags() & FL_BLA_NODAMAGE)
 		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage ON\n");
 	else
 		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage OFF\n");
@@ -1114,6 +1114,25 @@ void CC_Nodamage_f()
 static ConCommand bla_nodamage("bla_nodamage", CC_Nodamage_f,
 							   "Toggle: Don't take damage (physics still "
 							   "apply)");
+
+
+//-----------------------------------------------------------------------------
+// Toggles no damage flag
+//-----------------------------------------------------------------------------
+void CC_Infammo_f()
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+	pPlayer->ToggleBlaFlag(FL_BLA_INFAMMO);
+	if (pPlayer->GetBlaFlags() & FL_BLA_INFAMMO)
+		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "Infinite ammo ON\n");
+	else
+		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "Infinite ammo OFF\n");
+}
+
+static ConCommand bla_infammo(
+	"bla_infammo", CC_Infammo_f, "Toggle: infinite ammo");
 
 
 //-----------------------------------------------------------------------------

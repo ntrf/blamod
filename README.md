@@ -7,7 +7,6 @@ to-do:
 - add cvars:
     * bla\_nofalldamage (self-explanatory)
     * disable speed loss after long drops
-    * bla\_infammo (self-explanatory)
     * infinite suite energy
     * sprint while carrying objects, including objects carried by the gravity gun
     * disable environmental damage (cf. poisonous water in HL2 canals)
@@ -23,3 +22,4 @@ to-do:
 - replace "New Game" dialog with a simple map selector to allow for maps to be loaded dynamically without the need for additional chapterX.cfg files
 - add blowback to shotgun and ar2 to boost the player in the opposite viewing direction
 - don't end the game when leaving alyx behind
+

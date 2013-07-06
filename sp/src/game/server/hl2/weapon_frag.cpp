@@ -306,7 +306,8 @@ void CWeaponFrag::PrimaryAttack( void )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 {
-	pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
+	if (!(static_cast<CBasePlayer *>(pOwner)->GetBlaFlags() & FL_BLA_INFAMMO))
+		pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
 }
 
 //-----------------------------------------------------------------------------

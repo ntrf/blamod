@@ -371,7 +371,8 @@ void CWeaponSMG1::SecondaryAttack( void )
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 	// Decrease ammo
-	pPlayer->RemoveAmmo( 1, m_iSecondaryAmmoType );
+	if (!(pPlayer->GetBlaFlags() & FL_BLA_INFAMMO))
+		pPlayer->RemoveAmmo( 1, m_iSecondaryAmmoType );
 
 	// Can shoot again immediately
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;

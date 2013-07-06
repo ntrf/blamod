@@ -72,7 +72,6 @@ public:
 	void FinishReload( void );
 	void CheckHolsterReload( void );
 	void Pump( void );
-//	void WeaponIdle( void );
 	void ItemHolsterFrame( void );
 	void ItemPostFrame( void );
 	void PrimaryAttack( void );
@@ -462,7 +461,8 @@ void CWeaponShotgun::PrimaryAttack( void )
 
 	// Don't fire again until fire animation has completed
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
-	m_iClip1 -= 1;
+	if (!(pPlayer->GetBlaFlags() & FL_BLA_INFAMMO))
+		m_iClip1 -= 1;
 
 	Vector	vecSrc		= pPlayer->Weapon_ShootPosition( );
 	Vector	vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );	
@@ -520,7 +520,8 @@ void CWeaponShotgun::SecondaryAttack( void )
 
 	// Don't fire again until fire animation has completed
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
-	m_iClip1 -= 2;	// Shotgun uses same clip for primary and secondary attacks
+	if (!(pPlayer->GetBlaFlags() & FL_BLA_INFAMMO))
+		m_iClip1 -= 2;	// Shotgun uses same clip for primary and secondary attacks
 
 	Vector vecSrc	 = pPlayer->Weapon_ShootPosition();
 	Vector vecAiming = pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );	
@@ -771,23 +772,3 @@ void CWeaponShotgun::ItemHolsterFrame( void )
 		m_iClip1 += ammoFill;
 	}
 }
-
-//==================================================
-// Purpose: 
-//==================================================
-/*
-void CWeaponShotgun::WeaponIdle( void )
-{
-	//Only the player fires this way so we can cast
-	CBasePlayer *pPlayer = GetOwner()
-
-	if ( pPlayer == NULL )
-		return;
-
-	//If we're on a target, play the new anim
-	if ( pPlayer->IsOnTarget() )
-	{
-		SendWeaponAnim( ACT_VM_IDLE_ACTIVE );
-	}
-}
-*/

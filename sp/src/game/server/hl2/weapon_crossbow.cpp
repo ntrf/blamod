@@ -676,7 +676,8 @@ void CWeaponCrossbow::FireBolt( void )
 		pBolt->SetAbsVelocity( vecAiming * BOLT_AIR_VELOCITY );
 	}
 
-	m_iClip1--;
+	if (!(pOwner->GetBlaFlags() & FL_BLA_INFAMMO))
+		m_iClip1--;
 
 	pOwner->ViewPunch( QAngle( -2, 0, 0 ) );
 

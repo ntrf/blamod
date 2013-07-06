@@ -3238,7 +3238,7 @@ void CHL2_Player::UpdateClientData( void )
 
 		CSingleUserRecipientFilter user( this );
 
-		if (!(GetFlags() & FL_NODAMAGE) && bla_damagefx.GetBool())
+		if (!(GetBlaFlags() & FL_BLA_NODAMAGE) && bla_damagefx.GetBool())
 		{
 			user.MakeReliable();
 			UserMessageBegin( user, "Damage" );

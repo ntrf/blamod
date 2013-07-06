@@ -291,6 +291,12 @@ public:
 	virtual const Vector		GetPlayerMins( void ) const; // uses local player
 	virtual const Vector		GetPlayerMaxs( void ) const; // uses local player
 
+	// blamod
+private:
+	int m_fBlaFlags;
+public:
+	int GetBlaFlags() const;
+
 	// Is the player dead?
 	bool				IsPlayerDead();
 	bool				IsPoisoned( void ) { return m_Local.m_bPoisoned; }

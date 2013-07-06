@@ -2082,3 +2082,7 @@ bool fogparams_t::operator !=( const fogparams_t& other ) const
 	return false;
 }
 
+int CBasePlayer::GetBlaFlags() const
+{
+	return m_fBlaFlags;
+}

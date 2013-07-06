@@ -1623,7 +1623,8 @@ void CWeaponRPG::PrimaryAttack( void )
 		m_hMissile->SetGracePeriod( 0.3 );
 	}
 
-	DecrementAmmo( GetOwner() );
+	if (!(pOwner->GetBlaFlags() & FL_BLA_INFAMMO))
+		DecrementAmmo(GetOwner());
 
 	// Register a muzzleflash for the AI
 	pOwner->SetMuzzleFlashTime( gpGlobals->curtime + 0.5 );

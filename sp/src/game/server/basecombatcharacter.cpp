@@ -2498,15 +2498,19 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if ( flIntegerDamage <= 0 )
 			return 0;
 
-        // This method also deals damage to NPCs so make sure only player
-        // damage is reduced.
-        if (!IsPlayer())
-             m_iHealth -= flIntegerDamage;
-        else if (!(GetFlags() & FL_NODAMAGE))
-        {
-			float flDamageFraction = clamp(
-				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
-			m_iHealth -= flIntegerDamage / flDamageFraction;
+		// This method also deals damage to NPCs so make sure only player
+		// damage is reduced.
+		if (!IsPlayer())
+			m_iHealth -= flIntegerDamage;
+		else
+		{
+			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this); // up-cast
+			if (!(pPlayer->GetBlaFlags() & FL_BLA_NODAMAGE))
+			{
+				float flDamageFraction = clamp(
+					bla_damagefraction.GetFloat(), 1.0f, 100.0f);
+				m_iHealth -= flIntegerDamage / flDamageFraction;
+			}
 		}
 	}
 
@@ -2525,11 +2529,15 @@ int CBaseCombatCharacter::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 	{
 	    if (!IsPlayer())
 	         m_iHealth -= info.GetDamage();
-	    else if (!(GetFlags() & FL_NODAMAGE)) 
+	    else 
 	    {
-	        float flDamageFraction = clamp(
-				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
-	        m_iHealth -= info.GetDamage() / flDamageFraction;
+			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this); // up-cast
+			if (!(pPlayer->GetBlaFlags() & FL_BLA_NODAMAGE))
+			{
+		        float flDamageFraction = clamp(
+					bla_damagefraction.GetFloat(), 1.0f, 100.0f);
+		        m_iHealth -= info.GetDamage() / flDamageFraction;
+		    }
 	    }
 	}
 

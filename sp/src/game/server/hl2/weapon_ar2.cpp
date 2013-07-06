@@ -252,7 +252,8 @@ void CWeaponAR2::DelayedAttack( void )
 	pOwner->ViewPunch( QAngle( random->RandomInt( -8, -12 ), random->RandomInt( 1, 2 ), 0 ) );
 
 	// Decrease ammo
-	pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
+	if (!(pOwner->GetBlaFlags() & FL_BLA_INFAMMO))
+		pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
 
 	// Can shoot again immediately
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
