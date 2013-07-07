@@ -439,15 +439,17 @@ void CWeaponShotgun::DryFire( void )
 //
 //
 //-----------------------------------------------------------------------------
+static ConVar bla_shotgunblowback(
+	"bla_shotgunblowback", "100.0", 
+	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
+	"Amount of force to apply in opposite look direction of the player after "
+	"firing the shotgun.");
 void CWeaponShotgun::PrimaryAttack( void )
 {
 	// Only the player fires this way so we can cast
 	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
-
 	if (!pPlayer)
-	{
 		return;
-	}
 
 	// MUST call sound before removing a round from the clip of a CMachineGun
 	WeaponSound(SINGLE);
@@ -466,6 +468,9 @@ void CWeaponShotgun::PrimaryAttack( void )
 
 	Vector	vecSrc		= pPlayer->Weapon_ShootPosition( );
 	Vector	vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );	
+
+	pPlayer->VelocityPunch(
+		-clamp(bla_shotgunblowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 1.0 );
 	
@@ -501,11 +506,8 @@ void CWeaponShotgun::SecondaryAttack( void )
 {
 	// Only the player fires this way so we can cast
 	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
-
 	if (!pPlayer)
-	{
 		return;
-	}
 
 	pPlayer->m_nButtons &= ~IN_ATTACK2;
 	// MUST call sound before removing a round from the clip of a CMachineGun
@@ -529,6 +531,9 @@ void CWeaponShotgun::SecondaryAttack( void )
 	// Fire the bullets
 	pPlayer->FireBullets( 12, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0, -1, -1, 0, NULL, false, false );
 	pPlayer->ViewPunch( QAngle(random->RandomFloat( -5, 5 ),0,0) );
+
+	pPlayer->VelocityPunch(
+		-2 * clamp(bla_shotgunblowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 1.0 );
 

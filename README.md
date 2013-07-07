@@ -20,6 +20,6 @@ to-do:
 - add global timer which carries over the current time across map transitions
 - make object gibs solid again so that itemflying on broken crates, etc. is possible
 - replace "New Game" dialog with a simple map selector to allow for maps to be loaded dynamically without the need for additional chapterX.cfg files
-- add blowback to shotgun and ar2 to boost the player in the opposite viewing direction
+- add blowback to the ar2 to boost the player in the opposite viewing direction
 - don't end the game when leaving alyx behind
 
