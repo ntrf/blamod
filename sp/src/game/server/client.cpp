@@ -1158,7 +1158,7 @@ void CC_SetStart_f()
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	timer()->SetStartPosition(TraceBrush(pPlayer));
+	BlaTimer::timer()->SetStartPosition(TraceBrush(pPlayer));
 }
 
 static ConCommand bla_setstart("bla_setstart", CC_SetStart_f, 
@@ -1174,7 +1174,7 @@ void CC_SetGoal_f()
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	timer()->SetGoalPosition(TraceBrush(pPlayer));
+	BlaTimer::timer()->SetGoalPosition(TraceBrush(pPlayer));
 }
 
 static ConCommand bla_setgoal("bla_setgoal", CC_SetGoal_f, "Place the goal "

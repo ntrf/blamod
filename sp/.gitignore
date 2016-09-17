@@ -1,0 +1,12 @@
+*.sdf
+*.opensdf
+
+*.suo
+
+ipch
+
+Debug
+Release
+
+Debug_mod_episodic
+Release_mod_episodic

@@ -1,6 +1,8 @@
+#include "cbase.h"
+
 #include "timer.h"
 
-BlaTimer *timer()
+BlaTimer * BlaTimer::timer()
 {
     static BlaTimer *timer = new BlaTimer();
     return timer;

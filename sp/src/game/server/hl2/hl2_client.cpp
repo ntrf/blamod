@@ -83,8 +83,8 @@ void ClientActive( edict_t *pEdict, bool bLoadGame )
 
 	// Make sure the timer isn't running and request that it sends the map
 	// record to the HUD.
-	timer()->Init();
-	timer()->DispatchTimeToBeatMessage();
+	BlaTimer::timer()->Init();
+	BlaTimer::timer()->DispatchTimeToBeatMessage();
 }
 
 

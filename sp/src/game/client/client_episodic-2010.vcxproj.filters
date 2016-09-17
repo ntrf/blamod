@@ -46,14 +46,11 @@
     <Filter Include="Tool Framework">
       <UniqueIdentifier>{C8FC1989-2499-2137-2EEA-17663813D98F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Blamod">
+      <UniqueIdentifier>{5bae5382-57d7-468c-b04f-9850d4fb2bad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\lib\win32\release\VS2010\libprotobuf.lib">
-      <Filter>Libraries</Filter>
-    </Library>
-    <Library Include="..\..\lib\win32\debug\VS2010\libprotobuf.lib">
-      <Filter>Libraries</Filter>
-    </Library>
     <Library Include="..\..\lib\public\bitmap.lib">
       <Filter>Link Libraries</Filter>
     </Library>
@@ -3426,6 +3423,12 @@
     </ClCompile>
     <ClCompile Include="toolframework_client.cpp">
       <Filter>Tool Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="bla\hud_speedmeter.cpp">
+      <Filter>Source Files\Blamod</Filter>
+    </ClCompile>
+    <ClCompile Include="bla\hud_timer.cpp">
+      <Filter>Source Files\Blamod</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

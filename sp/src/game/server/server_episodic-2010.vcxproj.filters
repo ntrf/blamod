@@ -31,11 +31,11 @@
     <Filter Include="Tools Framework">
       <UniqueIdentifier>{7B72D9D0-E55D-2A74-4A7B-5D5B7AFE85C6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Blamod">
+      <UniqueIdentifier>{d08397ce-aeea-42ec-96e1-b42a27635cc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\lib\win32\release\VS2010\libprotobuf.lib">
-      <Filter>Libraries</Filter>
-    </Library>
     <Library Include="..\..\lib\public\choreoobjects.lib">
       <Filter>Link Libraries</Filter>
     </Library>
@@ -1781,6 +1781,9 @@
     <ClInclude Include="toolframework_server.h">
       <Filter>Tools Framework</Filter>
     </ClInclude>
+    <ClInclude Include="bla\timer.h">
+      <Filter>Source Files\Blamod</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamedll_replay.cpp">
@@ -3498,6 +3501,9 @@
     </ClCompile>
     <ClCompile Include="toolframework_server.cpp">
       <Filter>Tools Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="bla\timer.cpp">
+      <Filter>Source Files\Blamod</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

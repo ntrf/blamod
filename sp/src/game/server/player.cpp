@@ -4640,16 +4640,17 @@ void CBasePlayer::PostThink()
 		// only be started once. 
 		Vector origin = GetLocalOrigin();
 		float radius = clamp(bla_timerradius.GetFloat(), 100.0f, 1000.0f);
-		if (!timer()->IsRunning())
+		if (!BlaTimer::timer()->IsRunning())
 		{
 			vec_t distStart = origin.DistTo(m_vecStartPosition);
 			if ((distStart > radius && m_bSpawnedInsideTimerRadius) ||
 		     	(distStart <= radius && !m_bSpawnedInsideTimerRadius))
-		     	timer()->Start();
+				BlaTimer::timer()->Start();
 		}
-		else if (origin.DistTo(m_vecGoalPosition) < radius && 
-		         timer()->IsRunning())
-			timer()->Stop();
+		else if (origin.DistTo(m_vecGoalPosition) < radius &&
+				 BlaTimer::timer()->IsRunning()) {
+			BlaTimer::timer()->Stop();
+		}
 
 		VPROF_SCOPE_BEGIN( "CBasePlayer::PostThink-PostThinkVPhysics" );
 		PostThinkVPhysics();
@@ -6862,7 +6863,7 @@ void CBasePlayer::UpdateClientData( void )
 		m_Local.m_iHideHUD &= ~HIDEHUD_BONUS_PROGRESS;
 
 	// Send timer update to the HUD.
-	timer()->DispatchTimeMessage();
+	BlaTimer::timer()->DispatchTimeMessage();
 
 	// Let any global rules update the HUD, too
 	g_pGameRules->UpdateClientData( this );

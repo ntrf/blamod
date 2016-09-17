@@ -174,9 +174,9 @@ private:
 		Q_FixSlashes(pszPath);
 		return pszPath;
 	}
+public:
+	static BlaTimer * timer();
 };
-
-BlaTimer *timer();
 
 #undef NEWLINE
 
