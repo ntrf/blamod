@@ -1013,7 +1013,9 @@ CStudioHdr *C_BaseAnimating::OnNewModel()
 	{
 		// XXX what's authoritative? the model pointer or the model index? what a mess.
 		nNewIndex = modelinfo->GetModelIndex( modelinfo->GetModelName( GetModel() ) );
+#ifdef BE_ANOYING
 		Assert( modelinfo->GetModel( nNewIndex ) == GetModel() );
+#endif
 	}
 
 	m_AutoRefModelIndex = nNewIndex;
