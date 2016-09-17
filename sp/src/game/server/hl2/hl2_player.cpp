@@ -155,27 +155,16 @@ static impactdamagetable_t gCappedPlayerImpactDamageTable =
 
 };
 
+ConVar bla_lagacy_flashlight("bla_lagacy_flashlight", "1",
+							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							 "Set flashlight energy source.\n0: Separate, 1: AUX Power");
+
 // Flashlight utility
-bool g_bCacheLegacyFlashlightStatus = true;
-bool g_bUseLegacyFlashlight;
+bool g_bUseLegacyFlashlight = true;
 bool Flashlight_UseLegacyVersion( void )
 {
-	// If this is the first run through, cache off what the answer should be (cannot change during a session)
-	if ( g_bCacheLegacyFlashlightStatus )
-	{
-		char modDir[MAX_PATH];
-		if ( UTIL_GetModDir( modDir, sizeof(modDir) ) == false )
-			return false;
-
-		g_bUseLegacyFlashlight = ( !Q_strcmp( modDir, "hl2" ) ||
-					   !Q_strcmp( modDir, "episodic" ) ||
-					   !Q_strcmp( modDir, "lostcoast" ));
-
-		g_bCacheLegacyFlashlightStatus = false;
-	}
-
 	// Return the results
-	return g_bUseLegacyFlashlight;
+	return bla_lagacy_flashlight.GetBool();
 }
 
 //-----------------------------------------------------------------------------
