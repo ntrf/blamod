@@ -2343,8 +2343,16 @@ bool CGameMovement::CheckJumpButton( void )
 		int iMovement;
 
 		iMovement = bla_movement.GetInt();
-		if (iMovement < 0 || iMovement > 1)
+		if (iMovement < 0 || iMovement > 2)
 			iMovement = 0;
+
+		if (iMovement == 2) {
+			if (mv->m_flForwardMove < 0.0f) {
+				iMovement = 0;
+			} else {
+				iMovement = 1;
+			}
+		}
 
 		if (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
 			flBoost = 0.5f;
@@ -2957,15 +2965,26 @@ void CGameMovement::CheckVelocity( void )
 		}
 
 		// Bound it.
-		if (mv->m_vecVelocity[i] > sv_maxvelocity.GetFloat()) 
-		{
-			DevMsg( 1, "PM  Got a velocity too high on %s\n", DescribeAxis( i ) );
-			mv->m_vecVelocity[i] = sv_maxvelocity.GetFloat();
+		float maxvel = sv_maxvelocity.GetFloat();
+
+		if (mv->m_vecVelocity.z > maxvel) {
+			DevMsg(1, "PM  Got a velocity too high on Z\n");
+			mv->m_vecVelocity[i] = maxvel;
+		} else if (mv->m_vecVelocity.z < -maxvel) {
+			DevMsg(1, "PM  Got a velocity too low on Z\n");
+			mv->m_vecVelocity[i] = -maxvel;
 		}
-		else if (mv->m_vecVelocity[i] < -sv_maxvelocity.GetFloat())
-		{
-			DevMsg( 1, "PM  Got a velocity too low on %s\n", DescribeAxis( i ) );
-			mv->m_vecVelocity[i] = -sv_maxvelocity.GetFloat();
+
+		float x = mv->m_vecVelocity.x;
+		float y = mv->m_vecVelocity.y;
+
+		float mag = x * x + y * y;
+
+		if (mag > 0 && mag > maxvel * maxvel) {
+			DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+
+			mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
+			mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
 		}
 	}
 }
