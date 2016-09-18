@@ -39,22 +39,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug_mod_episodic\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\game\mod_episodic\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug_mod_episodic\</IntDir>
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\devtools\vstools;$(ExecutablePath);$(Path)</ExecutablePath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PostBuildEventUseInBuild>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release_mod_episodic\</OutDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\game\mod_episodic\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release_mod_episodic\</IntDir>
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\devtools\vstools;$(ExecutablePath);$(Path)</ExecutablePath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -239,7 +239,6 @@ exit 1
     <Library Include="..\..\lib\public\particles.lib" />
     <Library Include="..\..\lib\public\steam_api.lib" />
     <Library Include="..\..\lib\public\tier0.lib" />
-    <Library Include="..\..\lib\public\tier1.lib" />
     <Library Include="..\..\lib\public\tier2.lib" />
     <Library Include="..\..\lib\public\tier3.lib" />
     <Library Include="..\..\lib\public\vstdlib.lib" />
@@ -1487,6 +1486,9 @@ exit 1
     <ClCompile Include="toolframework_server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\tier1\tier1-2010.vcxproj">
+      <Project>{ec1c516d-e1d9-bc0a-f79d-e91e954ed8ec}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\public\tier0\pointeroverride.asm">

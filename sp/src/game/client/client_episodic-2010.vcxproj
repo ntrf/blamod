@@ -39,7 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug_mod_episodic\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\game\mod_episodic\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug_mod_episodic\</IntDir>
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\devtools\vstools;$(ExecutablePath);$(Path)</ExecutablePath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreBuildEventUseInBuild>
@@ -47,8 +47,8 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PostBuildEventUseInBuild>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release_mod_episodic\</OutDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\game\mod_episodic\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release_mod_episodic\</IntDir>
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\devtools\vstools;$(ExecutablePath);$(Path)</ExecutablePath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PreBuildEventUseInBuild>
@@ -56,7 +56,7 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -127,20 +127,10 @@
       <OutputFile>$(OutDir)/client.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Publishing to ..\..\..\game\mod_episodic\bin</Message>
-      <Command>if not exist "..\..\..\game\mod_episodic\bin" mkdir "..\..\..\game\mod_episodic\bin"
-copy "$(TargetDir)"$(TargetFileName) "..\..\..\game\mod_episodic\bin\$(TargetFileName)"
-if ERRORLEVEL 1 goto BuildEventFailed
-if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map ..\..\..\game\mod_episodic\bin\$(TargetName).map
-copy "$(TargetDir)"$(TargetName).pdb ..\..\..\game\mod_episodic\bin\$(TargetName).pdb
-if ERRORLEVEL 1 goto BuildEventFailed
-goto BuildEventOK
-:BuildEventFailed
-echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
-del /q "$(TargetDir)"$(TargetFileName)
-exit 1
-:BuildEventOK
-</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
     </CustomBuildStep>
@@ -218,20 +208,10 @@ exit 1
       <OutputFile>$(OutDir)/client.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Publishing to ..\..\..\game\mod_episodic\bin</Message>
-      <Command>if not exist "..\..\..\game\mod_episodic\bin" mkdir "..\..\..\game\mod_episodic\bin"
-copy "$(TargetDir)"$(TargetFileName) "..\..\..\game\mod_episodic\bin\$(TargetFileName)"
-if ERRORLEVEL 1 goto BuildEventFailed
-if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map ..\..\..\game\mod_episodic\bin\$(TargetName).map
-copy "$(TargetDir)"$(TargetName).pdb ..\..\..\game\mod_episodic\bin\$(TargetName).pdb
-if ERRORLEVEL 1 goto BuildEventFailed
-goto BuildEventOK
-:BuildEventFailed
-echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
-del /q "$(TargetDir)"$(TargetFileName)
-exit 1
-:BuildEventOK
-</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <CustomBuildStep>
     </CustomBuildStep>
@@ -245,7 +225,6 @@ exit 1
     <Library Include="..\..\lib\public\particles.lib" />
     <Library Include="..\..\lib\public\steam_api.lib" />
     <Library Include="..\..\lib\public\tier0.lib" />
-    <Library Include="..\..\lib\public\tier1.lib" />
     <Library Include="..\..\lib\public\tier2.lib" />
     <Library Include="..\..\lib\public\tier3.lib" />
     <Library Include="..\..\lib\public\vgui_controls.lib" />
@@ -1467,6 +1446,17 @@ exit 1
     <ClCompile Include="toolframework_client.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\tier1\tier1-2010.vcxproj">
+      <Project>{ec1c516d-e1d9-bc0a-f79d-e91e954ed8ec}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\server\server_episodic-2010.vcxproj">
+      <Project>{7855b476-b6d4-535d-f7a9-d623245f8b07}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\public\tier0\pointeroverride.asm">

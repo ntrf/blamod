@@ -2,7 +2,7 @@
 {
 	game 		"blamod"
     gamelogo    "0"
-	title 		"blamod"
+	title 		"BLAMOD : Reborn"
 	title2		""
 
 	type		singleplayer_only
