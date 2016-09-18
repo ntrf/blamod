@@ -631,13 +631,13 @@ Scheme
 		{
 			"1"
 			{
-				"name"  "Tahoma"
-				"tall"			"20"
-				"tall_hidef"	"0"
-				"weight" "0"
+				"name"  "Crystal clear"
+				"tall"			"40"
+				"tall_hidef"	"1"
+				"weight" "900"
 				"additive" "0"
 				"antialias" "1"
-				"custom"	"1" [$OSX]
+				"custom"	"1"
 			}
 		}
 		CreditsLogo
@@ -793,7 +793,8 @@ Scheme
 	{
 		"1"		"resource/HALFLIFE2.ttf"
 		"2"		"resource/HL2crosshairs.ttf"
-		"3"	"resource/HL2EP2.ttf"		
+		"3"	"resource/HL2EP2.ttf"
+		"4" "resource/CRYSTALC.ttf"
 	}
 
 }
