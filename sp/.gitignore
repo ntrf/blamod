@@ -3,6 +3,8 @@
 
 *.suo
 
+*.vcxproj.user
+
 ipch
 
 Debug
