@@ -2966,13 +2966,18 @@ void CGameMovement::CheckVelocity( void )
 
 		// Bound it.
 		float maxvel = sv_maxvelocity.GetFloat();
+		float maxfall = sv_fallvelocity.GetFloat();
+
+		if (maxfall == 0) {
+			maxfall = maxvel;
+		}
 
 		if (mv->m_vecVelocity.z > maxvel) {
 			DevMsg(1, "PM  Got a velocity too high on Z\n");
-			mv->m_vecVelocity[i] = maxvel;
-		} else if (mv->m_vecVelocity.z < -maxvel) {
-			DevMsg(1, "PM  Got a velocity too low on Z\n");
-			mv->m_vecVelocity[i] = -maxvel;
+			mv->m_vecVelocity.z = maxvel;
+		} else if (mv->m_vecVelocity.z < -maxfall) {
+			//DevMsg(1, "PM  Got a velocity too low on Z\n");
+			mv->m_vecVelocity.z = -maxfall;
 		}
 
 		float x = mv->m_vecVelocity.x;

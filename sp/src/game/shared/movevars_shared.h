@@ -29,6 +29,7 @@ extern ConVar sv_rollangle;
 extern ConVar sv_friction;
 extern ConVar sv_bounce;
 extern ConVar sv_maxvelocity;
+extern ConVar sv_fallvelocity;
 extern ConVar sv_stepsize;
 extern ConVar sv_skyname;
 extern ConVar sv_backspeed;
