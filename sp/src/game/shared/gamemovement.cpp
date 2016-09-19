@@ -2535,7 +2535,7 @@ int CGameMovement::TryPlayerMove( Vector *pFirstDest, trace_t *pFirstTrace )
 				// If we detect getting stuck, don't allow the movement
 				trace_t stuck;
 				TracePlayerBBox( pm.endpos, pm.endpos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, stuck );
-				if ( stuck.startsolid || stuck.fraction != 1.0f )
+				if ((stuck.startsolid || stuck.fraction != 1.0f) && stuck.contents != 0)
 				{
 					//Msg( "Player will become stuck!!!\n" );
 					VectorCopy (vec3_origin, mv->m_vecVelocity);
