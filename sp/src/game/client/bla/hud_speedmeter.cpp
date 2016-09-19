@@ -52,7 +52,9 @@ void CHudSpeedMeter::OnThink()
 {
     Vector velocity(0, 0, 0);
     C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
-    if (player)
-        velocity = player->GetLocalVelocity();
+	if (player) {
+		velocity = player->GetLocalVelocity();
+		velocity.z = 0;
+	}
     SetDisplayValue((int)velocity.Length());
 }
