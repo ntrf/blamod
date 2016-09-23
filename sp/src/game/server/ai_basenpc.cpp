@@ -680,7 +680,7 @@ bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &info )
 
 		if ( bHitByVehicle || (npcEnemy && npcEnemy->IRelationType( this ) == D_LI) )
 		{
-			m_fNoDamageDecal = true;
+			// m_fNoDamageDecal = true;
 
 			if ( npcEnemy && npcEnemy->IsPlayer() )
 			{
@@ -689,7 +689,7 @@ bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &info )
 				m_OnDamagedByPlayerSquad.FireOutput( info.GetAttacker(), this );
 			}
 
-			return false;
+			//return false;
 		}
 	}
 	
