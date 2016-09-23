@@ -2214,9 +2214,9 @@ static ConVar bla_pogo("bla_pogo", "1",
 					   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
 					   "Keep jumping when jump button is down. This removes "
 					   "the need for external scripts like AutoHotkey.");
-static ConVar bla_movement("bla_movement", "0",
+static ConVar bla_movement("bla_movement", "2",
 						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
-						   "Set movement physics.\n0: ABH, 1: bunny-hopping");
+						   "Set movement physics.\n0: ABH, 1: bunny-hopping, 2: mixed");
 bool CGameMovement::CheckJumpButton( void )
 {
 	if (player->pl.deadflag)

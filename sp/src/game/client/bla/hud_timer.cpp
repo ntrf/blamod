@@ -18,7 +18,7 @@ using namespace vgui;
 
 #define BUFSIZE (sizeof("00:00.0000")+1)
 
-static ConVar bla_timer("bla_timer", "1",
+static ConVar bla_timer("bla_timer", "0",
 						FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_DEMO, 
 						"Turn the timer display on/off");
 

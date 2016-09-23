@@ -1,15 +1,15 @@
 "GameInfo"
 {
-	game 		"blamod"
+	game 		"Blamod Reborn"
     gamelogo    "0"
 	title 		"BLAMOD : Reborn"
 	title2		""
 
 	type		singleplayer_only
 
-	developer		sourceruns
-	developer_url 	https://github.com/nkoep/blamod
-	icon 			resource/sourceruns
+	developer		"Sourceruns & Ntrf"
+	developer_url 	"https://github.com/ntrf/blamod"
+	icon 			"resource/blamod"
 
 	FileSystem
 	{
