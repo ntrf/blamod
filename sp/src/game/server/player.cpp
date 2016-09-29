@@ -4436,6 +4436,11 @@ void CBasePlayer::UpdatePlayerSound ( void )
 	//Msg( "%d/%d\n", iVolume, m_iTargetVolume );
 }
 
+ConVar bla_clipdirection("bla_clipdirection", "0",
+						 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+						 "Cliping direction switch:\n"
+						 "  0: Clip up, 1: Clip down");
+
 // This is a glorious hack to find free space when you've crouched into some solid space
 // Our crouching collisions do not work correctly for some reason and this is easier
 // than fixing the problem :(
@@ -4458,6 +4463,10 @@ void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
 		}
 		else
 			return;
+	}
+
+	if (bla_clipdirection.GetInt() == 0) {
+		return;
 	}
 
 	pPlayer->SetAbsOrigin( org );
