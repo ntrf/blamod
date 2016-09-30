@@ -4092,6 +4092,7 @@ void CGameMovement::FinishUnDuckJump( trace_t &trace )
 //-----------------------------------------------------------------------------
 void CGameMovement::FinishDuck( void )
 {
+	//ntrf: Don't touch tihs - this enables quantum crouching
 	if ( player->GetFlags() & FL_DUCKING )
 		return;
 
@@ -4349,7 +4350,7 @@ void CGameMovement::Duck( void )
 
 			// Try to unduck unless automovement is not allowed
 			// NOTE: When not onground, you can always unduck
-			if ( player->m_Local.m_bAllowAutoMovement || bInAir || player->m_Local.m_bDucking )
+			if ( player->m_Local.m_bAllowAutoMovement || bInAir /*|| player->m_Local.m_bDucking*/ )
 			{
 				// We released the duck button, we aren't in "duck" and we are not in the air - start unduck transition.
 				if ( ( buttonsReleased & IN_DUCK ) )
