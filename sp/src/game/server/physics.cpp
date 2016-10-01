@@ -689,8 +689,12 @@ bool CCollisionEvent::ShouldFreezeObject( IPhysicsObject *pObject )
 		if ( FindMaxContact( pObject, pObject->GetMass() * 10, &pOtherObject, &contactPos, &force ) )
 		{
 			CBaseEntity *pOther = static_cast<CBaseEntity *>(pOtherObject->GetGameData());
+
+			if (PropIsGib(pEntity)) {
+				//ntrf: Do nothing. This prevents gibs from despawning
+			}
 			// this object can take damage, crush it
-			if ( pEntity->m_takedamage > DAMAGE_EVENTS_ONLY )
+			else if ( pEntity->m_takedamage > DAMAGE_EVENTS_ONLY )
 			{
 				CTakeDamageInfo dmgInfo( pOther, pOther, force, contactPos, force.Length() * 0.1f, DMG_CRUSH );
 				PhysCallbackDamage( pEntity, dmgInfo );
