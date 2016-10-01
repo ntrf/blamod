@@ -2480,9 +2480,20 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	// do the damage
 	if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 	{
+		float damage = info.GetDamage();
+
+		if (IsPlayer()) {
+			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this); // up-cast
+			if (pPlayer->GetBlaFlags() & FL_BLA_NODAMAGE)
+				return 1; // don't take damage at all
+			float flDamageFraction = clamp(
+				bla_damagefraction.GetFloat(), 1.0f, 100.0f);
+			damage /= flDamageFraction;
+		}
+
 		// Separate the fractional amount of damage from the whole
-		float flFractionalDamage = info.GetDamage() - floor( info.GetDamage() );
-		float flIntegerDamage = info.GetDamage() - flFractionalDamage;
+		float flFractionalDamage = damage - floor(damage);
+		float flIntegerDamage = damage - flFractionalDamage;
 
 		// Add fractional damage to the accumulator
 		m_flDamageAccumulator += flFractionalDamage;
@@ -2500,18 +2511,7 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 		// This method also deals damage to NPCs so make sure only player
 		// damage is reduced.
-		if (!IsPlayer())
-			m_iHealth -= flIntegerDamage;
-		else
-		{
-			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this); // up-cast
-			if (!(pPlayer->GetBlaFlags() & FL_BLA_NODAMAGE))
-			{
-				float flDamageFraction = clamp(
-					bla_damagefraction.GetFloat(), 1.0f, 100.0f);
-				m_iHealth -= flIntegerDamage / flDamageFraction;
-			}
-		}
+		m_iHealth -= flIntegerDamage;
 	}
 
 	return 1;
