@@ -347,7 +347,9 @@ CPathTrack *CPathTrack::GetNext( void )
 	}
 	
 	// The paths shouldn't normally be getting deleted so assert that if it was set, it's valid.
+#ifdef BE_ANOYING
 	Assert( !m_pnext.IsValid() || m_pnext.Get() != NULL );
+#endif
 	return m_pnext;
 }
 
@@ -361,7 +363,9 @@ CPathTrack *CPathTrack::GetPrevious( void )
 		return m_paltpath;
 	}
 	
+#ifdef BE_ANOYING
 	Assert( !m_pprevious.IsValid() || m_pprevious.Get() != NULL );
+#endif
 	return m_pprevious;
 }
 
