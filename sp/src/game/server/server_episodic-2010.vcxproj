@@ -61,7 +61,7 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\game\mod_release\bin\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Shiping|Win32'">..\..\..\game\mod_release\bin\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Shiping|Win32'">..\..\..\game\blamod\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release_mod_episodic\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Shiping|Win32'">.\Release_mod_episodic\</IntDir>
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\devtools\vstools;$(ExecutablePath);$(Path)</ExecutablePath>
