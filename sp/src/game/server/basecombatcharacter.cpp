@@ -2459,7 +2459,7 @@ int CBaseCombatCharacter::OnTakeDamage( const CTakeDamageInfo &info )
 	}
 }
 
-static ConVar bla_damagefraction("bla_damagefraction", "15", 
+static ConVar bla_damagefraction("bla_damagefraction", "6", 
 								 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
 								 "Fraction by which damage dealt to the "
 								 "player should be reduced. The value must "
