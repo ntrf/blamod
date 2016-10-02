@@ -23,26 +23,31 @@ Scheme
 	// controls use these to determine their settings
 	BaseSettings
 	{
-		"FgColor"			"255 220 0 100"
-		"BgColor"			"0 0 0 76"
+		"FgColor"			"250 255 240 180"
+		"BgColor"			"0 0 0 180"
 
-		"Panel.FgColor"			"255 220 0 100"
-		"Panel.BgColor"			"0 0 0 76"
+		"Panel.FgColor"			"250 255 240 180"
+		"Panel.BgColor"			"0 0 0 180"
 		
-		"BrightFg"		"255 220 0 255"
+		"BrightFg"		"255 255 245 255"
 
 		"DamagedBg"			"180 0 0 200"
 		"DamagedFg"			"180 0 0 230"
 		"BrightDamagedFg"		"255 0 0 255"
 
 		// weapon selection colors
-		"SelectionNumberFg"		"255 220 0 255"
-		"SelectionTextFg"		"255 220 0 255"
-		"SelectionEmptyBoxBg" 	"0 0 0 80"
-		"SelectionBoxBg" 		"0 0 0 80"
-		"SelectionSelectedBoxBg" "0 0 0 80"
-		
-		"ZoomReticleColor"	"255 220 0 255"
+		"SelectionNumberFg"		"250 255 240 100"
+		"SelectionTextFg"		"250 255 240 100"
+		"SelectionEmptyBoxBg" 	"0 0 0 180"
+		"SelectionBoxBg" 		"0 0 0 180"
+		"SelectionSelectedBoxBg" "40 40 40 180"
+
+		"ZoomReticleColor"	"250 255 240 200"
+
+		// HL1-style HUD colors
+		"Yellowish"			"255 160 0 255"
+		"Normal"			"255 208 64 255"
+		"Caution"			"255 48 0 255"
 
 		// HL1-style HUD colors
 		"Yellowish"			"255 160 0 255"
