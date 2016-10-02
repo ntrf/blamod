@@ -547,8 +547,8 @@ event WeaponUsesSecondaryAmmo
 	Animate HudAmmoSecondary	FgColor		"FgColor"		Linear	0.2		1.5
 	Animate HudAmmoSecondary	Alpha		255		Linear	0.0		0.1
 
-	Animate HudAmmo		Position	"r226 432"	Deaccel	0.0		0.5	[$WIN32]
-	Animate HudAmmo		Size		"98 36"	Deaccel	0.0		0.4	[$WIN32]
+	Animate HudAmmo		Position	"r222 432"	Deaccel	0.0		0.5	[$WIN32]
+	Animate HudAmmo		Size		"132 36"	Deaccel	0.0		0.4	[$WIN32]
 	Animate HudAmmo		Position	"r279 416"	Deaccel	0.0		0.5	[$X360]
 	Animate HudAmmo		Size		"155 36"	Deaccel	0.0		0.4	[$X360]
 }
@@ -702,5 +702,149 @@ event HideCommentary
 {
 	StopEvent	ShowCommentary 0.0
 	Animate 	HudCommentary 	Alpha	0 Linear 0.0 0.5
+}
+
+// Voting
+event PulseOption1
+{
+	Animate		Option2Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		Option1Background_Selected	Alpha	255 Linear	0.0 0.001
+	Animate		Option1Background_Selected	Alpha	128	Linear	0.5 1.5
+	
+	Animate		YesLeftLabel	Alpha	0	Linear	1.25 1.7
+	Animate		YesIcon			Alpha	0	Linear	1.25 1.7
+	Animate		YesRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		NoLeftLabel		Alpha	0	Linear	1.25 1.7
+	Animate		NoIcon			Alpha	0	Linear	1.25 1.7
+	Animate		NoRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		LabelOption2	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption3	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption4	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption5	Alpha	60	Linear	1.25 1.7
+}
+
+event PulseOption2
+{
+	Animate		Option1Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		Option2Background_Selected	Alpha	255 Linear	0.0 0.001
+	Animate		Option2Background_Selected	Alpha	128	Linear	0.5 1.5
+	
+	Animate		YesLeftLabel	Alpha	0	Linear	1.25 1.7
+	Animate		YesIcon			Alpha	0	Linear	1.25 1.7
+	Animate		YesRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		NoLeftLabel		Alpha	0	Linear	1.25 1.7
+	Animate		NoIcon			Alpha	0	Linear	1.25 1.7
+	Animate		NoRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		LabelOption1	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption3	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption4	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption5	Alpha	60	Linear	1.25 1.7
+}
+
+event PulseOption3
+{
+	Animate		Option1Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option2Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		Option3Background_Selected	Alpha	255 Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	128	Linear	0.5 1.5
+	
+	Animate		YesLeftLabel	Alpha	0	Linear	1.25 1.7
+	Animate		YesIcon			Alpha	0	Linear	1.25 1.7
+	Animate		YesRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		NoLeftLabel		Alpha	0	Linear	1.25 1.7
+	Animate		NoIcon			Alpha	0	Linear	1.25 1.7
+	Animate		NoRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		LabelOption1	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption2	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption4	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption5	Alpha	60	Linear	1.25 1.7
+}
+
+event PulseOption4
+{
+	Animate		Option1Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option2Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		Option4Background_Selected	Alpha	255 Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	128	Linear	0.5 1.5
+	
+	Animate		YesLeftLabel	Alpha	0	Linear	1.25 1.7
+	Animate		YesIcon			Alpha	0	Linear	1.25 1.7
+	Animate		YesRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		NoLeftLabel		Alpha	0	Linear	1.25 1.7
+	Animate		NoIcon			Alpha	0	Linear	1.25 1.7
+	Animate		NoRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		LabelOption1	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption2	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption3	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption5	Alpha	60	Linear	1.25 1.7
+}
+
+event PulseOption5
+{
+	Animate		Option1Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option2Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		Option5Background_Selected	Alpha	255 Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	128	Linear	0.5 1.5
+	
+	Animate		YesLeftLabel	Alpha	0	Linear	1.25 1.7
+	Animate		YesIcon			Alpha	0	Linear	1.25 1.7
+	Animate		YesRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		NoLeftLabel		Alpha	0	Linear	1.25 1.7
+	Animate		NoIcon			Alpha	0	Linear	1.25 1.7
+	Animate		NoRightLabel	Alpha	0	Linear	1.25 1.7
+	
+	Animate		LabelOption1	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption2	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption3	Alpha	60	Linear	1.25 1.7
+	Animate		LabelOption4	Alpha	60	Linear	1.25 1.7
+}
+
+event HideVoteBackgrounds
+{
+	Animate		Option1Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option2Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option3Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option4Background_Selected	Alpha	0	Linear	0.0 0.001
+	Animate		Option5Background_Selected	Alpha	0	Linear	0.0 0.001
+	
+	Animate		YesLeftLabel	Alpha	255 Linear	0.0 0.001
+	Animate		YesIcon			Alpha	255 Linear	0.0 0.001
+	Animate		YesRightLabel	Alpha	255 Linear	0.0 0.001
+	
+	Animate		NoLeftLabel		Alpha	255 Linear	0.0 0.001
+	Animate		NoIcon			Alpha	255 Linear	0.0 0.001
+	Animate		NoRightLabel	Alpha	255 Linear	0.0 0.001
+	
+	Animate		LabelOption1	Alpha	255 Linear	0.0 0.001
+	Animate		LabelOption2	Alpha	255 Linear	0.0 0.001
+	Animate		LabelOption3	Alpha	255 Linear	0.0 0.001
+	Animate		LabelOption4	Alpha	255 Linear	0.0 0.001
+	Animate		LabelOption5	Alpha	255 Linear	0.0 0.001
 }
 
