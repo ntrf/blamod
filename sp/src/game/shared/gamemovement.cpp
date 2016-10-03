@@ -653,12 +653,15 @@ int CGameMovement::GetCheckInterval( IntervalType_t type )
 		tickInterval = CATEGORIZE_GROUND_SURFACE_TICK_INTERVAL;
 		break;
 	case STUCK:
+		// ntrf: this code prevents duckjumping and J-clip. removed
+#if 0
 		// If we are in the process of being "stuck", then try a new position every command tick until m_StuckLast gets reset back down to zero
 		if ( player->m_StuckLast != 0 )
 		{
 			tickInterval = 1;
 		}
 		else
+#endif
 		{
 			if ( gpGlobals->maxClients == 1 )
 			{
