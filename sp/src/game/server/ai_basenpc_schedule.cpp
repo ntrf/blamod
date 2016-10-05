@@ -4612,7 +4612,9 @@ int CAI_BaseNPC::SelectDeadSchedule()
 //-----------------------------------------------------------------------------
 int CAI_BaseNPC::SelectScriptSchedule()
 {
+#ifdef BE_ANOYING
 	Assert( m_hCine != NULL );
+#endif
 	if ( m_hCine )
 		return SCHED_AISCRIPT;
 

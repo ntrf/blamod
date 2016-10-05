@@ -132,7 +132,9 @@ void C_ParticleSystem::ClientThink( void )
 				return;
 
 			CNewParticleEffect *pEffect = ParticleProp()->Create( pszName, PATTACH_ABSORIGIN_FOLLOW );
+#ifdef BE_ANOYING
 			AssertMsg1( pEffect, "Particle system couldn't make %s", pszName );
+#endif
 			if (pEffect)
 			{
 				for ( int i = 0 ; i < kMAXCONTROLPOINTS ; ++i )
