@@ -53,16 +53,5 @@ nosetests.xml
 *obj_*
 sp/src/vgui2/vgui_controls/generated_proto
 
-# mod directory entries
-sp/game/mod_episodic/demoheader.tmp
-sp/game/mod_episodic/maps
-sp/game/mod_episodic/save
-sp/game/mod_episodic/sound
-sp/game/mod_episodic/modelsounds.cache
-sp/game/mod_episodic/gamestate.txt
-sp/game/mod_episodic/stats.txt
-sp/game/mod_episodic/cfg/config.cfg
-sp/game/mod_episodic/voice_ban.dt
-sp/game/mod_episodic/cfg/autoexec.cfg
 *.dem
 

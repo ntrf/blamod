@@ -1,0 +1,18 @@
+screenshots
+downloadlists
+
+ep1_gamestats.dat
+
+# mod directory entries
+demoheader.tmp
+maps
+save
+sound
+modelsounds.cache
+gamestate.txt
+stats.txt
+cfg/config.cfg
+voice_ban.dt
+cfg/autoexec.cfg
+cfg/userconfig.cfg
+
