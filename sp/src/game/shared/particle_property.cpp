@@ -139,7 +139,9 @@ CNewParticleEffect *CParticleProperty::Create( const char *pszParticleName, Part
 
 	if ( !pDef )
 	{
+#ifdef BE_ANOYING
 		AssertMsg( 0, "Attempting to create unknown particle system" );
+#endif
 		Warning( "Attempting to create unknown particle system '%s' \n", pszParticleName );
 		return NULL;
 	}

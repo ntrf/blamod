@@ -1868,7 +1868,9 @@ void CTempEnts::MuzzleFlash( const Vector& pos1, const QAngle& angles, int type,
 	
 	default:
 		// There's no supported muzzle flash for the type specified!
+#ifdef BE_ANOYING
 		Assert(0);
+#endif
 		break;
 	}
 
