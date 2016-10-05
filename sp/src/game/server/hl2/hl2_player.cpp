@@ -856,6 +856,9 @@ void CHL2_Player::PreThink(void)
 	// Update weapon's ready status
 	UpdateWeaponPosture();
 
+	// ntrf: let player shoot while zooming
+	// weapons are not accurate anyway
+#if 0
 	// Disallow shooting while zooming
 	if ( IsX360() )
 	{
@@ -881,6 +884,7 @@ void CHL2_Player::PreThink(void)
 			m_nButtons &= ~(IN_ATTACK|IN_ATTACK2);
 		}
 	}
+#endif
 }
 
 void CHL2_Player::PostThink( void )
