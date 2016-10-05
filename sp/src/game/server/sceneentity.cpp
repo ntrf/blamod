@@ -1899,6 +1899,11 @@ void CSceneEntity::DispatchEndFace( CChoreoScene *scene, CBaseFlex *actor, CChor
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchStartSequence( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
+	if (!actor) {
+		Warning("CSceneEntity::DispatchStartSequence / actor == nullptr");
+		return;
+	}
+
 	actor->AddSceneEvent( scene, event );
 }
 
@@ -1910,6 +1915,11 @@ void CSceneEntity::DispatchStartSequence( CChoreoScene *scene, CBaseFlex *actor,
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchEndSequence( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
+	if (!actor) {
+		Warning("CSceneEntity::DispatchEndSequence / actor == nullptr");
+		return;
+	}
+
 	actor->RemoveSceneEvent( scene, event, m_bRestoring );
 }
 
@@ -1921,6 +1931,11 @@ void CSceneEntity::DispatchEndSequence( CChoreoScene *scene, CBaseFlex *actor, C
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchStartPermitResponses( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
+	if (!actor) {
+		Warning("CSceneEntity::DispatchStartPermitResponses / actor == nullptr");
+		return;
+	}
+
 	actor->SetPermitResponse( gpGlobals->curtime + event->GetDuration() );
 }
 
@@ -1932,6 +1947,11 @@ void CSceneEntity::DispatchStartPermitResponses( CChoreoScene *scene, CBaseFlex 
 //-----------------------------------------------------------------------------
 void CSceneEntity::DispatchEndPermitResponses( CChoreoScene *scene, CBaseFlex *actor, CChoreoEvent *event )
 {
+	if (!actor) {
+		Warning("CSceneEntity::DispatchEndPermitResponses / actor == nullptr");
+		return;
+	}
+
 	actor->SetPermitResponse( 0 );
 }
 
