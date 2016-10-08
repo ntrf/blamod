@@ -140,26 +140,29 @@ void CHudCredits::PrepareCredits( const char *pKeyName )
 {
 	Clear();
 
-	KeyValues *pKV= new KeyValues( "CreditsFile" );
-	if ( !pKV->LoadFromFile( filesystem, CREDITS_FILE, "MOD" ) )
-	{
+	KeyValues *pKV = new KeyValues("CreditsFile");
+	if (!pKV->LoadFromFile(filesystem, CREDITS_FILE, "MOD")) {
 		pKV->deleteThis();
+		pKV = nullptr;
 
-		Assert( !"env_credits couldn't be initialized!" );
-		return;
+		Warning("env_credits couldn't be initialized!\n");
 	}
 
 	KeyValues *pKVSubkey;
-	if ( pKeyName )
-	{
-		pKVSubkey = pKV->FindKey( pKeyName );
-		ReadNames( pKVSubkey );
+	if (pKeyName && pKV) {
+		pKVSubkey = pKV->FindKey(pKeyName);
+		ReadNames(pKVSubkey);
 	}
 
-	pKVSubkey = pKV->FindKey( "CreditsParams" );
-	ReadParams( pKVSubkey );
+	if (pKV) {
+		pKVSubkey = pKV->FindKey("CreditsParams");
+		ReadParams(pKVSubkey);
 
-	pKV->deleteThis();
+		pKV->deleteThis();
+	} else {
+		pKVSubkey = new KeyValues("CreditsParams");
+		ReadParams(pKVSubkey);
+	}
 }
 
 using namespace vgui;
@@ -624,8 +627,10 @@ void CHudCredits::PrepareOutroCredits( void )
 {
 	PrepareCredits( "OutroCreditsNames" );
 	
-	if ( m_CreditsList.Count() == 0 )
-		 return;
+	if (m_CreditsList.Count() == 0) {
+		Warning("You're done. Disconnecting ...\n");
+		return;
+	}
 
 	// fill the screen
 	int iWidth, iTall;
