@@ -158,7 +158,7 @@ CBaseGameStats::CBaseGameStats() :
 
 bool CBaseGameStats::StatTrackingAllowed( void )
 {
-	return CBGSDriver.m_bEnabled;
+	return false;
 }
 
 // Don't care about vcr hooks here...
@@ -1265,7 +1265,8 @@ void CBaseGameStats_Driver::FrameUpdatePostEntityThink()
 
 bool StatsTrackingIsFullyEnabled( void )
 {
-	return CBGSDriver.m_bEnabled && gamestats->StatTrackingEnabledForMod();
+	return false;
+	//return CBGSDriver.m_bEnabled && gamestats->StatTrackingEnabledForMod();
 }
 
 void CBaseGameStats::Clear( void )

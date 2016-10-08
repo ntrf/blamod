@@ -859,8 +859,6 @@ exit 1
     <ClInclude Include="hl2\energy_wave.h" />
     <ClInclude Include="..\..\game\shared\hl2\env_alyxemp_shared.h" />
     <ClInclude Include="..\..\game\shared\hl2\env_headcrabcanister_shared.h" />
-    <ClInclude Include="episodic\ep1_gamestats.h" />
-    <ClInclude Include="episodic\ep2_gamestats.h" />
     <ClInclude Include="hl2\func_bulletshield.h" />
     <ClInclude Include="hl2\func_tank.h" />
     <ClInclude Include="hl2\grenade_ar2.h" />
@@ -1435,16 +1433,6 @@ exit 1
     <ClCompile Include="..\..\game\shared\hl2\env_headcrabcanister_shared.cpp" />
     <ClCompile Include="hl2\env_speaker.cpp" />
     <ClCompile Include="hl2\env_starfield.cpp" />
-    <ClCompile Include="episodic\ep1_gamestats.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Shiping|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="episodic\ep2_gamestats.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Shiping|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="hl2\func_bulletshield.cpp" />
     <ClCompile Include="hl2\Func_Monitor.cpp" />
     <ClCompile Include="hl2\func_recharge.cpp" />

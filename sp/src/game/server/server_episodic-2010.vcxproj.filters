@@ -1580,12 +1580,6 @@
     <ClInclude Include="..\..\game\shared\hl2\env_headcrabcanister_shared.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
-    <ClInclude Include="episodic\ep1_gamestats.h">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
-    <ClInclude Include="episodic\ep2_gamestats.h">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
     <ClInclude Include="hl2\func_bulletshield.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -2966,12 +2960,6 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\env_starfield.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="episodic\ep1_gamestats.cpp">
-      <Filter>Source Files\HL2 DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="episodic\ep2_gamestats.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\func_bulletshield.cpp">
