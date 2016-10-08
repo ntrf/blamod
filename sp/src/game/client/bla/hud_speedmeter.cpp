@@ -11,7 +11,7 @@ using namespace vgui;
 
 static ConVar bla_speedmeter("bla_speedmeter", "1", 
                              FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_DEMO, 
-                             "Turn the speedmeter on/off");
+                             "Turn the speedmeter on/off\nSet it to 2 to include vertical speed");
 
 class CHudSpeedMeter : public CHudElement, public CHudNumericDisplay
 {
@@ -32,11 +32,14 @@ public:
         SetLabelText(L"UPS");
         SetDisplayValue(0);
     }
-    virtual bool ShouldDraw()
+    bool ShouldDraw() override
     {
-        return bla_speedmeter.GetBool() && CHudElement::ShouldDraw();
+        return bla_speedmeter.GetInt() > 0 && CHudElement::ShouldDraw();
     }
-    virtual void OnThink();
+
+	void OnThink() override;
+
+	void Paint() override;
 };
 
 DECLARE_HUDELEMENT(CHudSpeedMeter);
@@ -54,7 +57,14 @@ void CHudSpeedMeter::OnThink()
     C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if (player) {
 		velocity = player->GetLocalVelocity();
-		velocity.z = 0;
+		if (bla_speedmeter.GetInt() < 2) velocity.z = 0;
 	}
     SetDisplayValue((int)velocity.Length());
+}
+
+void CHudSpeedMeter::Paint()
+{
+	BaseClass::Paint();
+
+	//vgui::surface()->Draw
 }
