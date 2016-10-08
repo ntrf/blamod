@@ -645,6 +645,32 @@ Scheme
 				"custom"	"1"
 			}
 		}
+		IntroLogoHL2
+		{
+			"1"
+			{
+				"name"  "HalfLife2"
+				"tall"			"32"
+				"tall_hidef"	"46"
+				"weight" "0"
+				"additive" "0"
+				"antialias" "1"
+				"custom"	"1" [$OSX]
+			}
+		}
+		IntroLogoEpisodes
+		{
+			"1"
+			{
+				"name"		"HL2EP2"
+				"tall"			"32"
+				"tall_hidef"	"46"
+				"weight" "0"
+				"additive" "0"
+				"antialias" "1"
+				"custom"	"1" [$OSX]
+			}
+		}
 		CreditsLogo
 		{
 			"1"
