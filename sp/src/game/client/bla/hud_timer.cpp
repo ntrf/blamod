@@ -115,6 +115,7 @@ void CHudTimer::MsgFunc_BlaTimer_Time(bf_read &msg)
 
 void CHudTimer::MsgFunc_BlaTimer_StateChange(bf_read &msg)
 {
+/*
 	bool started = msg.ReadOneBit();
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	if (!pPlayer)
@@ -132,6 +133,7 @@ void CHudTimer::MsgFunc_BlaTimer_StateChange(bf_read &msg)
 		VGUI_ANIMATE("TimerStop");
 		pPlayer->EmitSound("blamod.StopTimer");
 	}
+*/
 }
 
 void CHudTimer::Paint(void)
