@@ -20,6 +20,11 @@ install(
 )
 
 install(
-	FILES detail.vbsp gameinfo.txt gamestate.txt lights.rad
+	FILES 
+		detail.vbsp 
+		gameinfo.txt 
+		gamestate.txt 
+		lights.rad 
+		maplist.txt
 	DESTINATION .
 )
