@@ -314,7 +314,74 @@ LINK_ENTITY_TO_CLASS( info_target_vehicle_transition, CInfoTargetVehicleTransiti
 //	CPropJeepEpisodic
 //
 
-LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeepEpisodic );
+#define ALWAYS_HL2 true
+
+#if defined( CLIENT_DLL )
+
+static C_BaseEntity *CCPropJeepFactory(void)
+{
+	if (hl2_episodic.GetBool() && !ALWAYS_HL2) {
+		return static_cast< C_BaseEntity * >(new CPropJeepEpisodic);
+	} else {
+		return static_cast< C_BaseEntity * >(new CPropJeep);
+	}
+};
+class Cprop_vehicle_jeepFoo
+{
+public:
+	Cprop_vehicle_jeepFoo(void)
+	{
+		GetClassMap().Add("prop_vehicle_jeep", "CPropJeep", sizeof(CPropJeep),
+						  &CCPropJeepFactory);
+	}
+};
+static Cprop_vehicle_jeepFoo g_Cprop_vehicle_jeepFoo;
+
+#else
+
+class CJeepEntityFactory : public IEntityFactory
+{
+	const char * _class_name = "prop_vehicle_jeep";
+public:
+
+	CJeepEntityFactory()
+	{
+		EntityFactoryDictionary()->InstallFactory(this, _class_name);
+	}
+
+	IServerNetworkable *Create(const char *pClassName)
+	{
+		if (hl2_episodic.GetBool() && !ALWAYS_HL2) {
+			CPropJeepEpisodic* pEnt = _CreateEntityTemplate((CPropJeepEpisodic*)NULL, pClassName);
+			return pEnt->NetworkProp();
+		} else {
+			CPropJeep* pEnt = _CreateEntityTemplate((CPropJeep*)NULL, pClassName);
+			return pEnt->NetworkProp();
+		}
+	}
+
+	void Destroy(IServerNetworkable *pNetworkable)
+	{
+		if (pNetworkable) {
+			pNetworkable->Release();
+		}
+	}
+
+	virtual size_t GetEntitySize()
+	{
+		if (hl2_episodic.GetBool() && !ALWAYS_HL2)
+			return sizeof(CPropJeepEpisodic);
+		else
+			return sizeof(CPropJeep);
+	}
+};
+
+static CJeepEntityFactory prop_vehicle_jeep;
+
+#endif
+
+// ntrf: replaced with dynamic factory
+//LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeepEpisodic );
 
 BEGIN_DATADESC( CPropJeepEpisodic )
 
