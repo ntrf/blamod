@@ -110,10 +110,8 @@ public:
 
 	DECLARE_DATADESC();
 
-#ifdef HL2_EPISODIC
 	void AddPhysicsChild( CBaseEntity *pChild );
 	void RemovePhysicsChild( CBaseEntity *pChild );
-#endif //HL2_EPISODIC
 		
 protected:
 	// engine sounds
@@ -132,9 +130,7 @@ protected:
 	unsigned int					m_nVehicleType;
 	string_t						m_vehicleScript;
 
-#ifdef HL2_EPISODIC
 	CUtlVector<EHANDLE>				m_hPhysicsChildren;	// List of entities who wish to get physics callbacks from the vehicle
-#endif //HL2_EPISODIC
 
 private:
 	Vector							m_vecSmoothedVelocity;

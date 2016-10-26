@@ -348,7 +348,7 @@ void CMaterialModifyProxy::OnBindSetVar( C_MaterialModifyControl *pControl )
 	IMaterial *pMaterial = pControl->GetMaterial();
 	if( !pMaterial )
 	{
-		Assert( 0 );
+		Assert( !"Not material defined in CMaterialModifyProxy::OnBindSetVar" );
 		return;
 	}
 

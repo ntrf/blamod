@@ -79,12 +79,10 @@ ConVar func_breakdmg_explosive( "func_breakdmg_explosive", "1.25" );
 
 ConVar sv_turbophysics( "sv_turbophysics", "0", FCVAR_REPLICATED, "Turns on turbo physics" );
 
-#ifdef HL2_EPISODIC
-	#define PROP_FLARE_LIFETIME 30.0f
-	#define PROP_FLARE_IGNITE_SUBSTRACT 5.0f
-	CBaseEntity *CreateFlare( Vector vOrigin, QAngle Angles, CBaseEntity *pOwner, float flDuration );
-	void KillFlare( CBaseEntity *pOwnerEntity, CBaseEntity *pEntity, float flKillTime );
-#endif
+#define PROP_FLARE_LIFETIME 30.0f
+#define PROP_FLARE_IGNITE_SUBSTRACT 5.0f
+CBaseEntity *CreateFlare( Vector vOrigin, QAngle Angles, CBaseEntity *pOwner, float flDuration );
+void KillFlare( CBaseEntity *pOwnerEntity, CBaseEntity *pEntity, float flKillTime );
 
 
 //-----------------------------------------------------------------------------
@@ -246,9 +244,7 @@ void CBaseProp::Precache( void )
 	PrecacheScriptSound( "Metal.SawbladeStick" );
 	PrecacheScriptSound( "PropaneTank.Burst" );
 
-#ifdef HL2_EPISODIC
 	UTIL_PrecacheOther( "env_flare" );
-#endif
 
 	BaseClass::Precache();
 }
@@ -1008,7 +1004,6 @@ void CBreakableProp::BreakablePropTouch( CBaseEntity *pOther )
 		}
 	}
 
-#ifdef HL2_EPISODIC
 	if ( m_hFlareEnt )
 	{
 		CAI_BaseNPC *pNPC = pOther->MyNPCPointer();
@@ -1025,7 +1020,6 @@ void CBreakableProp::BreakablePropTouch( CBaseEntity *pOther )
 			}
 		}
 	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1463,16 +1457,13 @@ void CBreakableProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t
 	m_bOriginalBlockLOS = BlocksLOS();
 	SetBlocksLOS( false );
 
-#ifdef HL2_EPISODIC
 	if ( HasInteraction( PROPINTER_PHYSGUN_CREATE_FLARE ) )
 	{
 		CreateFlare( PROP_FLARE_LIFETIME );
 	}
-#endif
 }
 
 
-#ifdef HL2_EPISODIC
 //-----------------------------------------------------------------------------
 // Purpose: Create a flare at the attachment point
 //-----------------------------------------------------------------------------
@@ -1506,7 +1497,6 @@ void CBreakableProp::CreateFlare( float flLifetime )
 		AddEffects( EF_NOSHADOW );
 	}
 }
-#endif // HL2_EPISODIC
 
 //-----------------------------------------------------------------------------
 // Purpose: 

@@ -382,8 +382,6 @@ void C_EntityFlame::Simulate( void )
 	if ( gpGlobals->frametime <= 0.0f )
 		return;
 
-#ifdef HL2_EPISODIC 
-
 	if ( IsEffectActive(EF_BRIGHTLIGHT) || IsEffectActive(EF_DIMLIGHT) )
 	{
 		dlight_t *dl = effects->CL_AllocDlight ( index );
@@ -395,8 +393,6 @@ void C_EntityFlame::Simulate( void )
 		dl->radius = random->RandomFloat(400,431);
 		dl->die = gpGlobals->curtime + 0.001;
 	}
-
-#endif // HL2_EPISODIC 
 }
 
 //-----------------------------------------------------------------------------

@@ -1132,7 +1132,6 @@ C_EntityFlame *FireEffect( C_BaseAnimating *pTarget, C_BaseEntity *pServerFire, 
 		pFire->OnDataChanged( DATA_UPDATE_CREATED );
 		pFire->SetAbsOrigin( pTarget->GetAbsOrigin() );
 
-#ifdef HL2_EPISODIC
 		if ( pServerFire )
 		{
 			if ( pServerFire->IsEffectActive(EF_DIMLIGHT) )
@@ -1144,7 +1143,6 @@ C_EntityFlame *FireEffect( C_BaseAnimating *pTarget, C_BaseEntity *pServerFire, 
 				pFire->AddEffects( EF_BRIGHTLIGHT );
 			}
 		}
-#endif
 
 		//Play a sound
 		CPASAttenuationFilter filter( pTarget );
