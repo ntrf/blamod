@@ -1,0 +1,19 @@
+*.c text eol=lf
+*.cpp text eol=lf
+*.cxx text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.hxx text eol=lf
+*.cs text eol=lf
+*.m text eol=lf
+*.mm text eol=lf
+*.java text eol=lf
+
+*.json text eol=lf
+*.vcxproj text eol=crlf
+*.vcproj text eol=crlf
+*.vcxproj.filters eol=crlf
+*.vcxproj.user eol=crlf
+*.sln text eol=crlf
+proguard-project.txt text=auto
+
