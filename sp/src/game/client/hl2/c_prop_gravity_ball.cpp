@@ -22,6 +22,7 @@
 
 // Precache our effects
 CLIENTEFFECT_REGISTER_BEGIN( PrecacheEffectGravityBall )
+#if 0
 CLIENTEFFECT_MATERIAL( "effects/ar2_altfire2" )
 CLIENTEFFECT_MATERIAL( "effects/ar2_altfire2b" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle1b_nocull" )
@@ -29,6 +30,15 @@ CLIENTEFFECT_MATERIAL( "effects/combinemuzzle2b_nocull" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle2c" )
 CLIENTEFFECT_MATERIAL( "effects/ar2_altfire2" )
 CLIENTEFFECT_MATERIAL( "effects/ar2_altfire2b" )
+#else
+CLIENTEFFECT_MATERIAL("effects/ar2_altfire1")
+CLIENTEFFECT_MATERIAL("effects/ar2_altfire1b")
+CLIENTEFFECT_MATERIAL("effects/combinemuzzle1_nocull")
+CLIENTEFFECT_MATERIAL("effects/combinemuzzle2_nocull")
+CLIENTEFFECT_MATERIAL("effects/combinemuzzle1")
+CLIENTEFFECT_MATERIAL("effects/ar2_altfire1")
+CLIENTEFFECT_MATERIAL("effects/ar2_altfire1b")
+#endif
 CLIENTEFFECT_REGISTER_END()
 
 IMPLEMENT_CLIENTCLASS_DT( C_PropGravityBall, DT_PropGravityBall, CPropGravityBall )
@@ -81,7 +91,7 @@ bool C_PropGravityBall::InitMaterials( void )
 	// Motion blur
 	if ( m_pBlurMaterial == NULL )
 	{
-		m_pBlurMaterial = materials->FindMaterial( "effects/ar2_altfire2b", NULL, false );
+		m_pBlurMaterial = materials->FindMaterial( "effects/ar2_altfire1b", NULL, false );
 
 		if ( m_pBlurMaterial == NULL )
 			return false;
@@ -90,7 +100,7 @@ bool C_PropGravityBall::InitMaterials( void )
 	// Main body of the ball
 	if ( m_pBodyMaterial == NULL )
 	{
-		m_pBodyMaterial = materials->FindMaterial( "effects/ar2_altfire2", NULL, false );
+		m_pBodyMaterial = materials->FindMaterial( "effects/ar2_altfire1", NULL, false );
 
 		if ( m_pBodyMaterial == NULL )
 			return false;
@@ -99,7 +109,7 @@ bool C_PropGravityBall::InitMaterials( void )
 	// Flicker material
 	if ( m_pFlickerMaterial == NULL )
 	{
-		m_pFlickerMaterial = materials->FindMaterial( "effects/combinemuzzle2c", NULL, false );
+		m_pFlickerMaterial = materials->FindMaterial( "effects/combinemuzzle1", NULL, false );
 
 		if ( m_pFlickerMaterial == NULL )
 			return false;
@@ -303,7 +313,7 @@ void GravityBallImpactCallback( const CEffectData &data )
 				0,
 				Vector( 1.0f, 1.0f, 1.0f ),
 				0.25f,
-				"effects/combinemuzzle1b_nocull",
+				"effects/combinemuzzle1_nocull",
 				(FXQUAD_BIAS_SCALE|FXQUAD_BIAS_ALPHA) );
 
 	// Lingering burn
@@ -319,7 +329,7 @@ void GravityBallImpactCallback( const CEffectData &data )
 				0,
 				Vector( 1.0f, 1.0f, 1.0f ),
 				0.5f,
-				"effects/combinemuzzle2b_nocull",
+				"effects/combinemuzzle2_nocull",
 				(FXQUAD_BIAS_SCALE|FXQUAD_BIAS_ALPHA) );
 
 	// Throw sparks

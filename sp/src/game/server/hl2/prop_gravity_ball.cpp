@@ -524,7 +524,7 @@ void CPropGravityBall::DoExplosion( )
 					pEntity->TakeDamage( ragdollInfo );
 
 					if (m_pWeaponPC)
-						PhysCannon_PuntRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
+						PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
 				}
 				else if ( m_pWeaponPC )
 				{
@@ -543,11 +543,11 @@ void CPropGravityBall::DoExplosion( )
 					// Amplify the height of the push
 					forward.z *= 1.4f;
 					if ( m_pWeaponPC )
-						PhysCannon_PuntRagdoll(m_pWeaponPC, pEntity, forward, tr);
+						PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pEntity, forward, tr);
 				}
 				else if ( m_pWeaponPC )
 				{
-					PhysCannon_PuntVPhysics(m_pWeaponPC, pEntity, forward, tr );
+					PhysCannon_PuntConcussionVPhysics(m_pWeaponPC, pEntity, forward, tr);
 				}
 			}
 		}

@@ -1305,6 +1305,7 @@ public:
 
 	void	PuntConcussionNonVPhysics(CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
 	void	PuntConcussionVPhysics(CBaseEntity *pEntity, const Vector &vecForward, trace_t &tr);
+	void	PuntConcussionRagdoll(CBaseEntity *pEntity, const Vector &vecForward, trace_t &tr);
 
 	// Velocity-based throw common to punt and launch code.
 	void	ApplyVelocityBasedForce(CBaseEntity *pEntity, const Vector &forward, const Vector &vecHitPos, PhysGunForce_t reason);
@@ -2247,6 +2248,98 @@ void CWeaponPhysCannon::PuntRagdoll( CBaseEntity *pEntity, const Vector &vecForw
 	m_flNextSecondaryAttack = m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
 }
 
+
+void CWeaponPhysCannon::PuntConcussionRagdoll(CBaseEntity *pEntity, const Vector &vecForward, trace_t &tr)
+{
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+
+	CTakeDamageInfo	info;
+
+	Vector forward = vecForward;
+	info.SetAttacker(GetOwner());
+	info.SetInflictor(this);
+	info.SetDamage(0.0f);
+	info.SetDamageType(DMG_GENERIC);
+	pEntity->DispatchTraceAttack(info, forward, &tr);
+	ApplyMultiDamage();
+
+	if (Pickup_OnAttemptPhysGunPickup(pEntity, pOwner, PUNTED_BY_CANNON)) {
+		RecordThrownObject(pEntity);
+
+		// If anything changes here remember to duplciate in c_baseanimating.cpp
+		if (forward.z < 0) {
+			//reflect, but flatten the trajectory out a bit so it's easier to hit standing targets
+			forward.z *= -0.65f;
+		}
+
+		/*
+		Vector			vVel = forward * 700;
+		AngularImpulse	aVel;
+		aVel.x = 3200.0f + random->RandomFloat(0.0f, 3200.0f);
+		aVel.y = 3200.0f + random->RandomFloat(0.0f, 3200.0f);
+		aVel.z = 3200.0f + random->RandomFloat(0.0f, 3200.0f);
+
+		if (random->RandomInt(0,1))
+		aVel.x *= -1;
+
+		if (random->RandomInt(0,1))
+		aVel.y *= -1;
+
+		if (random->RandomInt(0,1))
+		aVel.z *= -1;
+		*/
+
+		CRagdollProp *pRagdoll = dynamic_cast<CRagdollProp*>(pEntity);
+		ragdoll_t *pRagdollPhys = pRagdoll->GetRagdoll();
+
+		//int j;
+		// for ( j = 0; j < pRagdollPhys->listCount; ++j )
+		// {
+		// 	pRagdollPhys->list[j].pObject->AddVelocity(  &vVel, &aVel );
+		// }
+
+		float totalMass = 0;
+		for (int j = 0; j < pRagdollPhys->listCount; ++j) {
+			totalMass += pRagdollPhys->list[j].pObject->GetMass();
+		}
+
+		// If the ragdoll we're hitting is a strider reduce push significantly
+		if (Q_strcmp(STRING(pRagdoll->GetModelName()), "models/combine_strider.mdl") == 0) {
+			forward *= 0.2;
+			while (forward.Length() > 0.3) {
+				forward *= 0.75;
+			}
+		}
+
+		float maxMass = physconcussion_maxmass_conc.GetFloat();
+		float mass = min(totalMass, maxMass); // max 250kg of additional force
+
+		// Put some spin on the object
+		for (int j = 0; j < pRagdollPhys->listCount; ++j) {
+			const float hitObjectFactor = 0.5f;
+			const float otherObjectFactor = 1.0f - hitObjectFactor;
+
+			// Must be light enough
+			float ratio = pRagdollPhys->list[j].pObject->GetMass() / totalMass;
+			if (pRagdollPhys->list[j].pObject == pEntity->VPhysicsGetObject()) {
+				ratio += hitObjectFactor;
+				ratio = min(ratio, 1.0f);
+			} else {
+				ratio *= otherObjectFactor;
+			}
+
+			pRagdollPhys->list[j].pObject->ApplyForceCenter(forward * mass * 320.0f  * ratio);
+			pRagdollPhys->list[j].pObject->ApplyForceOffset(forward * mass * 320.0f * ratio, tr.endpos);
+		}
+	}
+
+	m_nChangeState = ELEMENT_STATE_CLOSED;
+	m_flElementDebounce = gpGlobals->curtime + 0.5f;
+	m_flCheckSuppressTime = gpGlobals->curtime + 0.25f;
+
+	// Don't allow the gun to regrab a thrown object!!
+	m_flNextSecondaryAttack = m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
+}
 
 //-----------------------------------------------------------------------------
 // Trace length
@@ -4891,13 +4984,13 @@ void PhysCannon_PuntConcussionNonVPhysics(CWeaponPhysCannon * pc, CBaseEntity *p
 { 
 	pc->PuntConcussionNonVPhysics(pEntity, forward, tr);
 }
-void PhysCannon_PuntVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr)
+void PhysCannon_PuntConcussionVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr)
 {
 	pc->PuntConcussionVPhysics(pEntity, forward, tr);
 }
-void PhysCannon_PuntRagdoll(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr)
+void PhysCannon_PuntConcussionRagdoll(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr)
 {
-	pc->PuntRagdoll(pEntity, forward, tr);
+	pc->PuntConcussionRagdoll(pEntity, forward, tr);
 }
 
 bool PhysCannonEntityAllowsPunts(CWeaponPhysCannon * pc, CBaseEntity *pEntity)

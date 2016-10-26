@@ -34,7 +34,7 @@ bool PhysCannonAccountableForObject( CBaseCombatWeapon *pPhysCannon, CBaseEntity
 bool PhysCannonEntityAllowsPunts(CWeaponPhysCannon * pc, CBaseEntity *pEntity);
 
 void PhysCannon_PuntConcussionNonVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
-void PhysCannon_PuntVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
-void PhysCannon_PuntRagdoll(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
+void PhysCannon_PuntConcussionVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
+void PhysCannon_PuntConcussionRagdoll(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
 
 #endif // WEAPON_PHYSCANNON_H

@@ -924,13 +924,19 @@ void CPropCombineBall::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t R
 
 		vecForward *= GetSpeed();
 
-		VPhysicsGetObject()->SetVelocity( &vecForward, &vec3_origin );
+		auto phys = VPhysicsGetObject();
+
+		if (phys)
+			phys->SetVelocity(&vecForward, &vec3_origin);
 	}
 	else
 	{
+		auto phys = VPhysicsGetObject();
+
 		// This will have the consequence of making it so that the
 		// ball is launched directly down the crosshair even if the player is moving.
-		VPhysicsGetObject()->SetVelocity( &vec3_origin, &vec3_origin );
+		if (phys)
+			phys->SetVelocity( &vec3_origin, &vec3_origin );
 	}
 
 	SetBallAsLaunched();
