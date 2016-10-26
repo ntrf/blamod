@@ -938,6 +938,7 @@
     <ClInclude Include="toolframework_client.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bla\bla_mount.cpp" />
     <ClCompile Include="bla\hud_speedmeter.cpp" />
     <ClCompile Include="bla\hud_timer.cpp" />
     <ClCompile Include="mp3player.cpp" />

@@ -3427,6 +3427,9 @@
     <ClCompile Include="bla\hud_timer.cpp">
       <Filter>Source Files\Blamod</Filter>
     </ClCompile>
+    <ClCompile Include="bla\bla_mount.cpp">
+      <Filter>Source Files\Blamod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
