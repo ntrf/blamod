@@ -557,6 +557,7 @@
     <ClInclude Include="..\..\game\shared\hintmessage.h" />
     <ClInclude Include="..\..\game\shared\hintsystem.h" />
     <ClInclude Include="history_resource.h" />
+    <ClInclude Include="hl2\c_prop_gravity_ball.h" />
     <ClInclude Include="hltvcamera.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="hud_basechat.h" />
@@ -940,6 +941,7 @@
   <ItemGroup>
     <ClCompile Include="bla\hud_speedmeter.cpp" />
     <ClCompile Include="bla\hud_timer.cpp" />
+    <ClCompile Include="hl2\c_prop_gravity_ball.cpp" />
     <ClCompile Include="mp3player.cpp" />
     <ClCompile Include="replay\cdll_replay.cpp" />
     <ClCompile Include="replay\replaycamera.cpp" />

@@ -1901,6 +1901,9 @@
     <ClInclude Include="toolframework_client.h">
       <Filter>Tool Framework</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\c_prop_gravity_ball.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mp3player.cpp">
@@ -3426,6 +3429,9 @@
     </ClCompile>
     <ClCompile Include="bla\hud_timer.cpp">
       <Filter>Source Files\Blamod</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\c_prop_gravity_ball.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

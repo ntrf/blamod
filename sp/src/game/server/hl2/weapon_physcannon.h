@@ -10,7 +10,9 @@
 #pragma once
 #endif
 
+#include "basehlcombatweapon.h"
 
+class CWeaponPhysCannon;
 
 //-----------------------------------------------------------------------------
 // Do we have the super-phys gun?
@@ -29,5 +31,10 @@ CBaseEntity *PhysCannonGetHeldEntity( CBaseCombatWeapon *pActiveWeapon );
 CBaseEntity *GetPlayerHeldEntity( CBasePlayer *pPlayer );
 
 bool PhysCannonAccountableForObject( CBaseCombatWeapon *pPhysCannon, CBaseEntity *pObject );
+bool PhysCannonEntityAllowsPunts(CWeaponPhysCannon * pc, CBaseEntity *pEntity);
+
+void PhysCannon_PuntConcussionNonVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
+void PhysCannon_PuntVPhysics(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
+void PhysCannon_PuntRagdoll(CWeaponPhysCannon * pc, CBaseEntity *pEntity, const Vector &forward, trace_t &tr);
 
 #endif // WEAPON_PHYSCANNON_H

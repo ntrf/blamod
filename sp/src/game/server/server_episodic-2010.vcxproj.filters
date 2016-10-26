@@ -1775,6 +1775,9 @@
     <ClInclude Include="bla\timer.h">
       <Filter>Source Files\Blamod</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\prop_gravity_ball.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamedll_replay.cpp">
@@ -3489,6 +3492,9 @@
     </ClCompile>
     <ClCompile Include="bla\timer.cpp">
       <Filter>Source Files\Blamod</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\prop_gravity_ball.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

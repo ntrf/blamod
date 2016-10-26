@@ -115,7 +115,7 @@ public:
 	void SetOriginalOwner( CBaseEntity *pEntity ) { m_hOriginalOwner = pEntity; }
 	CBaseEntity *GetOriginalOwner() { return m_hOriginalOwner; }
 
-private:
+protected:
 
 	void SetPlayerLaunched( CBasePlayer *pOwner );
 
@@ -161,7 +161,7 @@ private:
 		return ( m_nState == STATE_LAUNCHED && m_nMaxBounces != 0 && m_nBounceCount >= m_nMaxBounces );
 	}
 
-private:
+protected:
 
 	int		m_nBounceCount;
 	int		m_nMaxBounces;
