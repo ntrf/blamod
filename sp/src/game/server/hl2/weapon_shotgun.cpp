@@ -469,8 +469,7 @@ void CWeaponShotgun::PrimaryAttack( void )
 	Vector	vecSrc		= pPlayer->Weapon_ShootPosition( );
 	Vector	vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );	
 
-	pPlayer->VelocityPunch(
-		-clamp(bla_shotgunblowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
+	pPlayer->VelocityPunch(-clamp(bla_shotgunblowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 1.0 );
 	
@@ -533,7 +532,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 	pPlayer->ViewPunch( QAngle(random->RandomFloat( -5, 5 ),0,0) );
 
 	pPlayer->VelocityPunch(
-		-2 * clamp(bla_shotgunblowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
+		-2 * clamp(bla_shotgunblowback.GetFloat(), 0.0f, 600.0f) * vecAiming);
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 1.0 );
 
