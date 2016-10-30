@@ -662,6 +662,14 @@ float CInput::DetermineKeySpeed( float frametime )
 	return speed;
 }
 
+
+static bool do_flip180 = false;
+
+static void IN_Flip180(const CCommand &args)
+{
+	do_flip180 = true;
+}
+
 /*
 ==============================
 AdjustYaw
@@ -674,6 +682,11 @@ void CInput::AdjustYaw( float speed, QAngle& viewangles )
 	{
 		viewangles[YAW] -= speed*cl_yawspeed.GetFloat() * KeyState (&in_right);
 		viewangles[YAW] += speed*cl_yawspeed.GetFloat() * KeyState (&in_left);
+	}
+
+	if (do_flip180) {
+		do_flip180 = false;
+		viewangles[YAW] += 180.0f;
 	}
 
 	// thirdperson platformer mode
@@ -1698,3 +1711,5 @@ void CInput::LevelInit( void )
 #endif
 }
 
+
+static ConCommand flip180("flip180", IN_Flip180);
