@@ -3495,16 +3495,14 @@ void CWeaponPhysCannon::DoEffectIdle( void )
 		{
 			EmitSound( "Weapon_Physgun.Off" );
 
-#ifdef HL2_EPISODIC
 			ForceDrop();
 
 			CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
 
-			if ( pPlayer )
-			{
-				pPlayer->StartArmorReduction();
-			}
-#endif
+//			if ( pPlayer )
+//			{
+//				pPlayer->StartArmorReduction();
+//			}
 
 			CCitadelEnergyCore *pCore = static_cast<CCitadelEnergyCore*>( CreateEntityByName( "env_citadel_energy_core" ) );
 
