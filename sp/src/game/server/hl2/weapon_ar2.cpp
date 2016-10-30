@@ -470,7 +470,7 @@ void CWeaponAR2::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChara
 // Purpose: 
 //-----------------------------------------------------------------------------
 static ConVar bla_ar2blowback(
-	"bla_ar2blowback", "0.0",
+	"bla_ar2blowback", "45.0",
 	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
 	"Amount of force to apply in opposite look direction of the player after "
 	"firing the AR2.");

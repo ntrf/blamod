@@ -73,6 +73,10 @@ ConVar physconcussion_fire_mass("physconcussion_fire_mass", "150");
 
 ConVar physconcussion_playerspeedscale("physconcussion_playerspeedscale", "1.0");
 
+ConVar physconcussion_enable("physconcussion_enable", "0",
+							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							 "Enables TE120 gravity gun");
+
 extern ConVar hl2_normspeed;
 extern ConVar hl2_walkspeed;
 
@@ -2442,239 +2446,211 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 		return;
 	}
 
-#if 0
+	if (!physconcussion_enable.GetBool()) {
+		// If not active, just issue a physics punch in the world.
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
 
-	// If not active, just issue a physics punch in the world.
-	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
+		Vector forward;
+		pOwner->EyeVectors(&forward);
 
-	Vector forward;
-	pOwner->EyeVectors( &forward );
+		// NOTE: Notice we're *not* using the mega tracelength here
+		// when you have the mega cannon. Punting has shorter range.
+		Vector start, end;
+		start = pOwner->Weapon_ShootPosition();
+		float flPuntDistance = physcannon_tracelength.GetFloat();
+		VectorMA(start, flPuntDistance, forward, end);
 
-	// NOTE: Notice we're *not* using the mega tracelength here
-	// when you have the mega cannon. Punting has shorter range.
-	Vector start, end;
-	start = pOwner->Weapon_ShootPosition();
-	float flPuntDistance = physcannon_tracelength.GetFloat();
-	VectorMA( start, flPuntDistance, forward, end );
+		trace_t tr;
+		UTIL_PhyscannonTraceHull(start, end, -Vector(8, 8, 8), Vector(8, 8, 8), pOwner, &tr);
+		bool bValid = true;
+		CBaseEntity *pEntity = tr.m_pEnt;
+		if (tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet(EFL_NO_PHYSCANNON_INTERACTION)) {
+			bValid = false;
+		} else if ((pEntity->GetMoveType() != MOVETYPE_VPHYSICS) && (pEntity->m_takedamage == DAMAGE_NO)) {
+			bValid = false;
+		}
 
-	trace_t tr;
-	UTIL_PhyscannonTraceHull( start, end, -Vector(8,8,8), Vector(8,8,8), pOwner, &tr );
-	bool bValid = true;
-	CBaseEntity *pEntity = tr.m_pEnt;
-	if ( tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) )
-	{
-		bValid = false;
-	}
-	else if ( (pEntity->GetMoveType() != MOVETYPE_VPHYSICS) && ( pEntity->m_takedamage == DAMAGE_NO ) )
-	{
-		bValid = false;
-	}
+		// If the entity we've hit is invalid, try a traceline instead
+		if (!bValid) {
+			UTIL_PhyscannonTraceLine(start, end, pOwner, &tr);
+			if (tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet(EFL_NO_PHYSCANNON_INTERACTION)) {
+				if (hl2_episodic.GetBool()) {
+					// Try to find something in a very small cone. 
+					CBaseEntity *pObject = FindObjectInCone(start, forward, physcannon_punt_cone.GetFloat());
 
-	// If the entity we've hit is invalid, try a traceline instead
-	if ( !bValid )
-	{
-		UTIL_PhyscannonTraceLine( start, end, pOwner, &tr );
-		if ( tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) )
-		{
-			if( hl2_episodic.GetBool() )
-			{
-				// Try to find something in a very small cone. 
-				CBaseEntity *pObject = FindObjectInCone( start, forward, physcannon_punt_cone.GetFloat() );
+					if (pObject) {
+						// Trace to the object.
+						UTIL_PhyscannonTraceLine(start, pObject->WorldSpaceCenter(), pOwner, &tr);
 
-				if( pObject )
-				{
-					// Trace to the object.
-					UTIL_PhyscannonTraceLine( start, pObject->WorldSpaceCenter(), pOwner, &tr );
-
-					if( tr.m_pEnt && tr.m_pEnt == pObject && !(pObject->IsEFlagSet(EFL_NO_PHYSCANNON_INTERACTION)) )
-					{
-						bValid = true;
-						pEntity = pObject;
+						if (tr.m_pEnt && tr.m_pEnt == pObject && !(pObject->IsEFlagSet(EFL_NO_PHYSCANNON_INTERACTION))) {
+							bValid = true;
+							pEntity = pObject;
+						}
 					}
+				}
+			} else {
+				bValid = true;
+				pEntity = tr.m_pEnt;
+			}
+		}
+
+		if (!bValid) {
+			DryFire();
+			return;
+		}
+
+		// See if we hit something
+		if (pEntity->GetMoveType() != MOVETYPE_VPHYSICS) {
+			if (pEntity->m_takedamage == DAMAGE_NO) {
+				DryFire();
+				return;
+			}
+
+			if (GetOwner()->IsPlayer() && !IsMegaPhysCannon()) {
+				// Don't let the player zap any NPC's except regular antlions and headcrabs.
+				if (pEntity->IsNPC() && pEntity->Classify() != CLASS_HEADCRAB && !FClassnameIs(pEntity, "npc_antlion")) {
+					DryFire();
+					return;
+				}
+			}
+
+			if (IsMegaPhysCannon()) {
+				if (pEntity->IsNPC() && !pEntity->IsEFlagSet(EFL_NO_MEGAPHYSCANNON_RAGDOLL) && pEntity->MyNPCPointer()->CanBecomeRagdoll()) {
+					CTakeDamageInfo info(pOwner, pOwner, 1.0f, DMG_GENERIC);
+					CBaseEntity *pRagdoll = CreateServerRagdoll(pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
+					PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
+					pRagdoll->SetCollisionBounds(pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs());
+
+					// Necessary to cause it to do the appropriate death cleanup
+					CTakeDamageInfo ragdollInfo(pOwner, pOwner, 10000.0, DMG_PHYSGUN | DMG_REMOVENORAGDOLL);
+					pEntity->TakeDamage(ragdollInfo);
+
+					PuntRagdoll(pRagdoll, forward, tr);
+					return;
+				}
+			}
+
+			PuntNonVPhysics(pEntity, forward, tr);
+		} else {
+			if (EntityAllowsPunts(pEntity) == false) {
+				DryFire();
+				return;
+			}
+
+			if (!IsMegaPhysCannon()) {
+				if (pEntity->VPhysicsIsFlesh()) {
+					DryFire();
+					return;
+				}
+				PuntVPhysics(pEntity, forward, tr);
+			} else {
+				if (dynamic_cast<CRagdollProp*>(pEntity)) {
+					PuntRagdoll(pEntity, forward, tr);
+				} else {
+					PuntVPhysics(pEntity, forward, tr);
 				}
 			}
 		}
-		else
-		{
-			bValid = true;
-			pEntity = tr.m_pEnt;
-		}
-	}
+	} else {
+		// TE120 gun
 
-	if( !bValid )
-	{
-		DryFire();
-		return;
-	}
+		CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(pOwner);
 
-	// See if we hit something
-	if ( pEntity->GetMoveType() != MOVETYPE_VPHYSICS )
-	{
-		if ( pEntity->m_takedamage == DAMAGE_NO )
-		{
-			DryFire();
+		if (pPlayer == NULL)
 			return;
-		}
 
-		if( GetOwner()->IsPlayer() && !IsMegaPhysCannon() )
-		{
-			// Don't let the player zap any NPC's except regular antlions and headcrabs.
-			if( pEntity->IsNPC() && pEntity->Classify() != CLASS_HEADCRAB && !FClassnameIs(pEntity, "npc_antlion") )
-			{
-				DryFire();
-				return;
-			}
-		}
+		SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 
-		if ( IsMegaPhysCannon() )
-		{
-			if ( pEntity->IsNPC() && !pEntity->IsEFlagSet( EFL_NO_MEGAPHYSCANNON_RAGDOLL ) && pEntity->MyNPCPointer()->CanBecomeRagdoll() )
-			{
-				CTakeDamageInfo info( pOwner, pOwner, 1.0f, DMG_GENERIC );
-				CBaseEntity *pRagdoll = CreateServerRagdoll( pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true );
-				PhysSetEntityGameFlags( pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS );
-				pRagdoll->SetCollisionBounds( pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs() );
+		// Total delay is ((current energy requirement w/ pow change) - current energy available) / 12.5 + (min ready time)
+		//float fTotalDelay = clamp((clamp(pPlayer->m_flEnergyRequired - pPlayer->SuitPower_GetCurrentPercentage(), 0.1, 100.0) / 12.5f) + pPlayer->m_flOverHeatWait,
+		//							MIN_READY_DELAY,
+		//							physconcussion_maxdelay.GetFloat()
+		//							);
+		float fTotalDelay = physconcussion_maxdelay.GetFloat();
 
-				// Necessary to cause it to do the appropriate death cleanup
-				CTakeDamageInfo ragdollInfo( pOwner, pOwner, 10000.0, DMG_PHYSGUN | DMG_REMOVENORAGDOLL );
-				pEntity->TakeDamage( ragdollInfo );
+		// Msg( "Min delay: %f\n", m_flOverHeatWait );
+		// Msg( "Time needed for extra energy: %f\n", (clamp( m_flEnergyRequired - pPlayer->SuitPower_GetCurrentPercentage(), 0.1, 100.0 ) / 12.5f) );
+		// Msg( "Total wait time: %f\n\n", fTotalDelay );
 
-				PuntRagdoll( pRagdoll, forward, tr );
-				return;
-			}
-		}
+		m_flNextPrimaryAttack = gpGlobals->curtime + fTotalDelay;
 
-		PuntNonVPhysics( pEntity, forward, tr );
+		// Calculate next energy requirement
+		//pPlayer->m_flEnergyRequired += pow(pPlayer->m_flEnergyRequired * physconcussion_energypowscale.GetFloat(), 2);
+		//pPlayer->m_flEnergyRequired = clamp(pPlayer->m_flEnergyRequired, MIN_ENERGY_REQUIRED, MAX_ENERGY_REQUIRED);
+		// Msg( "Next Energy Required: %f\n\n", m_flEnergyRequired );
+
+		// Calculate next ready delay
+		//pPlayer->m_flOverHeatWait += pow(pPlayer->m_flOverHeatWait, physconcussion_mindelaypower.GetInt());
+		//pPlayer->m_flOverHeatWait = clamp(pPlayer->m_flOverHeatWait, MIN_READY_DELAY, MAX_READY_DELAY);
+		// Msg( "Next Ready Delay: %f\n\n", m_flOverHeatWait );
+
+		//pPlayer->m_flNextCoolDown = gpGlobals->curtime + 2.0f;
+		//pPlayer->m_flLastRecoveryTime = 1.0;
+		//pPlayer->m_flRecoveryRateScale *= m_flShrinkRate;
+		// Msg( "m_flShrinkRate: %f\n", m_flShrinkRate );
+
+
+		pOwner->m_flNextAttack = gpGlobals->curtime + 0.1f;
+
+		// Register a muzzleflash for the AI
+		pOwner->DoMuzzleFlash();
+		pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+
+		WeaponSound(SINGLE);
+
+		// pOwner->RumbleEffect( RUMBLE_PHYSCANNON_OPEN, 0, RUMBLE_FLAG_RESTART );
+		pOwner->RumbleEffect(RUMBLE_SHOTGUN_DOUBLE, 0, RUMBLE_FLAG_RESTART);
+
+		// Fire the combine ball
+		Vector vecSrc = pOwner->Weapon_ShootPosition();
+		Vector vecAiming = pOwner->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
+		Vector impactPoint = vecSrc + (vecAiming * MAX_TRACE_LENGTH);
+		Vector vecVelocity = vecAiming * 1000.0f;
+
+		Vector vecPV;
+		AngularImpulse angPA;
+		pOwner->GetVelocity(&vecPV, &angPA);
+
+		vecVelocity = vecVelocity + vecPV;
+
+		// Fire the combine ball
+		CreateGravityBall(vecSrc,
+						  vecVelocity,
+						  physconcussion_fire_radius.GetFloat(),
+						  physconcussion_fire_mass.GetFloat(),
+						  physconcussion_fire_duration.GetFloat(),
+						  pOwner,
+						  this);
+
+
+		Vector vecSpot = vecSrc + vecAiming * PHYSCONCUSSION_DANGER_SOUND_RADIUS;
+
+		// Play launch effect
+		DoEffect(EFFECT_LAUNCH, &vecSpot);
+
+		// View effects
+		color32 white = { 255, 255, 255, 64 };
+		UTIL_ScreenFade(pOwner, white, 0.1, 0, FFADE_IN);
+
+		//Disorient the player
+		QAngle angles = pOwner->GetLocalAngles();
+
+		angles.x += random->RandomInt(-4, 4);
+		angles.y += random->RandomInt(-4, 4);
+		angles.z = 0;
+
+		pOwner->SnapEyeAngles(angles);
+
+		pOwner->ViewPunch(QAngle(random->RandomInt(-8, -12), random->RandomInt(1, 2), 0));
+
+		// Decrease ammo
+		//pOwner->RemoveAmmo(5, m_iPrimaryAmmoType);
+
+		gamestats->Event_WeaponFired(pOwner, true, GetClassname());
+
+		// This alerts the enemy
+		CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_PISTOL, 0.2, GetOwner());
 	}
-	else
-	{
-		if ( EntityAllowsPunts( pEntity) == false )
-		{
-			DryFire();
-			return;
-		}
-
-		if ( !IsMegaPhysCannon() )
-		{
-			if ( pEntity->VPhysicsIsFlesh( ) )
-			{
-				DryFire();
-				return;
-			}
-			PuntVPhysics( pEntity, forward, tr );
-		}
-		else
-		{
-			if ( dynamic_cast<CRagdollProp*>(pEntity) )
-			{
-				PuntRagdoll( pEntity, forward, tr );
-			}
-			else
-			{
-				PuntVPhysics( pEntity, forward, tr );
-			}
-		}
-	}
-#else
-	// TE120 gun
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(pOwner);
-
-	if (pPlayer == NULL)
-	return;
-
-	SendWeaponAnim(ACT_VM_PRIMARYATTACK);
-
-	// Total delay is ((current energy requirement w/ pow change) - current energy available) / 12.5 + (min ready time)
-	//float fTotalDelay = clamp((clamp(pPlayer->m_flEnergyRequired - pPlayer->SuitPower_GetCurrentPercentage(), 0.1, 100.0) / 12.5f) + pPlayer->m_flOverHeatWait,
-	//							MIN_READY_DELAY,
-	//							physconcussion_maxdelay.GetFloat()
-	//							);
-	float fTotalDelay = physconcussion_maxdelay.GetFloat();
-
-	// Msg( "Min delay: %f\n", m_flOverHeatWait );
-	// Msg( "Time needed for extra energy: %f\n", (clamp( m_flEnergyRequired - pPlayer->SuitPower_GetCurrentPercentage(), 0.1, 100.0 ) / 12.5f) );
-	// Msg( "Total wait time: %f\n\n", fTotalDelay );
-
-	m_flNextPrimaryAttack = gpGlobals->curtime + fTotalDelay;
-
-	// Calculate next energy requirement
-	//pPlayer->m_flEnergyRequired += pow(pPlayer->m_flEnergyRequired * physconcussion_energypowscale.GetFloat(), 2);
-	//pPlayer->m_flEnergyRequired = clamp(pPlayer->m_flEnergyRequired, MIN_ENERGY_REQUIRED, MAX_ENERGY_REQUIRED);
-	// Msg( "Next Energy Required: %f\n\n", m_flEnergyRequired );
-
-	// Calculate next ready delay
-	//pPlayer->m_flOverHeatWait += pow(pPlayer->m_flOverHeatWait, physconcussion_mindelaypower.GetInt());
-	//pPlayer->m_flOverHeatWait = clamp(pPlayer->m_flOverHeatWait, MIN_READY_DELAY, MAX_READY_DELAY);
-	// Msg( "Next Ready Delay: %f\n\n", m_flOverHeatWait );
-
-	//pPlayer->m_flNextCoolDown = gpGlobals->curtime + 2.0f;
-	//pPlayer->m_flLastRecoveryTime = 1.0;
-	//pPlayer->m_flRecoveryRateScale *= m_flShrinkRate;
-	// Msg( "m_flShrinkRate: %f\n", m_flShrinkRate );
-
-
-	pOwner->m_flNextAttack = gpGlobals->curtime + 0.1f;
-
-	// Register a muzzleflash for the AI
-	pOwner->DoMuzzleFlash();
-	pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
-
-	WeaponSound(SINGLE);
-
-	// pOwner->RumbleEffect( RUMBLE_PHYSCANNON_OPEN, 0, RUMBLE_FLAG_RESTART );
-	pOwner->RumbleEffect(RUMBLE_SHOTGUN_DOUBLE, 0, RUMBLE_FLAG_RESTART);
-
-	// Fire the combine ball
-	Vector vecSrc = pOwner->Weapon_ShootPosition();
-	Vector vecAiming = pOwner->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
-	Vector impactPoint = vecSrc + (vecAiming * MAX_TRACE_LENGTH);
-	Vector vecVelocity = vecAiming * 1000.0f;
-
-	Vector vecPV;
-	AngularImpulse angPA;
-	pOwner->GetVelocity(&vecPV, &angPA);
-
-	vecVelocity = vecVelocity + vecPV;
-
-	// Fire the combine ball
-	CreateGravityBall(vecSrc,
-						vecVelocity,
-						physconcussion_fire_radius.GetFloat(),
-						physconcussion_fire_mass.GetFloat(),
-						physconcussion_fire_duration.GetFloat(),
-						pOwner,
-						this);
-
-
-	Vector vecSpot = vecSrc + vecAiming * PHYSCONCUSSION_DANGER_SOUND_RADIUS;
-
-	// Play launch effect
-	DoEffect(EFFECT_LAUNCH, &vecSpot);
-
-	// View effects
-	color32 white = { 255, 255, 255, 64 };
-	UTIL_ScreenFade(pOwner, white, 0.1, 0, FFADE_IN);
-
-	//Disorient the player
-	QAngle angles = pOwner->GetLocalAngles();
-
-	angles.x += random->RandomInt(-4, 4);
-	angles.y += random->RandomInt(-4, 4);
-	angles.z = 0;
-
-	pOwner->SnapEyeAngles(angles);
-
-	pOwner->ViewPunch(QAngle(random->RandomInt(-8, -12), random->RandomInt(1, 2), 0));
-
-	// Decrease ammo
-	//pOwner->RemoveAmmo(5, m_iPrimaryAmmoType);
-
-	gamestats->Event_WeaponFired(pOwner, true, GetClassname());
-
-	// This alerts the enemy
-	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_PISTOL, 0.2, GetOwner());
-#endif
 }
 
 
