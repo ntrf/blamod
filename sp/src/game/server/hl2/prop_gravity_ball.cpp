@@ -514,17 +514,20 @@ void CPropGravityBall::DoExplosion( )
 
 				if ( pEntity->IsNPC() && !pEntity->IsEFlagSet( EFL_NO_MEGAPHYSCANNON_RAGDOLL ) && pEntity->MyNPCPointer()->CanBecomeRagdoll() )
 				{
-					CTakeDamageInfo info( pPlayer, pPlayer, 1.0f, DMG_GENERIC );
-					CBaseEntity *pRagdoll = CreateServerRagdoll( pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true );
-					PhysSetEntityGameFlags( pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS );
-					pRagdoll->SetCollisionBounds( pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs() );
-
 					// Necessary to cause it to do the appropriate death cleanup
 					CTakeDamageInfo ragdollInfo( pPlayer, pPlayer, 10000.0, DMG_PHYSGUN | DMG_REMOVENORAGDOLL );
 					pEntity->TakeDamage( ragdollInfo );
 
-					if (m_pWeaponPC)
-						PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
+					if (!pEntity->IsAlive()) {
+
+						CTakeDamageInfo info(pPlayer, pPlayer, 1.0f, DMG_GENERIC);
+						CBaseEntity *pRagdoll = CreateServerRagdoll(pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
+						PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
+						pRagdoll->SetCollisionBounds(pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs());
+
+						if (m_pWeaponPC)
+							PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
+					}
 				}
 				else if ( m_pWeaponPC )
 				{
