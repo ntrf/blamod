@@ -1,13 +1,13 @@
-*.c text eol=lf
-*.cpp text eol=lf
-*.cxx text eol=lf
-*.h text eol=lf
-*.hpp text eol=lf
-*.hxx text eol=lf
-*.cs text eol=lf
-*.m text eol=lf
-*.mm text eol=lf
-*.java text eol=lf
+*.c text eol=crlf
+*.cpp text eol=crlf
+*.cxx text eol=crlf
+*.h text eol=crlf
+*.hpp text eol=crlf
+*.hxx text eol=crlf
+*.cs text eol=crlf
+*.m text eol=crlf
+*.mm text eol=crlf
+*.java text eol=crlf
 
 *.json text eol=lf
 *.vcxproj text eol=crlf
