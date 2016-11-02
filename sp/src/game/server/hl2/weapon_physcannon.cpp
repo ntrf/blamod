@@ -71,6 +71,8 @@ ConVar physconcussion_fire_radius("physconcussion_fire_radius", "10");
 ConVar physconcussion_fire_duration("physconcussion_fire_duration", "2");
 ConVar physconcussion_fire_mass("physconcussion_fire_mass", "150");
 
+ConVar physconcussion_aiming("physconcussion_aiming", "2");
+
 ConVar physconcussion_playerspeedscale("physconcussion_playerspeedscale", "1.0");
 
 ConVar physconcussion_enable("physconcussion_enable", "0",
@@ -2604,14 +2606,24 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 		// Fire the combine ball
 		Vector vecSrc = pOwner->Weapon_ShootPosition();
 		Vector vecAiming = pOwner->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
-		Vector impactPoint = vecSrc + (vecAiming * MAX_TRACE_LENGTH);
+		//Vector impactPoint = vecSrc + (vecAiming * MAX_TRACE_LENGTH);
 		Vector vecVelocity = vecAiming * 1000.0f;
 
-		Vector vecPV;
-		AngularImpulse angPA;
-		pOwner->GetVelocity(&vecPV, &angPA);
+		int aiming = physconcussion_aiming.GetInt();
+		if (aiming > 0) {
+			Vector vecPV;
+			AngularImpulse angPA;
+			pOwner->GetVelocity(&vecPV, &angPA);
 
-		vecVelocity = vecVelocity + vecPV;
+			if (aiming == 1) {
+				vecVelocity += vecPV;
+			} else if (aiming == 2) {
+				auto pv = vecPV.Normalized();
+				auto jv = vecVelocity.Normalized();
+
+				vecVelocity += jv.Dot(pv) * vecPV;
+			}
+		}
 
 		// Fire the combine ball
 		CreateGravityBall(vecSrc,
@@ -2641,7 +2653,12 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 
 		pOwner->SnapEyeAngles(angles);
 
-		pOwner->ViewPunch(QAngle(random->RandomInt(-8, -12), random->RandomInt(1, 2), 0));
+		if (IsMegaPhysCannon()) {
+			// don't punch too mush in mega mode
+			pOwner->ViewPunch(QAngle(random->RandomInt(-3, -6), random->RandomInt(0, 2), 0));
+		} else {
+			pOwner->ViewPunch(QAngle(random->RandomInt(-8, -12), random->RandomInt(1, 2), 0));
+		}
 
 		// Decrease ammo
 		//pOwner->RemoveAmmo(5, m_iPrimaryAmmoType);
