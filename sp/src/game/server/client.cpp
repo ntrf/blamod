@@ -724,27 +724,6 @@ CON_COMMAND_F( explodevector, "Kills a player applying an explosive force. Usage
 }
 
 
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND_F( buddha, "Toggle.  Player takes damage but won't die. (Shows red cross when health is zero)", FCVAR_CHEAT )
-{
-	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() ); 
-	if ( pPlayer )
-	{
-		if (pPlayer->m_debugOverlays & OVERLAY_BUDDHA_MODE)
-		{
-			pPlayer->m_debugOverlays &= ~OVERLAY_BUDDHA_MODE;
-			Msg("Buddha Mode off...\n");
-		}
-		else
-		{
-			pPlayer->m_debugOverlays |= OVERLAY_BUDDHA_MODE;
-			Msg("Buddha Mode on...\n");
-		}
-	}
-}
-
-
 #define TALK_INTERVAL 0.66 // min time between say commands from a client
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

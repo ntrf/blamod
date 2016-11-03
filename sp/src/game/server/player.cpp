@@ -876,19 +876,6 @@ int CBasePlayer::TakeHealth( float flHealth, int bitsDamageType )
 //-----------------------------------------------------------------------------
 void CBasePlayer::DrawDebugGeometryOverlays(void) 
 {
-	// --------------------------------------------------------
-	// If in buddha mode and dead draw lines to indicate death
-	// --------------------------------------------------------
-	if ((m_debugOverlays & OVERLAY_BUDDHA_MODE) && m_iHealth == 1)
-	{
-		Vector vBodyDir = BodyDirection2D( );
-		Vector eyePos	= EyePosition() + vBodyDir*10.0;
-		Vector vUp		= Vector(0,0,8);
-		Vector vSide;
-		CrossProduct( vBodyDir, vUp, vSide);
-		NDebugOverlay::Line(eyePos+vSide+vUp, eyePos-vSide-vUp, 255,0,0, false, 0);
-		NDebugOverlay::Line(eyePos+vSide-vUp, eyePos-vSide+vUp, 255,0,0, false, 0);
-	}
 	BaseClass::DrawDebugGeometryOverlays();
 }
 
@@ -1090,15 +1077,6 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	if ( GetFlags() & FL_GODMODE )
 		return 0;
-
-	if ( m_debugOverlays & OVERLAY_BUDDHA_MODE ) 
-	{
-		if ((m_iHealth - info.GetDamage()) <= 0)
-		{
-			m_iHealth = 1;
-			return 0;
-		}
-	}
 
 	// Early out if there's no damage
 	if ( !info.GetDamage() )

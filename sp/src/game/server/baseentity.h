@@ -283,7 +283,7 @@ enum DebugOverlayBits_t
 	OVERLAY_NPC_KILL_BIT		=	0x00800000,		// kill the NPC, running all appropriate AI.
 
 	OVERLAY_WC_CHANGE_ENTITY	=	0x01000000,		// object changed during WC edit
-	OVERLAY_BUDDHA_MODE			=	0x02000000,		// take damage but don't die
+//	OVERLAY_BUDDHA_MODE			=	0x02000000,		// take damage but don't die
 
 	OVERLAY_NPC_STEERING_REGULATIONS	=	0x04000000,	// Show the steering regulations associated with the NPC
 
