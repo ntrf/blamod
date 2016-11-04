@@ -71,7 +71,7 @@ ConVar physconcussion_fire_radius("physconcussion_fire_radius", "10");
 ConVar physconcussion_fire_duration("physconcussion_fire_duration", "2");
 ConVar physconcussion_fire_mass("physconcussion_fire_mass", "150");
 
-ConVar physconcussion_aiming("physconcussion_aiming", "2");
+ConVar physconcussion_aiming("physconcussion_aiming", "1.02");
 
 ConVar physconcussion_playerspeedscale("physconcussion_playerspeedscale", "1.0");
 
@@ -2609,20 +2609,16 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 		//Vector impactPoint = vecSrc + (vecAiming * MAX_TRACE_LENGTH);
 		Vector vecVelocity = vecAiming * 1000.0f;
 
-		int aiming = physconcussion_aiming.GetInt();
+		float aiming = physconcussion_aiming.GetFloat();
 		if (aiming > 0) {
 			Vector vecPV;
 			AngularImpulse angPA;
 			pOwner->GetVelocity(&vecPV, &angPA);
 
-			if (aiming == 1) {
-				vecVelocity += vecPV;
-			} else if (aiming == 2) {
-				auto pv = vecPV.Normalized();
-				auto jv = vecVelocity.Normalized();
+			auto pv = vecPV.Normalized();
+			auto jv = vecVelocity.Normalized();
 
-				vecVelocity += jv.Dot(pv) * vecPV;
-			}
+			vecVelocity += jv.Dot(pv) * vecPV * aiming;
 		}
 
 		// Fire the combine ball
