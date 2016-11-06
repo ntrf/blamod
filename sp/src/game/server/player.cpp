@@ -4417,7 +4417,7 @@ void CBasePlayer::UpdatePlayerSound ( void )
 ConVar bla_clipdirection("bla_clipdirection", "2",
 						 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
 						 "Cliping direction switch:\n"
-						 "  0: Clip up, 1: Clip down, 2: Clip up when +jump is held, otherwise down");
+						 "  0: Clip up, 1: Clip down, 2: Clip up when +jump is held, otherwise down, 3: Cliping disable");
 
 // This is a glorious hack to find free space when you've crouched into some solid space
 // Our crouching collisions do not work correctly for some reason and this is easier
@@ -4429,17 +4429,14 @@ void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
 	// Move up as many as 18 pixels if the player is stuck.
 	int i;
 	Vector org = pPlayer->GetAbsOrigin();;
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
+	for (i = 0; i < 18; i++) {
+		UTIL_TraceHull(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(),
+					   VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace);
+		if (trace.startsolid) {
 			Vector origin = pPlayer->GetAbsOrigin();
 			origin.z += 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
+			pPlayer->SetLocalOrigin(origin);
+		} else
 			return;
 	}
 
@@ -4453,18 +4450,19 @@ void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
 
 	pPlayer->SetAbsOrigin( org );
 
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
+	for (i = 0; i < 18; i++) {
+		UTIL_TraceHull(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(),
+					   VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace);
+		if (trace.startsolid) {
 			Vector origin = pPlayer->GetAbsOrigin();
 			origin.z -= 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
+			pPlayer->SetLocalOrigin(origin);
+		} else
 			return;
+	}
+
+	if (bla_clipdirection.GetInt() == 3) {
+		pPlayer->SetAbsOrigin(org);
 	}
 }
 #define SMOOTHING_FACTOR 0.9
