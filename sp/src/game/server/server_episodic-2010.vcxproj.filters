@@ -71,9 +71,6 @@
     <ClInclude Include="..\..\game\shared\ammodef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\shared\base_playeranimstate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="base_transmit_proxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>

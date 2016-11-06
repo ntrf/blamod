@@ -19,19 +19,19 @@ class CHudSpeedMeter : public CHudElement, public CHudNumericDisplay
 
 public:
     CHudSpeedMeter(const char *pElementName);
-    virtual void Init()
+    
+	void Init() override
     {
         Reset();
     }
-    virtual void VidInit()
+    
+	void VidInit() override
     {
         Reset();
     }
-    virtual void Reset()
-    {
-        SetLabelText(L"UPS");
-        SetDisplayValue(0);
-    }
+
+	void Reset() override;
+
     bool ShouldDraw() override
     {
         return bla_speedmeter.GetInt() > 0 && CHudElement::ShouldDraw();
@@ -40,6 +40,8 @@ public:
 	void OnThink() override;
 
 	void Paint() override;
+
+	float tick_pos = 0.0f;
 };
 
 DECLARE_HUDELEMENT(CHudSpeedMeter);
@@ -51,13 +53,27 @@ CHudSpeedMeter::CHudSpeedMeter(const char *pElementName) :
     SetHiddenBits(HIDEHUD_PLAYERDEAD);
 }
 
+void CHudSpeedMeter::Reset()
+{
+	SetLabelText(L"UPS");
+	SetDisplayValue(0);
+
+	tick_pos = 0;
+}
+
 void CHudSpeedMeter::OnThink()
 {
     Vector velocity(0, 0, 0);
     C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if (player) {
 		velocity = player->GetLocalVelocity();
-		if (bla_speedmeter.GetInt() < 2) velocity.z = 0;
+
+		// update vertical tick position
+		tick_pos += (gpGlobals->frametime * velocity.z) / 100.0f;
+
+		if (bla_speedmeter.GetInt() < 2) {
+			velocity.z = 0;
+		}
 	}
     SetDisplayValue((int)velocity.Length());
 }
@@ -66,5 +82,16 @@ void CHudSpeedMeter::Paint()
 {
 	BaseClass::Paint();
 
-	//vgui::surface()->Draw
+	float w = (float)this->GetWide();
+	float hc = (float)this->GetTall() * 0.5f;
+
+	float offset = tick_pos - floorf(tick_pos);
+
+	vgui::surface()->DrawSetColor(Color(255, 255, 255, 64));
+
+	for (float i = -2; i <= 2; i += 1.0f) {
+		float y = hc + (offset - (float)i) * 15.0f;
+		vgui::surface()->DrawLine(w - 17, y, w - 5, y);
+		vgui::surface()->DrawLine(5, y, 17, y);
+	}
 }

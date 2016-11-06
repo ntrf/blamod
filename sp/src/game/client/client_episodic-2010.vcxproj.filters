@@ -46,7 +46,10 @@
     <Filter Include="Tool Framework">
       <UniqueIdentifier>{C8FC1989-2499-2137-2EEA-17663813D98F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Blamod">
+    <Filter Include="BlamodUI">
+      <UniqueIdentifier>{870e8b6b-8256-4817-a8cd-38f86fe86a82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blamod">
       <UniqueIdentifier>{5bae5382-57d7-468c-b04f-9850d4fb2bad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1901,8 +1904,14 @@
     <ClInclude Include="toolframework_client.h">
       <Filter>Tool Framework</Filter>
     </ClInclude>
+    <ClInclude Include="BlamodUI\button_mainmenu.h">
+      <Filter>BlamodUI</Filter>
+    </ClInclude>
     <ClInclude Include="hl2\c_prop_gravity_ball.h">
       <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
+    <ClInclude Include="blamod_ui.h">
+      <Filter>BlamodUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3425,10 +3434,10 @@
       <Filter>Tool Framework</Filter>
     </ClCompile>
     <ClCompile Include="bla\hud_speedmeter.cpp">
-      <Filter>Source Files\Blamod</Filter>
+      <Filter>Blamod</Filter>
     </ClCompile>
     <ClCompile Include="bla\hud_timer.cpp">
-      <Filter>Source Files\Blamod</Filter>
+      <Filter>Blamod</Filter>
     </ClCompile>
     <ClCompile Include="hl2\c_prop_gravity_ball.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
