@@ -71,9 +71,6 @@
     <ClInclude Include="..\..\game\shared\ammodef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\shared\base_playeranimstate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="base_transmit_proxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1774,6 +1771,9 @@
     </ClInclude>
     <ClInclude Include="bla\timer.h">
       <Filter>Source Files\Blamod</Filter>
+    </ClInclude>
+    <ClInclude Include="hl2\prop_gravity_ball.h">
+      <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3489,6 +3489,9 @@
     </ClCompile>
     <ClCompile Include="bla\timer.cpp">
       <Filter>Source Files\Blamod</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\prop_gravity_ball.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

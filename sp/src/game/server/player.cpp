@@ -876,19 +876,6 @@ int CBasePlayer::TakeHealth( float flHealth, int bitsDamageType )
 //-----------------------------------------------------------------------------
 void CBasePlayer::DrawDebugGeometryOverlays(void) 
 {
-	// --------------------------------------------------------
-	// If in buddha mode and dead draw lines to indicate death
-	// --------------------------------------------------------
-	if ((m_debugOverlays & OVERLAY_BUDDHA_MODE) && m_iHealth == 1)
-	{
-		Vector vBodyDir = BodyDirection2D( );
-		Vector eyePos	= EyePosition() + vBodyDir*10.0;
-		Vector vUp		= Vector(0,0,8);
-		Vector vSide;
-		CrossProduct( vBodyDir, vUp, vSide);
-		NDebugOverlay::Line(eyePos+vSide+vUp, eyePos-vSide-vUp, 255,0,0, false, 0);
-		NDebugOverlay::Line(eyePos+vSide-vUp, eyePos-vSide+vUp, 255,0,0, false, 0);
-	}
 	BaseClass::DrawDebugGeometryOverlays();
 }
 
@@ -946,11 +933,11 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 			break;
 		}
 
-#ifdef HL2_EPISODIC
+//#ifdef HL2_EPISODIC
 		// If this damage type makes us bleed, then do so
 		bool bShouldBleed = !g_pGameRules->Damage_ShouldNotBleed( info.GetDamageType() );
 		if ( bShouldBleed )
-#endif
+//#endif
 		{
 			SpawnBlood(ptr->endpos, vecDir, BloodColor(), info.GetDamage());// a little surface blood.
 			TraceBleed( info.GetDamage(), vecDir, ptr, info.GetDamageType() );
@@ -1090,15 +1077,6 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	if ( GetFlags() & FL_GODMODE )
 		return 0;
-
-	if ( m_debugOverlays & OVERLAY_BUDDHA_MODE ) 
-	{
-		if ((m_iHealth - info.GetDamage()) <= 0)
-		{
-			m_iHealth = 1;
-			return 0;
-		}
-	}
 
 	// Early out if there's no damage
 	if ( !info.GetDamage() )
@@ -4439,7 +4417,7 @@ void CBasePlayer::UpdatePlayerSound ( void )
 ConVar bla_clipdirection("bla_clipdirection", "2",
 						 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
 						 "Cliping direction switch:\n"
-						 "  0: Clip up, 1: Clip down, 2: Clip up when +jump is held, otherwise down");
+						 "  0: Clip up, 1: Clip down, 2: Clip up when +jump is held, otherwise down, 3: Cliping disable");
 
 // This is a glorious hack to find free space when you've crouched into some solid space
 // Our crouching collisions do not work correctly for some reason and this is easier
@@ -4451,17 +4429,14 @@ void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
 	// Move up as many as 18 pixels if the player is stuck.
 	int i;
 	Vector org = pPlayer->GetAbsOrigin();;
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
+	for (i = 0; i < 18; i++) {
+		UTIL_TraceHull(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(),
+					   VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace);
+		if (trace.startsolid) {
 			Vector origin = pPlayer->GetAbsOrigin();
 			origin.z += 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
+			pPlayer->SetLocalOrigin(origin);
+		} else
 			return;
 	}
 
@@ -4475,18 +4450,19 @@ void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
 
 	pPlayer->SetAbsOrigin( org );
 
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
+	for (i = 0; i < 18; i++) {
+		UTIL_TraceHull(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(),
+					   VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace);
+		if (trace.startsolid) {
 			Vector origin = pPlayer->GetAbsOrigin();
 			origin.z -= 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
+			pPlayer->SetLocalOrigin(origin);
+		} else
 			return;
+	}
+
+	if (bla_clipdirection.GetInt() == 3) {
+		pPlayer->SetAbsOrigin(org);
 	}
 }
 #define SMOOTHING_FACTOR 0.9
@@ -6034,45 +6010,6 @@ void CBasePlayer::ImpulseCommands( )
 	
 	m_nImpulse = 0;
 }
-
-#ifdef HL2_EPISODIC
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-static void CreateJalopy( CBasePlayer *pPlayer )
-{
-	// Cheat to create a jeep in front of the player
-	Vector vecForward;
-	AngleVectors( pPlayer->EyeAngles(), &vecForward );
-	CBaseEntity *pJeep = (CBaseEntity *)CreateEntityByName( "prop_vehicle_jeep" );
-	if ( pJeep )
-	{
-		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 256 + Vector(0,0,64);
-		QAngle vecAngles( 0, pPlayer->GetAbsAngles().y - 90, 0 );
-		pJeep->SetAbsOrigin( vecOrigin );
-		pJeep->SetAbsAngles( vecAngles );
-		pJeep->KeyValue( "model", "models/vehicle.mdl" );
-		pJeep->KeyValue( "solid", "6" );
-		pJeep->KeyValue( "targetname", "jeep" );
-		pJeep->KeyValue( "vehiclescript", "scripts/vehicles/jalopy.txt" );
-		DispatchSpawn( pJeep );
-		pJeep->Activate();
-		pJeep->Teleport( &vecOrigin, &vecAngles, NULL );
-	}
-}
-
-void CC_CH_CreateJalopy( void )
-{
-	CBasePlayer *pPlayer = UTIL_GetCommandClient();
-	if ( !pPlayer )
-		return;
-	CreateJalopy( pPlayer );
-}
-
-static ConCommand ch_createjalopy("ch_createjalopy", CC_CH_CreateJalopy, "Spawn jalopy in front of the player.", FCVAR_CHEAT);
-
-#endif // HL2_EPISODIC
 
 //-----------------------------------------------------------------------------
 // Purpose: 

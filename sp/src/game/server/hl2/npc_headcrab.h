@@ -80,11 +80,7 @@ public:
 
 	bool	IsHangingFromCeiling( void ) 
 	{ 
-#ifdef HL2_EPISODIC
 		return m_bHangingFromCeiling;	
-#else
-		return false;
-#endif
 	}
 
 	virtual void PlayerHasIlluminatedNPC( CBasePlayer *pPlayer, float flDot );
@@ -268,9 +264,7 @@ public:
 	virtual void AlertSound( void );
 	virtual void ImpactSound( void );
 	virtual void TelegraphSound( void );
-#if HL2_EPISODIC
 	virtual bool FInViewCone( CBaseEntity *pEntity );
-#endif
 
 	//
 	// CBaseEntity implementation.

@@ -688,8 +688,6 @@ void CMissile::SeekThink( void )
 	// Think as soon as possible
 	SetNextThink( gpGlobals->curtime );
 
-#ifdef HL2_EPISODIC
-
 	if ( m_bCreateDangerSounds == true )
 	{
 		trace_t tr;
@@ -697,7 +695,6 @@ void CMissile::SeekThink( void )
 
 		CSoundEnt::InsertSound( SOUND_DANGER, tr.endpos, 100, 0.2, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
 	}
-#endif
 }
 
 
@@ -1155,11 +1152,7 @@ void CAPCMissile::DoExplosion( void )
 	}
 	else
 	{
-#ifdef HL2_EPISODIC
 		ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), this, APC_MISSILE_DAMAGE, 100, true, 20000 );
-#else
-		ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), APC_MISSILE_DAMAGE, 100, true, 20000 );
-#endif
 	}
 }
 

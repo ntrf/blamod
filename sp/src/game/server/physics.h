@@ -99,9 +99,7 @@ void PhysEnableFloating( IPhysicsObject *pObject, bool bEnable );
 void PhysCollisionSound( CBaseEntity *pEntity, IPhysicsObject *pPhysObject, int channel, int surfaceProps, int surfacePropsHit, float deltaTime, float speed );
 void PhysCollisionScreenShake( gamevcollisionevent_t *pEvent, int index );
 void PhysCollisionDust( gamevcollisionevent_t *pEvent, surfacedata_t *phit );
-#if HL2_EPISODIC
 void PhysCollisionWarpEffect( gamevcollisionevent_t *pEvent, surfacedata_t *phit );
-#endif
 void PhysBreakSound( CBaseEntity *pEntity, IPhysicsObject *pPhysObject, Vector vecOrigin );
 
 // plays the impact sound for a particular material

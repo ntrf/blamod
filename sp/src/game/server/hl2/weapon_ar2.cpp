@@ -469,30 +469,38 @@ void CWeaponAR2::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChara
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CWeaponAR2::AddViewKick( void )
+static ConVar bla_ar2blowback(
+	"bla_ar2blowback", "45.0",
+	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
+	"Amount of force to apply in opposite look direction of the player after "
+	"firing the AR2.");
+
+void CWeaponAR2::AddViewKick(void)
 {
-	#define	EASY_DAMPEN			0.5f
-	#define	MAX_VERTICAL_KICK	8.0f	//Degrees
-	#define	SLIDE_LIMIT			5.0f	//Seconds
-	
+#define	EASY_DAMPEN			0.5f
+#define	MAX_VERTICAL_KICK	8.0f	//Degrees
+#define	SLIDE_LIMIT			5.0f	//Seconds
+
 	//Get the view kick
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
 	if (!pPlayer)
 		return;
 
 	float flDuration = m_fFireDuration;
 
-	if( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
-	{
+	if (g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE) {
 		// On the 360 (or in any configuration using the 360 aiming scheme), don't let the
 		// AR2 progressive into the late, highly inaccurate stages of its kick. Just
 		// spoof the time to make it look (to the kicking code) like we haven't been
 		// firing for very long.
-		flDuration = MIN( flDuration, 0.75f );
+		flDuration = MIN(flDuration, 0.75f);
 	}
 
-	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, flDuration, SLIDE_LIMIT );
+	DoMachineGunKick(pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, flDuration, SLIDE_LIMIT);
+
+	Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
+	pPlayer->VelocityPunch(-clamp(bla_ar2blowback.GetFloat(), 0.0f, 250.0f) * vecAiming);
 }
 
 //-----------------------------------------------------------------------------
