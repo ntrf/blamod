@@ -36,8 +36,8 @@
 #define PROP_GRAVITY_BALL_MODEL	"models/effects/combineball.mdl"
 #define PROP_GRAVITY_BALL_SPRITE_TRAIL "sprites/combineball_trail_black_1.vmt"
 
-ConVar gravityball_tracelength( "gravityball_tracelength", "96" );
-ConVar gravityball_magnitude( "gravityball_magnitude", "9000" );
+ConVar gravityball_tracelength( "gravityball_tracelength", "128" );
+ConVar gravityball_magnitude( "gravityball_magnitude", "26000.0f" );
 
 // For our ring explosion
 int s_nExplosionGBTexture = -1;
@@ -503,7 +503,7 @@ void CPropGravityBall::DoExplosion( )
 				forward.z /= gravityball_tracelength.GetFloat();
 
 			trace_t tr;
-			UTIL_TraceLine( start,end, (MASK_SHOT|CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr );
+			UTIL_TraceLine( start, end, (MASK_SHOT|CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr );
 			// debugoverlay->AddLineOverlay( start, end, 0,255,0, true, 18.0 );
 
 			// Punt Non VPhysics Objects
@@ -515,18 +515,21 @@ void CPropGravityBall::DoExplosion( )
 				if ( pEntity->IsNPC() && !pEntity->IsEFlagSet( EFL_NO_MEGAPHYSCANNON_RAGDOLL ) && pEntity->MyNPCPointer()->CanBecomeRagdoll() )
 				{
 					// Necessary to cause it to do the appropriate death cleanup
-					CTakeDamageInfo ragdollInfo( pPlayer, pPlayer, 10000.0, DMG_PHYSGUN | DMG_REMOVENORAGDOLL );
+					Vector force = forward * gravityball_magnitude.GetFloat();
+
+					CTakeDamageInfo ragdollInfo(pPlayer, pPlayer, force, end, 10000.0, DMG_PHYSGUN | DMG_BLAST);
 					pEntity->TakeDamage( ragdollInfo );
 
 					if (!pEntity->IsAlive()) {
 
-						CTakeDamageInfo info(pPlayer, pPlayer, 1.0f, DMG_GENERIC);
-						CBaseEntity *pRagdoll = CreateServerRagdoll(pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
-						PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
-						pRagdoll->SetCollisionBounds(pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs());
+						//CTakeDamageInfo info(pPlayer, pPlayer, 1.0f, DMG_GENERIC);
+						//CBaseEntity *pRagdoll = CreateServerRagdoll(pEntity->MyNPCPointer(), 0, info, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
+						//PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
+						//pRagdoll->SetCollisionBounds(pEntity->CollisionProp()->OBBMins(), pEntity->CollisionProp()->OBBMaxs());
 
-						if (m_pWeaponPC)
-							PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
+						if (m_pWeaponPC) {
+							//PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pRagdoll, forward, tr);
+						}
 					}
 				}
 				else if ( m_pWeaponPC )

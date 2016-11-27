@@ -329,7 +329,7 @@ void CMissile::ShotDown( void )
 	// Let the RPG start reloading immediately
 	if ( m_hOwner != NULL )
 	{
-		m_hOwner->NotifyRocketDied();
+		m_hOwner->NotifyRocketDied(this);
 		m_hOwner = NULL;
 	}
 }
@@ -375,7 +375,7 @@ void CMissile::Explode( void )
 
 	if ( m_hOwner != NULL )
 	{
-		m_hOwner->NotifyRocketDied();
+		m_hOwner->NotifyRocketDied(this);
 		m_hOwner = NULL;
 	}
 
@@ -1660,6 +1660,12 @@ void CWeaponRPG::PrimaryAttack( void )
 			}
 		}
 	}
+
+	// if not guiding - reload immediately
+	if (!m_bGuiding) {
+		m_hMissile = nullptr;
+		Reload();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1689,7 +1695,7 @@ void CWeaponRPG::SuppressGuiding( bool state )
 			 return;
 	}
 
-	if ( state )
+	if ( state || !m_bGuiding )
 	{
 		m_hLaserDot->TurnOff();
 	}
@@ -1742,12 +1748,18 @@ void CWeaponRPG::ItemPostFrame( void )
 
 	//Player has toggled guidance state
 	//Adrian: Players are not allowed to remove the laser guide in single player anymore, bye!
-	if ( g_pGameRules->IsMultiplayer() == true )
+	// ntrf: wtf, Adrian?!
+	//
+	//   ... 2 HOURS LATER ...
+	//
+	// Oh, i figured it out. You're just lazy *** incapable of figuring out correct logic for everything.
+	// and you still trying to live with that "start / stop" patern, that caused so many bugs to appear
+	// in your code.
+	//
+	// That's why you keep disabling stuff
+	if ( pPlayer->m_afButtonPressed & IN_ATTACK2 )
 	{
-		if ( pPlayer->m_afButtonPressed & IN_ATTACK2 )
-		{
-			ToggleGuiding();
-		}
+		ToggleGuiding();
 	}
 
 	//Move the laser
@@ -1838,6 +1850,7 @@ bool CWeaponRPG::Holster( CBaseCombatWeapon *pSwitchingTo )
 		return false;
 
 	StopGuiding();
+	KillLaserDot();
 	return BaseClass::Holster( pSwitchingTo );
 }
 
@@ -1856,6 +1869,8 @@ void CWeaponRPG::StartGuiding( void )
 
 	CreateLaserPointer();
 	StartLaserEffects();
+
+	m_hLaserDot->TurnOn();
 }
 
 //-----------------------------------------------------------------------------
@@ -1868,14 +1883,6 @@ void CWeaponRPG::StopGuiding( void )
 	WeaponSound( SPECIAL2 );
 
 	StopLaserEffects();
-
-	// Kill the dot completely
-	if ( m_hLaserDot != NULL )
-	{
-		m_hLaserDot->TurnOff();
-		UTIL_Remove( m_hLaserDot );
-		m_hLaserDot = NULL;
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1899,6 +1906,7 @@ void CWeaponRPG::ToggleGuiding( void )
 void CWeaponRPG::Drop( const Vector &vecVelocity )
 {
 	StopGuiding();
+	KillLaserDot();
 
 	BaseClass::Drop( vecVelocity );
 }
@@ -1984,13 +1992,27 @@ void CWeaponRPG::CreateLaserPointer( void )
 }
 
 //-----------------------------------------------------------------------------
+void CWeaponRPG::KillLaserDot()
+{
+	// Kill the dot completely
+	if (m_hLaserDot != NULL) {
+		m_hLaserDot->TurnOff();
+		UTIL_Remove(m_hLaserDot);
+		m_hLaserDot = NULL;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CWeaponRPG::NotifyRocketDied( void )
+void CWeaponRPG::NotifyRocketDied(CMissile * missile)
 {
-	m_hMissile = NULL;
+	// only remove matching missile
+	if (missile == m_hMissile) {
+		m_hMissile = NULL;
 
-	Reload();
+		Reload();
+	}
 }
 
 //-----------------------------------------------------------------------------

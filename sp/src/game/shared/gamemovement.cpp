@@ -2219,7 +2219,7 @@ static ConVar bla_pogo("bla_pogo", "1",
 					   "the need for external scripts like AutoHotkey.");
 static ConVar bla_movement("bla_movement", "2",
 						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
-						   "Set movement physics.\n0: ABH, 1: bunny-hopping, 2: mixed");
+						   "Set movement physics.\n0: ABH, 1: bunny-hopping, 2: mixed, 3: no boost");
 bool CGameMovement::CheckJumpButton( void )
 {
 	if (player->pl.deadflag)
@@ -2340,24 +2340,16 @@ bool CGameMovement::CheckJumpButton( void )
 		int iMovement;
 
 		iMovement = bla_movement.GetInt();
-		if (iMovement < 0 || iMovement > 2)
+		if (iMovement < 0 || iMovement > 3)
 			iMovement = 0;
-
-		if (iMovement == 2) {
-			if (mv->m_flForwardMove < 0.0f) {
-				iMovement = 0;
-			} else {
-				iMovement = 1;
-			}
-		}
 
 		if (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
 			flBoost = 0.5f;
 		else
 			flBoost = 0.1f;
 
-		if (iMovement == 0) // ABH
-		{
+		if (iMovement == 0) { // ABH
+
 			// We give a certain percentage of the current forward movement as 
 			// a bonus to the jump speed.  That bonus is clipped to not 
 			// accumulate over time.
@@ -2374,13 +2366,40 @@ bool CGameMovement::CheckJumpButton( void )
 				flSpeedAddition *= -1.0f;
 
 			vecForward *= flSpeedAddition;
+
+		} else if (iMovement == 1) { // good ol' bunny-hopping
+
+			float flSpeedAddition = mv->m_flForwardMove * flBoost;
+
+			vecForward.x *= flSpeedAddition;
+			vecForward.y *= flSpeedAddition;
+
+		} else if (iMovement == 2) { // mixed movement - whichever is faster wins :)
+			Vector velocity_bhop;
+			
+			float flSpeedAddition = mv->m_flForwardMove * flBoost;
+
+			VectorMA(mv->m_vecVelocity, flSpeedAddition, vecForward, velocity_bhop);
+
+			flSpeedAddition = fabsf(flSpeedAddition);
+
+			float flMaxSpeed = mv->m_flMaxSpeed * (1.0f + flBoost);
+			float flNewSpeed = flSpeedAddition + mv->m_vecVelocity.Length2D();
+
+			if (flNewSpeed > flMaxSpeed)
+				flSpeedAddition -= flNewSpeed - flMaxSpeed;
+
+			if (mv->m_flForwardMove < 0.0f)
+				flSpeedAddition *= -1.0f;
+
+			VectorMA(mv->m_vecVelocity, flSpeedAddition, vecForward, mv->m_vecVelocity);
+
+			if (mv->m_vecVelocity.Length2DSqr() < velocity_bhop.Length2DSqr()) {
+				mv->m_vecVelocity = velocity_bhop;
+			}
+		} else { // no boost - use sv_airaccelerate :P
+			// Nothing
 		}
-		else // good ol' bunny-hopping
-		{
-			for (int iAxis = 0; iAxis < 2 ; iAxis++)
-				vecForward[iAxis] *= (mv->m_flForwardMove * flBoost);
-		}
-		VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
 	}
 #endif
 

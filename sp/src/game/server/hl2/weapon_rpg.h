@@ -210,13 +210,14 @@ public:
 	void	ToggleGuiding( void );
 	bool	IsGuiding( void );
 
-	void	NotifyRocketDied( void );
+	void	NotifyRocketDied( CMissile * missile );
 
 	bool	HasAnyAmmo( void );
 
 	void	SuppressGuiding( bool state = true );
 
 	void	CreateLaserPointer( void );
+	void    KillLaserDot();
 	void	UpdateLaserPosition( Vector vecMuzzlePos = vec3_origin, Vector vecEndPos = vec3_origin );
 	Vector	GetLaserPosition( void );
 	void	StartLaserEffects( void );
