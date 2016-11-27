@@ -30,6 +30,7 @@ public:
 		m_ftTimer = CFastTimer(); // CFastTimer has no reset method.
 		m_bIsRunning = false;
 
+#if 0
 		// Make sure the maps directory is there (you never know...).
 		filesystem->CreateDirHierarchy("maps", "MOD");
 
@@ -49,7 +50,7 @@ public:
 			delete[] pszRecord;
 		}
 		delete[] pszPath;
-
+#endif
 		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 		if (!pPlayer)
 			return;
@@ -148,6 +149,7 @@ private:
 
 	void WriteMapFile()
 	{
+#if 0
 		char *pszPath = GetMapFilePath();
 		FileHandle_t fh = filesystem->Open(pszPath, "w", "MOD");
 		if (fh)
@@ -160,6 +162,7 @@ private:
 			filesystem->Close(fh);
 		}
 		delete[] pszPath;
+#endif
 	}
 
 	// Caller is responsible for delete[]'ing the array.
