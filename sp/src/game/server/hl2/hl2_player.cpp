@@ -638,6 +638,7 @@ void CHL2_Player::PreThink(void)
 	HandleArmorReduction();
 #endif
 
+#if 0
 	if( sv_stickysprint.GetBool() && m_bIsAutoSprinting )
 	{
 		// If we're ducked and not in the air
@@ -667,6 +668,7 @@ void CHL2_Player::PreThink(void)
 			StopSprinting();
 		}
 	}
+#endif
 
 	VPROF_SCOPE_END();
 
