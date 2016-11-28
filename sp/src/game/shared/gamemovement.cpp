@@ -1376,6 +1376,89 @@ void CGameMovement::WaterMove( void )
 }
 
 //-----------------------------------------------------------------------------
+void CGameMovement::FlyStepMove(Vector &vecDestination, trace_t &trace)
+{
+	Vector vecEndPos;
+	VectorCopy(vecDestination, vecEndPos);
+
+	// Try sliding forward both on ground and up 16 pixels
+	//  take the move that goes farthest
+	Vector vecPos, vecVel;
+	VectorCopy(mv->GetAbsOrigin(), vecPos);
+	VectorCopy(mv->m_vecVelocity, vecVel);
+
+	// Slide move down.
+	TryPlayerMove(&vecEndPos, &trace);
+
+	// Down results.
+	Vector vecDownPos, vecDownVel;
+	VectorCopy(mv->GetAbsOrigin(), vecDownPos);
+	VectorCopy(mv->m_vecVelocity, vecDownVel);
+
+	// Reset original values.
+	mv->SetAbsOrigin(vecPos);
+	VectorCopy(vecVel, mv->m_vecVelocity);
+
+	// Move up a stair height.
+	VectorCopy(mv->GetAbsOrigin(), vecEndPos);
+	if (player->m_Local.m_bAllowAutoMovement) {
+		vecEndPos.z += 3.0f + DIST_EPSILON;
+	}
+
+	TracePlayerBBox(mv->GetAbsOrigin(), vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace);
+	if (!trace.startsolid && !trace.allsolid) {
+		mv->SetAbsOrigin(trace.endpos);
+	}
+
+	// Slide move up.
+	TryPlayerMove();
+
+	// Move down a stair (attempt to).
+	VectorCopy(mv->GetAbsOrigin(), vecEndPos);
+	if (player->m_Local.m_bAllowAutoMovement) {
+		vecEndPos.z -= 3.0f + DIST_EPSILON;
+	}
+
+	TracePlayerBBox(mv->GetAbsOrigin(), vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace);
+
+	// If we are not on the ground any more then use the original movement attempt.
+	if (trace.plane.normal[2] < 0.7) {
+		mv->SetAbsOrigin(vecDownPos);
+		VectorCopy(vecDownVel, mv->m_vecVelocity);
+		float flStepDist = mv->GetAbsOrigin().z - vecPos.z;
+		if (flStepDist > 0.0f) {
+			mv->m_outStepHeight += flStepDist;
+		}
+		return;
+	}
+
+	// If the trace ended up in empty space, copy the end over to the origin.
+	if (!trace.startsolid && !trace.allsolid) {
+		mv->SetAbsOrigin(trace.endpos);
+	}
+
+	// Copy this origin to up.
+	Vector vecUpPos;
+	VectorCopy(mv->GetAbsOrigin(), vecUpPos);
+
+	// decide which one went farther
+	float flDownDist = (vecDownPos.x - vecPos.x) * (vecDownPos.x - vecPos.x) + (vecDownPos.y - vecPos.y) * (vecDownPos.y - vecPos.y);
+	float flUpDist = (vecUpPos.x - vecPos.x) * (vecUpPos.x - vecPos.x) + (vecUpPos.y - vecPos.y) * (vecUpPos.y - vecPos.y);
+	if (flDownDist > flUpDist) {
+		mv->SetAbsOrigin(vecDownPos);
+		VectorCopy(vecDownVel, mv->m_vecVelocity);
+	} else {
+		// copy z value from slide move
+		mv->m_vecVelocity.z = vecDownVel.z;
+	}
+
+	float flStepDist = mv->GetAbsOrigin().z - vecPos.z;
+	if (flStepDist > 0) {
+		mv->m_outStepHeight += flStepDist;
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Does the basic move attempting to climb up step heights.  It uses
 //          the mv->GetAbsOrigin() and mv->m_vecVelocity.  It returns a new
 //          new mv->GetAbsOrigin(), mv->m_vecVelocity, and mv->m_outStepHeight.
@@ -1619,6 +1702,7 @@ void CGameMovement::AirMove( void )
 	float		fmove, smove;
 	Vector		wishdir;
 	float		wishspeed;
+	trace_t	pm;
 	Vector forward, right, up;
 
 	AngleVectors (mv->m_vecViewAngles, &forward, &right, &up);  // Determine movement angles
@@ -1654,7 +1738,14 @@ void CGameMovement::AirMove( void )
 	// Add in any base velocity to the current velocity.
 	VectorAdd(mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
 
-	TryPlayerMove();
+	Vector dest;
+	// first try just moving to the destination	
+	dest[0] = mv->GetAbsOrigin()[0] + mv->m_vecVelocity[0] * gpGlobals->frametime;
+	dest[1] = mv->GetAbsOrigin()[1] + mv->m_vecVelocity[1] * gpGlobals->frametime;
+	dest[2] = mv->GetAbsOrigin()[2];
+
+	FlyStepMove(dest, pm);
+	//TryPlayerMove();
 
 	// Now pull the base velocity back out.   Base velocity is set if you are on a moving object, like a conveyor (or maybe another monster?)
 	VectorSubtract( mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
@@ -2367,12 +2458,16 @@ bool CGameMovement::CheckJumpButton( void )
 
 			vecForward *= flSpeedAddition;
 
+			VectorAdd(mv->m_vecVelocity, vecForward, mv->m_vecVelocity);
+
 		} else if (iMovement == 1) { // good ol' bunny-hopping
 
 			float flSpeedAddition = mv->m_flForwardMove * flBoost;
 
 			vecForward.x *= flSpeedAddition;
 			vecForward.y *= flSpeedAddition;
+
+			VectorAdd(mv->m_vecVelocity, vecForward, mv->m_vecVelocity);
 
 		} else if (iMovement == 2) { // mixed movement - whichever is faster wins :)
 			Vector velocity_bhop;
