@@ -245,7 +245,7 @@ protected:
 
 	virtual void	SetGroundEntity( trace_t *pm );
 
-	virtual void    FlyStepMove(Vector &vecDestination, trace_t &trace);
+	virtual void    FlyStepMove(Vector &vecDestination);
 	virtual void	StepMove( Vector &vecDestination, trace_t &trace );
 
 	// when we step on ground that's too steep, search to see if there's any ground nearby that isn't too steep
