@@ -943,34 +943,10 @@ void CHL2_Player::HandleAdmireGlovesAnimation( void )
 		m_flAdmireGlovesAnimTime = 0.0f;
 }
 
-#define HL2PLAYER_RELOADGAME_ATTACK_DELAY 1.0f
-
 void CHL2_Player::Activate( void )
 {
 	BaseClass::Activate();
 	InitSprinting();
-
-#ifdef HL2_EPISODIC
-
-	// Delay attacks by 1 second after loading a game.
-	if ( GetActiveWeapon() )
-	{
-		float flRemaining = GetActiveWeapon()->m_flNextPrimaryAttack - gpGlobals->curtime;
-
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
-		{
-			GetActiveWeapon()->m_flNextPrimaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
-		}
-
-		flRemaining = GetActiveWeapon()->m_flNextSecondaryAttack - gpGlobals->curtime;
-
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
-		{
-			GetActiveWeapon()->m_flNextSecondaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
-		}
-	}
-
-#endif
 
 	GetPlayerProxy();
 }
@@ -1104,10 +1080,8 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 void CHL2_Player::Spawn(void)
 {
 
-#ifndef HL2MP
-#ifndef PORTAL
+#if !defined(HL2MP) && !defined(PORTAL)
 	SetModel( "models/player.mdl" );
-#endif
 #endif
 
 	BaseClass::Spawn();
@@ -1130,9 +1104,7 @@ void CHL2_Player::Spawn(void)
 	InitSprinting();
 
 	// Setup our flashlight values
-#ifdef HL2_EPISODIC
 	m_HL2Local.m_flFlashBattery = 100.0f;
-#endif 
 
 	GetPlayerProxy();
 
@@ -1143,9 +1115,7 @@ void CHL2_Player::Spawn(void)
 //-----------------------------------------------------------------------------
 void CHL2_Player::UpdateLocatorPosition( const Vector &vecPosition )
 {
-#ifdef HL2_EPISODIC
 	m_HL2Local.m_vecLocatorOrigin = vecPosition;
-#endif//HL2_EPISODIC 
 }
 
 //-----------------------------------------------------------------------------
@@ -3256,7 +3226,6 @@ void CHL2_Player::UpdateClientData( void )
 	}
 
 	// Update Flashlight
-#ifdef HL2_EPISODIC
 	if ( Flashlight_UseLegacyVersion() == false )
 	{
 		if ( FlashlightIsOn() && sv_infinite_aux_power.GetBool() == false )
@@ -3281,7 +3250,6 @@ void CHL2_Player::UpdateClientData( void )
 	{
 		m_HL2Local.m_flFlashBattery = -1.0f;
 	}
-#endif // HL2_EPISODIC
 
 	BaseClass::UpdateClientData();
 }
