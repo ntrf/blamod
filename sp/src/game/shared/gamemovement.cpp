@@ -3059,6 +3059,9 @@ const char *DescribeAxis( int axis );
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+ConVar bla_velocity_limit("bla_velocity_limit", "0", FCVAR_REPLICATED | FCVAR_ARCHIVE | FCVAR_DEMO,
+						  "Describes how velocity limiter works:\n 0 - cylinder - X & Y are limited combined, Z separately\n 1 - cube - X, Y and Z will be limited seperately");
+
 void CGameMovement::CheckVelocity( void )
 {
 	int i;
@@ -3104,13 +3107,25 @@ void CGameMovement::CheckVelocity( void )
 		float x = mv->m_vecVelocity.x;
 		float y = mv->m_vecVelocity.y;
 
-		float mag = x * x + y * y;
+		if (bla_velocity_limit.GetInt() == 0) {
 
-		if (mag > 0 && mag > maxvel * maxvel) {
-			DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+			float mag = x * x + y * y;
 
-			mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
-			mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
+			if (mag > 0 && mag > maxvel * maxvel) {
+				DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+
+				mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
+				mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
+			}
+		} else {
+			if (x > maxvel)
+				mv->m_vecVelocity.x = maxvel;
+			else if (x < -maxvel)
+				mv->m_vecVelocity.x = -maxvel;
+			if (y > maxvel)
+				mv->m_vecVelocity.y = maxvel;
+			else if (y < -maxvel)
+				mv->m_vecVelocity.y = -maxvel;
 		}
 	}
 }
