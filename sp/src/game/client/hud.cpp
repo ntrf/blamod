@@ -374,6 +374,15 @@ int	CHudElement::GetRenderGroupPriority( void )
 	return 0;
 }
 
+
+///
+/// Returns hud color, that is tinted to user's taste
+///
+Color CHudElement::TintUserColor(Color x)
+{
+	return x;
+}
+
 CHud gHUD;  // global HUD object
 
 DECLARE_MESSAGE(gHUD, ResetHUD);

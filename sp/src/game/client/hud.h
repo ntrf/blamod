@@ -174,6 +174,8 @@ public:
 	Color						m_clrCaution;
 	Color						m_clrYellowish;
 
+	Color						m_clrUserTint;
+
 	CUtlVector< CHudElement * >	m_HudList;
 
 private:

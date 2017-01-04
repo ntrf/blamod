@@ -41,12 +41,24 @@ Scheme
 		"SelectionEmptyBoxBg" 	"0 0 0 180"
 		"SelectionBoxBg" 		"0 0 0 180"
 		"SelectionSelectedBoxBg" "40 40 40 180"
+		
+		// aux power
+		"AuxPowerColorPositive"         "255 255 245 255"
+		"AuxPowerColorNegative"         "255 48 0 255"
+
+
+		// squad indicator
+		"SquadPanelColorPositive"         "255 255 245 255"
+		"SquadPanelColorPositiveAlpha"    "255 255 245 0"
+		"SquadPanelColorNegative"         "255 48 0 255"
+		"SquadPanelColorNegativeAlpha"    "255 48 0 0"
+
 
 		"ZoomReticleColor"	"250 255 240 200"
 
 		// HL1-style HUD colors
 		"Yellowish"			"255 160 0 255"
-		"Normal"			"255 208 64 255"
+		"Normal"			"255 255 245 255"
 		"Caution"			"255 48 0 255"
 
 		// HL1-style HUD colors

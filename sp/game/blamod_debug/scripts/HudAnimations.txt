@@ -102,19 +102,19 @@ event SuitAuxPowerNotMax
 {
 	// show suit power
 	Animate HudSuitPower BgColor		"BgColor"		Linear 0.0 0.4
-	Animate HudSuitPower AuxPowerColor	"255 220 0 220"		Linear 0.0 0.4
+	Animate HudSuitPower AuxPowerColor	"AuxPowerColorPositive"		Linear 0.0 0.4
 }
 
 event SuitAuxPowerDecreasedBelow25
 {
 	// make color red
-	Animate HudSuitPower AuxPowerColor	"255 0 0 220"		Linear 0.0 0.4
+	Animate HudSuitPower AuxPowerColor	"AuxPowerColorNegative"		Linear 0.0 0.4
 }
 
 event SuitAuxPowerIncreasedAbove25
 {
 	// make colr bright
-	Animate HudSuitPower AuxPowerColor	"255 220 0 220"		Linear 0.0 0.4
+	Animate HudSuitPower AuxPowerColor	"AuxPowerColorPositive"		Linear 0.0 0.4
 }
 
 event SuitAuxPowerNoItemsActive
