@@ -1376,8 +1376,7 @@ void CGameMovement::WaterMove( void )
 }
 
 //-----------------------------------------------------------------------------
-
-ConVar bla_displacement_stepsize("bla_displacement_stepsize", "3.0", FCVAR_REPLICATED);
+ConVar bla_displacement_stepsize("bla_displacement_stepsize", "1.0", FCVAR_REPLICATED);
 
 void CGameMovement::FlyStepMove(Vector &vecDestination)
 {
@@ -1430,17 +1429,18 @@ void CGameMovement::FlyStepMove(Vector &vecDestination)
 		TracePlayerBBox(mv->GetAbsOrigin(), vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace);
 
 		// If we are not on the ground any more then use the original movement attempt.
-		/*
-			if (trace.plane.normal[2] < 0.7) {
+#if 0
+		if (trace.plane.normal[2] < 0.7) {
 			mv->SetAbsOrigin(vecDownPos);
 			VectorCopy(vecDownVel, mv->m_vecVelocity);
 			float flStepDist = mv->GetAbsOrigin().z - vecPos.z;
 			if (flStepDist > 0.0f) {
-			mv->m_outStepHeight += flStepDist;
+				mv->m_outStepHeight += flStepDist;
 			}
 			return;
-			}
-			*/
+		}
+#endif
+
 		// If the trace ended up in empty space, copy the end over to the origin.
 		if (!trace.startsolid && !trace.allsolid) {
 			mv->SetAbsOrigin(trace.endpos);
@@ -3097,7 +3097,7 @@ void CGameMovement::CheckVelocity( void )
 		}
 
 		if (mv->m_vecVelocity.z > maxvel) {
-			DevMsg(1, "PM  Got a velocity too high on Z\n");
+			//DevMsg(1, "PM  Got a velocity too high on Z\n");
 			mv->m_vecVelocity.z = maxvel;
 		} else if (mv->m_vecVelocity.z < -maxfall) {
 			//DevMsg(1, "PM  Got a velocity too low on Z\n");
@@ -3112,7 +3112,7 @@ void CGameMovement::CheckVelocity( void )
 			float mag = x * x + y * y;
 
 			if (mag > 0 && mag > maxvel * maxvel) {
-				DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+				//DevMsg(1, "PM  Got a velocity too high on X & Y\n");
 
 				mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
 				mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
