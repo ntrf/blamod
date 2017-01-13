@@ -374,13 +374,25 @@ int	CHudElement::GetRenderGroupPriority( void )
 	return 0;
 }
 
+/*
+
+Tinting system:
+
+Red channel - multiplied by Red color
+Green channel - multiplied by hud tint
+Blue channel - multiplied by white
+
+*/
+
+static Color RedTint{ 255, 40, 0 };
+static Color HudTint{ 255, 186, 213 };
 
 ///
 /// Returns hud color, that is tinted to user's taste
 ///
-Color CHudElement::TintUserColor(Color x)
+Color CHudElement::TintUserColor(Color input)
 {
-	return x;
+	return input;
 }
 
 CHud gHUD;  // global HUD object
@@ -1205,4 +1217,3 @@ CON_COMMAND_F( testhudanim, "Test a hud element animation.\n\tArguments: <anim n
 
 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( args[1] );
 }
-
