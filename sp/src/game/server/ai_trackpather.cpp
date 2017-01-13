@@ -602,6 +602,9 @@ float CAI_TrackPather::ComputeDistanceToLeadingPosition()
 //-----------------------------------------------------------------------------
 float CAI_TrackPather::ComputeDistanceToTargetPosition()
 {
+	if (!m_pTargetNearestPath)
+		return 0.0f;
+
 	Assert( m_pTargetNearestPath );
 
 	CPathTrack *pDest = m_bMovingForward ? m_pTargetNearestPath.Get() : m_pTargetNearestPath->GetPrevious();
@@ -793,8 +796,6 @@ CPathTrack *CAI_TrackPather::FindClosestPointOnPath( CPathTrack *pPath,
 	// If the path node we're trying to use is not valid, then we're done.
 	if ( CPathTrack::ValidPath( pPath ) == NULL )
 	{
-		//FIXME: Implement
-		Assert(0);
 		return NULL;
 	}
 
@@ -1025,6 +1026,9 @@ void CAI_TrackPather::UpdateCurrentTargetLeading()
 {
 	bool bRestingAtDest = false;
 	CPathTrack *pAdjustedDest;
+
+	if (!m_pCurrentPathTarget)
+		return;
 
 	// Find the point along the line that we're closest to.
 	const Vector &vecTarget = m_pCurrentPathTarget->GetAbsOrigin();
@@ -1519,7 +1523,7 @@ bool CAI_TrackPather::IsForwardAlongPath( CPathTrack *pPath, CPathTrack *pPathTe
 	float flForwardDist = ComputePathDistance( pPath, pPathTest, true );
 	float flReverseDist = ComputePathDistance( pPath, pPathTest, false );
 
-	Assert( ( flForwardDist != FLT_MAX ) || ( flReverseDist != FLT_MAX ) );
+	//Assert( ( flForwardDist != FLT_MAX ) || ( flReverseDist != FLT_MAX ) );
 	return ( flForwardDist <= flReverseDist );
 }
 
