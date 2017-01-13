@@ -3060,7 +3060,7 @@ const char *DescribeAxis( int axis );
 // Purpose: 
 //-----------------------------------------------------------------------------
 ConVar bla_velocity_limit("bla_velocity_limit", "0", FCVAR_REPLICATED | FCVAR_ARCHIVE | FCVAR_DEMO,
-						  "Describes how velocity limiter works:\n 0 - cylinder - X & Y are limited combined, Z separately\n 1 - cube - X, Y and Z will be limited seperately");
+						  "Describes how velocity limiter works:\n 0 - cube - X, Y and Z will be limited seperately\n 1 - cylinder - X & Y are limited combined, Z separately");
 
 void CGameMovement::CheckVelocity( void )
 {
@@ -3107,7 +3107,7 @@ void CGameMovement::CheckVelocity( void )
 		float x = mv->m_vecVelocity.x;
 		float y = mv->m_vecVelocity.y;
 
-		if (bla_velocity_limit.GetInt() == 0) {
+		if (bla_velocity_limit.GetInt() == 1) {
 
 			float mag = x * x + y * y;
 
