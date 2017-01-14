@@ -37,6 +37,8 @@ public:
 	float		GetRange( void )		{	return	CROWBAR_RANGE;	}
 	float		GetFireRate( void )		{	return	CROWBAR_REFIRE;	}
 
+	void Equip(CBaseCombatCharacter *pOwner) override;
+
 	void		AddViewKick( void );
 	float		GetDamageForActivity( Activity hitActivity );
 

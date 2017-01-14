@@ -201,3 +201,18 @@ void CWeaponCrowbar::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 		break;
 	}
 }
+
+ConVar bla_giveubigun("bla_giveubigun", "0", FCVAR_ARCHIVE | FCVAR_GAMEDLL | FCVAR_DEMO, "Give player ubigun with crowbar");
+
+void CWeaponCrowbar::Equip(CBaseCombatCharacter *pOwner)
+{
+	BaseClass::Equip(pOwner);
+
+	if (!pOwner->IsPlayer()) return;
+
+	CBasePlayer * player = (CBasePlayer *)pOwner;
+
+	if (bla_giveubigun.GetInt() > 0) {
+		player->GiveNamedItem("weapon_physcannon");
+	}
+}
