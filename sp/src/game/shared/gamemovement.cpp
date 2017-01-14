@@ -3059,7 +3059,7 @@ const char *DescribeAxis( int axis );
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-ConVar bla_velocity_limit("bla_velocity_limit", "0", FCVAR_REPLICATED | FCVAR_ARCHIVE | FCVAR_DEMO,
+ConVar bla_velocity_limit("bla_velocity_limit", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE | FCVAR_DEMO,
 						  "Describes how velocity limiter works:\n 0 - cube - X, Y and Z will be limited seperately\n 1 - cylinder - X & Y are limited combined, Z separately");
 
 void CGameMovement::CheckVelocity( void )
