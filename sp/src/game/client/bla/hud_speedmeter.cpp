@@ -34,7 +34,8 @@ public:
 
     bool ShouldDraw() override
     {
-        return bla_speedmeter.GetInt() > 0 && CHudElement::ShouldDraw();
+        return (bla_speedmeter.GetInt() > 0) &&
+			CHudElement::ShouldDraw();
     }
 
 	void OnThink() override;
