@@ -939,6 +939,7 @@
     <ClInclude Include="toolframework_client.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bla\hud_runnername.cpp" />
     <ClCompile Include="bla\hud_speedmeter.cpp" />
     <ClCompile Include="bla\hud_timer.cpp" />
     <ClCompile Include="hl2\c_prop_gravity_ball.cpp" />

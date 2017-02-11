@@ -1043,7 +1043,7 @@ bool CBasePlayer::ShouldTakeDamageInCommentaryMode( const CTakeDamageInfo &input
 }
 
 static ConVar bla_punchangle("bla_punchangle", "0",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+							 FCVAR_REPLICATED | FCVAR_ARCHIVE,
 							 "Apply punch effect to view angle when player "
 							 "takes damage.");
 int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
@@ -1400,7 +1400,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 // Input  : &info - 
 //-----------------------------------------------------------------------------
 ConVar bla_damagefx("bla_damagefx", "0", 
-				    FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+				    FCVAR_REPLICATED | FCVAR_ARCHIVE,
 				    "Add effects like ear ringing when the player "
 				    "takes damage caused by an explosion.");
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )

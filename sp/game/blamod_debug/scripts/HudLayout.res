@@ -39,19 +39,40 @@
 	  "fieldName" "HudSpeedMeter"
 		"xpos"	"c-57"
 		"ypos"	"432"
-		"wide"	"128"
+		"wide"	"114"
 		"tall"  "36"
 		"visible" "1"
 		"enabled" "1"
 
 		"PaintBackgroundType"	"2"
 		
-		"text_xpos" "8"
+		"text_xpos" "12"
 		"text_ypos" "20"
-		"digit_xpos" "40"
+		"digit_xpos" "35"
 		"digit_ypos" "2"
 		"digit2_xpos" "98"
 		"digit2_ypos" "16"
+	}
+	HudName
+	{
+		"fieldName" "HudName"
+		"xpos"	"280"
+		"ypos"	"432"
+		"wide"	"200"
+		"tall"  "36"
+		"visible" "1"
+		"enabled" "1"
+
+		"PaintBackgroundType"	"2"
+
+		"text_xpos" "8"
+		"text_ypos" "20"
+		"digit_xpos" "8"
+		"digit_ypos" "4"
+		"digit2_xpos" "98"
+		"digit2_ypos" "16"
+		
+		"LargeFont" "RunnerNameLabel"
 	}
 	HudTimer
 	{

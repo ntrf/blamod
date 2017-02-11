@@ -16,10 +16,10 @@ using namespace vgui;
 
 #include "vgui_helpers.h"
 
-#define BUFSIZE (sizeof("00:00.0000")+1)
+#define BUFSIZE (18)
 
-static ConVar bla_timer("bla_timer", "0",
-						FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_DEMO, 
+static ConVar bla_timer("bla_hud_timer", "0",
+						FCVAR_CLIENTDLL | FCVAR_ARCHIVE, 
 						"Turn the timer display on/off");
 
 class CHudTimer : public CHudElement, public Panel

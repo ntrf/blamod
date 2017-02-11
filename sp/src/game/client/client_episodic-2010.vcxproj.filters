@@ -1904,14 +1904,8 @@
     <ClInclude Include="toolframework_client.h">
       <Filter>Tool Framework</Filter>
     </ClInclude>
-    <ClInclude Include="BlamodUI\button_mainmenu.h">
-      <Filter>BlamodUI</Filter>
-    </ClInclude>
     <ClInclude Include="hl2\c_prop_gravity_ball.h">
       <Filter>Source Files\HL2 DLL</Filter>
-    </ClInclude>
-    <ClInclude Include="blamod_ui.h">
-      <Filter>BlamodUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3441,6 +3435,9 @@
     </ClCompile>
     <ClCompile Include="hl2\c_prop_gravity_ball.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="bla\hud_runnername.cpp">
+      <Filter>Blamod</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

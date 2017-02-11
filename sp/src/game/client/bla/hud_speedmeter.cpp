@@ -9,8 +9,8 @@
 
 using namespace vgui;
 
-static ConVar bla_speedmeter("bla_speedmeter", "1", 
-                             FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_DEMO, 
+static ConVar bla_hud_speedmeter("bla_hud_speedmeter", "1",
+                             FCVAR_CLIENTDLL | FCVAR_ARCHIVE,
                              "Turn the speedmeter on/off\nSet it to 2 to include vertical speed");
 
 class CHudSpeedMeter : public CHudElement, public CHudNumericDisplay
@@ -34,7 +34,8 @@ public:
 
     bool ShouldDraw() override
     {
-        return bla_speedmeter.GetInt() > 0 && CHudElement::ShouldDraw();
+		return (bla_hud_speedmeter.GetInt() > 0) &&
+			CHudElement::ShouldDraw();
     }
 
 	void OnThink() override;
@@ -73,7 +74,7 @@ void CHudSpeedMeter::OnThink()
 		tick_pos += (gpGlobals->frametime * velocity.z) / 100.0f;
 		verticalVelocity = velocity.z;
 
-		if (bla_speedmeter.GetInt() < 2) {
+		if (bla_hud_speedmeter.GetInt() < 2) {
 			velocity.z = 0;
 		}
 	}
