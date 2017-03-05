@@ -19,6 +19,21 @@ include_directories(
 	../../vgui2/controls
 )
 
+link_directories(
+	../../lib/public
+)
+
+# Remove later
+link_directories(
+	../../lib/public/2013
+)
+
+if(MSVC)
+	# D'oh! Wtf, Valve?
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:libc /NODEFAULTLIB:libcd /NODEFAULTLIB:libcmt /GF")
+endif()
+
+
 ### Need to figure out what is realy needed
 
 add_definitions(
@@ -32,6 +47,7 @@ add_definitions(
 	-DVERSION_SAFE_STEAM_API_INTERFACES
 	-DRAD_TELEMETRY_DISABLED
 	-DNO_STRING_T
+	-D_ITERATOR_DEBUG_LEVEL=0
 )
 
 # WIN32
@@ -1188,4 +1204,27 @@ add_library(client SHARED
 	../../public/tools/bonelist.cpp
 	entity_client_tools.cpp
 	toolframework_client.cpp
+)
+
+target_link_libraries(client 
+	tier1
+
+	tier0
+	tier2
+	tier3
+	mathlib
+	dmxloader
+	particles
+	vgui_controls
+	matsys_controls
+	vtf
+	vstdlib
+	steam_api
+	choreoobjects
+	bitmap
+)
+
+# Need to get rid on this later!
+target_link_libraries(client 
+	libprotobuf
 )

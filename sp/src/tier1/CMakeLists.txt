@@ -113,3 +113,10 @@ add_library(tier1 STATIC
 	snappy-internal.h
 	snappy-stubs-internal.h
 )
+
+if (MSVC)
+	target_link_libraries(tier1
+		"Rpcrt4.lib" "odbccp32.lib"
+	)
+endif()
+
