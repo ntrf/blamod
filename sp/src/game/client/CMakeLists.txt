@@ -37,7 +37,6 @@ endif()
 ### Need to figure out what is realy needed
 
 add_definitions(
-	-D_USRDLL
 	-DCLIENT_DLL
 	-DHL2_CLIENT_DLL
 	-DHL2_EPISODIC
@@ -47,8 +46,14 @@ add_definitions(
 	-DVERSION_SAFE_STEAM_API_INTERFACES
 	-DRAD_TELEMETRY_DISABLED
 	-DNO_STRING_T
-	-D_ITERATOR_DEBUG_LEVEL=0
 )
+
+if(WIN32)
+	add_definitions(
+		-D_USRDLL
+		-D_ITERATOR_DEBUG_LEVEL=0
+	)
+endif()
 
 # WIN32
 # _WIN32
@@ -75,7 +80,6 @@ add_definitions(
 # HL2_EPISODIC
 # VPCGAMECAPS=VALVE
 # PROJECTDIR=D:/dev/games/rel/singleplayer/src/game/client
-# _DLL_EXT=.dll
 # VPCGAME=valve
 
 # ../../lib/public/bitmap.lib

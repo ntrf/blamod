@@ -26,8 +26,6 @@ endif()
 
 add_definitions(
 	-D_HAS_ITERATOR_DEBUGGING=0
-	-D_WIN32
-	-D_USRDLL
 	-DRAD_TELEMETRY_DISABLED
 	-DCOMPILER_MSVC32
 	# -DBINK_VIDEO
@@ -41,6 +39,15 @@ add_definitions(
 	-DHL2_EPISODIC
 	-DUSES_SAVERESTORE
 )
+
+if(WIN32)
+	add_definitions(
+		-DWIN32
+		-D_WIN32
+		-D_USRDLL
+		-D_ITERATOR_DEBUG_LEVEL=0
+	)
+endif()
 
 add_library(server SHARED
 	../../public/mathlib/amd3dx.h
