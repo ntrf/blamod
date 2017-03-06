@@ -96,7 +96,16 @@ endif()
 # ../../lib/public/vstdlib.lib
 # ../../lib/public/vtf.lib
 
+# Blamod variables framework
+set(BLAMOD_FW_FILES
+	../blamod/blamodvar.cpp
+	../blamod/blamodvar.h
+)
+source_group(Blamod FILES ${BLAMOD_FW_FILES})
+
 add_library(client SHARED
+
+	${BLAMOD_FW_FILES}
 
     ../shared/activitylist.h
     ../shared/ai_activity.h
@@ -1231,4 +1240,10 @@ target_link_libraries(client
 # Need to get rid on this later!
 target_link_libraries(client 
 	libprotobuf
+)
+
+install(
+	TARGETS client 
+	RUNTIME
+	DESTINATION bin	
 )

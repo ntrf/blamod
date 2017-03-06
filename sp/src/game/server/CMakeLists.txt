@@ -49,6 +49,13 @@ if(WIN32)
 	)
 endif()
 
+# Blamod variables framework
+set(BLAMOD_FW_FILES
+	../blamod/blamodvar.cpp
+	../blamod/blamodvar.h
+)
+source_group(Blamod FILES ${BLAMOD_FW_FILES})
+
 add_library(server SHARED
 	../../public/mathlib/amd3dx.h
 	../shared/ammodef.h
@@ -1193,6 +1200,9 @@ add_library(server SHARED
 	../shared/usermessages.cpp
 	entity_tools_server.cpp
 	toolframework_server.cpp
+
+
+	${BLAMOD_FW_FILES}
 )
 
 target_link_libraries(server
@@ -1207,4 +1217,10 @@ target_link_libraries(server
 	tier2
 	tier3
 	vstdlib
+)
+
+install(
+	TARGETS server 
+	RUNTIME
+	DESTINATION bin
 )
