@@ -440,8 +440,8 @@ void CWeaponShotgun::DryFire( void )
 //
 //-----------------------------------------------------------------------------
 static ConVar bla_shotgunblowback(
-	"bla_shotgunblowback", "80.0", 
-	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
+	"blamod_shotgunblowback", "80.0", 
+	FCVAR_REPLICATED,
 	"Amount of force to apply in opposite look direction of the player after "
 	"firing the shotgun.");
 void CWeaponShotgun::PrimaryAttack( void )

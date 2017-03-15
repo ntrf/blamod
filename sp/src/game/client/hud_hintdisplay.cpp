@@ -21,7 +21,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar bla_hudhints("bla_hudhints", "0", 
+static ConVar bla_hudhints("blamod_hudhints", "0", 
                            FCVAR_CLIENTDLL | FCVAR_ARCHIVE,
                            "Display HUD hints");
 

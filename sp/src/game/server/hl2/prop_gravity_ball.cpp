@@ -39,6 +39,8 @@
 ConVar gravityball_tracelength( "gravityball_tracelength", "128" );
 ConVar gravityball_magnitude( "gravityball_magnitude", "26000.0f" );
 
+ConVar gravityball_ignorewalls("gravityball_ignorewalls", "0", FCVAR_NOTIFY);
+
 // For our ring explosion
 int s_nExplosionGBTexture = -1;
 
@@ -503,8 +505,11 @@ void CPropGravityBall::DoExplosion( )
 				forward.z /= gravityball_tracelength.GetFloat();
 
 			trace_t tr;
-			UTIL_TraceLine( start, end, (MASK_SHOT|CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr );
+			UTIL_TraceLine(start, end, (MASK_SHOT | CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr);
 			// debugoverlay->AddLineOverlay( start, end, 0,255,0, true, 18.0 );
+
+			if (!gravityball_ignorewalls.GetBool() && tr.fraction != 1.0f)
+				continue;
 
 			// Punt Non VPhysics Objects
 			if ( pEntity->GetMoveType() != MOVETYPE_VPHYSICS )

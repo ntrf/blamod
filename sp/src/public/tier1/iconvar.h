@@ -76,16 +76,6 @@ class CCommand;
 #define FCVAR_CLIENTCMD_CAN_EXECUTE	(1<<30)	// IVEngineClient::ClientCmd is allowed to execute this command. 
 											// Note: IVEngineClient::ClientCmd_Unrestricted can run any client command.
 
-// #define FCVAR_AVAILABLE			(1<<15)
-// #define FCVAR_AVAILABLE			(1<<18)
-// #define FCVAR_AVAILABLE			(1<<19)
-// #define FCVAR_AVAILABLE			(1<<20)
-// #define FCVAR_AVAILABLE			(1<<21)
-// #define FCVAR_AVAILABLE			(1<<23)
-// #define FCVAR_AVAILABLE			(1<<26)
-// #define FCVAR_AVAILABLE			(1<<27)
-// #define FCVAR_AVAILABLE			(1<<31)
-
 #define FCVAR_MATERIAL_THREAD_MASK ( FCVAR_RELOAD_MATERIALS | FCVAR_RELOAD_TEXTURES | FCVAR_MATERIAL_SYSTEM_THREAD )	
 
 //-----------------------------------------------------------------------------

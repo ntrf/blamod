@@ -4,19 +4,19 @@ project(blamod)
 
 install(
 	DIRECTORY cfg/
-	DESTINATION ./cfg
+	DESTINATION blamod/cfg
 	PATTERN "config.cfg" EXCLUDE
 )
 
 install(
 	DIRECTORY maps/
-	DESTINATION ./maps
+	DESTINATION blamod/maps
 	FILES_MATCHING PATTERN "*.bsp"
 )
 
 install(
 	DIRECTORY materials media particles resource scripts sound
-	DESTINATION .
+	DESTINATION blamod
 )
 
 install(
@@ -26,5 +26,5 @@ install(
 		gamestate.txt 
 		lights.rad 
 		maplist.txt
-	DESTINATION .
+	DESTINATION blamod
 )

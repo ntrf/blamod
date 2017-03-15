@@ -1090,7 +1090,7 @@ void CC_Nodamage_f()
 		ClientPrint(pPlayer, HUD_PRINTCONSOLE, "No damage OFF\n");
 }
 
-static ConCommand bla_nodamage("bla_nodamage", CC_Nodamage_f,
+static ConCommand bla_nodamage("blamod_nodamage", CC_Nodamage_f,
 							   "Toggle: Don't take damage (physics still "
 							   "apply)");
 
@@ -1111,7 +1111,7 @@ void CC_Infammo_f()
 }
 
 static ConCommand bla_infammo(
-	"bla_infammo", CC_Infammo_f, "Toggle: infinite ammo");
+	"blamod_infammo", CC_Infammo_f, "Toggle: infinite ammo");
 
 
 //-----------------------------------------------------------------------------
@@ -1140,7 +1140,7 @@ void CC_SetStart_f()
 	BlaTimer::timer()->SetStartPosition(TraceBrush(pPlayer));
 }
 
-static ConCommand bla_setstart("bla_setstart", CC_SetStart_f, 
+static ConCommand bla_setstart("blamod_setstart", CC_SetStart_f, 
                                "Place the start trigger for the timer at the "
                                "position the player is looking at.");
 
@@ -1156,7 +1156,7 @@ void CC_SetGoal_f()
 	BlaTimer::timer()->SetGoalPosition(TraceBrush(pPlayer));
 }
 
-static ConCommand bla_setgoal("bla_setgoal", CC_SetGoal_f, "Place the goal "
+static ConCommand bla_setgoal("blamod_setgoal", CC_SetGoal_f, "Place the goal "
                               "trigger for the timer at the position the "
                               "player is looking at.");
 

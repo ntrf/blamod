@@ -9,8 +9,8 @@
 
 using namespace vgui;
 
-static ConVar bla_speedmeter("bla_speedmeter", "1", 
-                             FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_DEMO, 
+static ConVar bla_speedmeter("blamod_speedmeter", "1", 
+                             FCVAR_CLIENTDLL | FCVAR_ARCHIVE, 
                              "Turn the speedmeter on/off\nSet it to 2 to include vertical speed");
 
 class CHudSpeedMeter : public CHudElement, public CHudNumericDisplay

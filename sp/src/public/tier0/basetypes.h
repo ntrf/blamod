@@ -19,6 +19,11 @@
 
 
 // This is a trick to get the DLL extension off the -D option on the command line.
+#ifdef _WIN32
+#  define _DLL_EXT .dll
+#else
+#  define _DLL_EXT .so
+#endif
 #define DLLExtTokenPaste(x) #x
 #define DLLExtTokenPaste2(x) DLLExtTokenPaste(x)
 #define DLL_EXT_STRING DLLExtTokenPaste2( _DLL_EXT )
