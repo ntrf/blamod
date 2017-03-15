@@ -1378,7 +1378,7 @@ void CGameMovement::WaterMove( void )
 }
 
 //-----------------------------------------------------------------------------
-ConVar bla_displacement_stepsize("bla_displacement_stepsize", "1.0", FCVAR_REPLICATED);
+ConVar bla_displacement_stepsize("blamod_displacement_stepsize", "1.0", FCVAR_REPLICATED);
 
 void CGameMovement::FlyStepMove(Vector &vecDestination)
 {
@@ -2316,12 +2316,12 @@ void CGameMovement::PlaySwimSound()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-static ConVar bla_pogo("bla_pogo", "1",
-					   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_pogo("blamod_pogo", "1",
+					   FCVAR_REPLICATED | FCVAR_ARCHIVE,
 					   "Keep jumping when jump button is down. This removes "
 					   "the need for external scripts like AutoHotkey.");
-static BlaConVar bla_movement("bla_movement", "2",
-						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_movement("blamod_movement", "2",
+						   FCVAR_REPLICATED,
 						   "Set movement physics.\n0: ABH, 1: bunny-hopping, 2: mixed, 3: no boost");
 bool CGameMovement::CheckJumpButton( void )
 {
@@ -3061,7 +3061,7 @@ const char *DescribeAxis( int axis );
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-ConVar bla_velocity_limit("bla_velocity_limit", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE | FCVAR_DEMO,
+ConVar bla_velocity_limit("blamod_velocity_limit", "1", FCVAR_REPLICATED,
 						  "Describes how velocity limiter works:\n 0 - cube - X, Y and Z will be limited seperately\n 1 - cylinder - X & Y are limited combined, Z separately");
 
 void CGameMovement::CheckVelocity( void )

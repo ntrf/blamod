@@ -155,8 +155,8 @@ static impactdamagetable_t gCappedPlayerImpactDamageTable =
 
 };
 
-ConVar bla_lagacy_flashlight("bla_lagacy_flashlight", "1",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+ConVar bla_lagacy_flashlight("blamod_lagacy_flashlight", "1",
+							 FCVAR_REPLICATED,
 							 "Set flashlight energy source.\n0: Separate, 1: AUX Power");
 
 // Flashlight utility
@@ -2549,8 +2549,8 @@ bool CHL2_Player::ShouldKeepLockedAutoaimTarget( EHANDLE hLockedTarget )
 //			bSuppressSound - 
 // Output : int
 //-----------------------------------------------------------------------------
-static ConVar bla_autowepswitch("bla_autowepswitch", "0",
-								FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_autowepswitch("blamod_autowepswitch", "0",
+								FCVAR_REPLICATED | FCVAR_ARCHIVE,
 								"Switch weapon on ammunition depletion.");
 int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 {
@@ -3125,8 +3125,8 @@ float CHL2_Player::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 //-----------------------------------------------------------------------------
 // Purpose: Force the player to drop any physics objects he's carrying
 //-----------------------------------------------------------------------------
-static ConVar bla_itemflying("bla_itemflying", "1",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_itemflying("blamod_itemflying", "1",
+							 FCVAR_REPLICATED,
 							 "Don't force the player to drop objects he is "
 							 "carrying. This allows to continuously jump on "
 							 "an object which causes the player to be boosted "

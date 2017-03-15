@@ -75,8 +75,7 @@ ConVar physconcussion_aiming("physconcussion_aiming", "1.02");
 
 ConVar physconcussion_playerspeedscale("physconcussion_playerspeedscale", "1.0");
 
-ConVar physconcussion_enable("physconcussion_enable", "0",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+ConVar physconcussion_enable("blamod_ubigun", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE,
 							 "Enables TE120 gravity gun");
 
 extern ConVar hl2_normspeed;
