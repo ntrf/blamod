@@ -46,6 +46,7 @@
 #include "gamestats.h"
 #include "filters.h"
 #include "tier0/icommandline.h"
+#include "gamevars_shared.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -457,6 +458,12 @@ void CHL2_Player::EquipSuit( bool bPlayEffects )
 	if ( bPlayEffects == true )
 	{
 		StartAdmireGlovesAnimation();
+	}
+
+	if (blamod_giveubigun.GetInt() == 2) {
+		if (!Weapon_OwnsThisType("weapon_physcannon")) {
+			GiveNamedItem("weapon_physcannon");
+		}
 	}
 }
 
@@ -1109,6 +1116,12 @@ void CHL2_Player::Spawn(void)
 	GetPlayerProxy();
 
 	SetFlashlightPowerDrainScale( 1.0f );
+
+	if (blamod_giveubigun.GetInt() == 3) {
+		if (!Weapon_OwnsThisType("weapon_physcannon")) {
+			GiveNamedItem("weapon_physcannon");
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
