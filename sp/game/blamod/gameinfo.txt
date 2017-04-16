@@ -1,8 +1,8 @@
 "GameInfo"
 {
 	game 		"Blamod Reborn"
-    gamelogo    "0"
-	title 		"BLAMOD : Reborn"
+    gamelogo    "1"
+	title 		""
 	title2		""
 
 	type		singleplayer_only
