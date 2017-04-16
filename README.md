@@ -1,5 +1,4 @@
-Blamod Reborn
-=================
+![Blamod Reborn](https://raw.githubusercontent.com/ntrf/blamod/master/images/blamod_logo.png)
 
 This is blamod - a HL2 mod geared towards speedrunning and tricking.
 
