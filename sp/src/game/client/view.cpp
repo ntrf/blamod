@@ -1059,13 +1059,13 @@ void CViewRender::SetUpOverView()
 // Purpose: Render current view into specified rectangle
 // Input  : *rect - is computed by CVideoMode_Common::GetClientViewRect()
 //-----------------------------------------------------------------------------
-void CViewRender::Render( vrect_t *rect )
+void CViewRender::Render(vrect_t *rect)
 {
 	Assert(s_DbgSetupOrigin == m_View.origin);
 	Assert(s_DbgSetupAngles == m_View.angles);
 
 	VPROF_BUDGET( "CViewRender::Render", "CViewRender::Render" );
-	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
+	tmZone(TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__);
 
 	vrect_t vr = *rect;
 
@@ -1081,7 +1081,7 @@ void CViewRender::Render( vrect_t *rect )
 
 
     // Set for console commands, etc.
-    render->SetMainView ( m_View.origin, m_View.angles );
+	render->SetMainView(m_View.origin, m_View.angles);
 
     for( StereoEye_t eEye = GetFirstEye(); eEye <= GetLastEye(); eEye = (StereoEye_t)(eEye+1) )
 	{
