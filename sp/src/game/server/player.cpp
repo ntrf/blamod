@@ -71,6 +71,7 @@
 #include "ai_speech.h"
 
 #include "bla/timer.h"
+#include "../blamod/blamodvar.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -7676,8 +7677,14 @@ void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	}
 }
 
+static BlaConVar blamod_ignore_failures("blamod_ignore_failures", "1", 0,
+										"Ignore NPC death events and other failure conditions");
+
 void CRevertSaved::InputReload( inputdata_t &inputdata )
 {
+	if (blamod_ignore_failures.GetBool())
+		return;
+
 	UTIL_ScreenFadeAll( m_clrRender, Duration(), HoldTime(), FFADE_OUT );
 
 #ifdef HL1_DLL
