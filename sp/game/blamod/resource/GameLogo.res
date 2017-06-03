@@ -7,13 +7,13 @@ Resource/GameLogo.res
 		xpos		0
 		ypos		0
 		zpos		50
-		wide		800
+		wide		845
 		tall		200
 		autoResize	1
 		pinCorner	0
 		visible		1
 		enabled		1
-		offsetX		-80
+		offsetX		-100
 		offsetY		-50
 	}
  
@@ -24,7 +24,7 @@ Resource/GameLogo.res
 		xpos		0
 		ypos		0
 		zpos		50
-		wide		800
+		wide		845
 		tall		200
 		visible		1
 		enabled		1
