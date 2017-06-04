@@ -4,6 +4,8 @@ project(Blamod)
 
 add_subdirectory(tier1)
 
+add_subdirectory(vgui2/vgui_controls)
+
 add_subdirectory(game/client)
 add_subdirectory(game/server)
 
