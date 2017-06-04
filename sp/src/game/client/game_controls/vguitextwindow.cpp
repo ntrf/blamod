@@ -101,10 +101,12 @@ CTextWindow::CTextWindow(IViewPort *pViewPort) : Frame(NULL, PANEL_INFO	)
 	SetTitleBarVisible( false );
 
 	m_pTextMessage = new TextEntry( this, "TextMessage" );
+#if 0
 #if defined( ENABLE_CHROMEHTMLWINDOW )
 	m_pHTMLMessage = new CMOTDHTML( this,"HTMLMessage" );
 #else
 	m_pHTMLMessage = NULL;
+#endif
 #endif
 	m_pTitleLabel  = new Label( this, "MessageTitle", "Message Title" );
 	m_pOK		   = new Button(this, "ok", "#PropertyDialog_OK");
@@ -421,6 +423,7 @@ void CTextWindow::ShowPanel( bool bShow )
 	}
 }
 
+#if 0
 bool CTextWindow::CMOTDHTML::OnStartRequest( const char *url, const char *target, const char *pchPostData, bool bIsRedirect )
 {
 	if ( Q_strstr( url, "steam://" ) )
@@ -428,3 +431,4 @@ bool CTextWindow::CMOTDHTML::OnStartRequest( const char *url, const char *target
 
 	return BaseClass::OnStartRequest( url, target, pchPostData, bIsRedirect );
 }
+#endif

@@ -10,7 +10,7 @@
 #include "vgui_controls/BitmapImagePanel.h"
 #include "vgui_controls/ExpandButton.h"
 #include "vgui_controls/TreeViewListControl.h"
-#include "vgui_controls/HTML.h"
+//#include "vgui_controls/HTML.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"

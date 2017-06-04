@@ -13,7 +13,7 @@
 
 #include <vgui_controls/Frame.h>
 #include <vgui_controls/Button.h>
-#include <vgui_controls/HTML.h>
+//#include <vgui_controls/HTML.h>
 
 #include <game/client/iviewport.h>
 #include "shareddefs.h"
@@ -85,6 +85,7 @@ protected:
 
 	vgui::TextEntry	*m_pTextMessage;
 	
+#if 0
 	class CMOTDHTML : public vgui::HTML
 	{
 	private:
@@ -95,6 +96,7 @@ protected:
 		virtual bool OnStartRequest( const char *url, const char *target, const char *pchPostData, bool bIsRedirect ) OVERRIDE;
 	};
 	CMOTDHTML		*m_pHTMLMessage;
+#endif
 	
 	vgui::Button	*m_pOK;
 	vgui::Label		*m_pTitleLabel;

@@ -6,12 +6,13 @@ install(
 	DIRECTORY cfg/
 	DESTINATION blamod/cfg
 	PATTERN "config.cfg" EXCLUDE
+	PATTERN "userconfig.cfg" EXCLUDE
 )
 
 install(
 	DIRECTORY maps/
 	DESTINATION blamod/maps
-	FILES_MATCHING PATTERN "*.bsp"
+	FILES_MATCHING PATTERN "sdk_*.bsp"
 )
 
 install(
