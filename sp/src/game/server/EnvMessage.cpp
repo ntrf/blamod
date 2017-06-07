@@ -231,6 +231,11 @@ void CCredits::RollOutroCredits()
 
 void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 {
+	if (Q_stricmp(gpGlobals->mapname.ToCStr(), "ep1_c17_06") == 0) {
+		engine->ChangeLevel("ep2_outland_01", NULL);
+		return;
+	}
+
 	RollOutroCredits();
 
 	// In case we save restore

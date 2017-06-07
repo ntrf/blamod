@@ -368,13 +368,14 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 			continue;
 		}
 
+#if 0
 		// blast's don't tavel into or out of water
 		if (bInWater && pEntity->GetWaterLevel() == 0)
 			continue;
 
 		if (!bInWater && pEntity->GetWaterLevel() == 3)
 			continue;
-
+#endif
 		// Check that the explosion can 'see' this entity.
 		vecSpot = pEntity->BodyTarget( vecSrc, false );
 		UTIL_TraceLine( vecSrc, vecSpot, MASK_RADIUS_DAMAGE, info.GetInflictor(), COLLISION_GROUP_NONE, &tr );
@@ -531,23 +532,6 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 
 		// Now hit all triggers along the way that respond to damage... 
 		pEntity->TraceAttackToTriggers( adjustedInfo, vecSrc, tr.endpos, dir );
-
-#if defined( GAME_DLL )
-		if ( info.GetAttacker() && info.GetAttacker()->IsPlayer() && ToBaseCombatCharacter( tr.m_pEnt ) )
-		{
-
-			// This is a total hack!!!
-			bool bIsPrimary = true;
-			CBasePlayer *player = ToBasePlayer( info.GetAttacker() );
-			CBaseCombatWeapon *pWeapon = player->GetActiveWeapon();
-			if ( pWeapon && FClassnameIs( pWeapon, "weapon_smg1" ) )
-			{
-				bIsPrimary = false;
-			}
-
-			gamestats->Event_WeaponHit( player, bIsPrimary, (pWeapon != NULL) ? player->GetActiveWeapon()->GetClassname() : "NULL", info );
-		}
-#endif
 	}
 }
 
