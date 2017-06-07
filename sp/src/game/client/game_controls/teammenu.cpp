@@ -20,7 +20,7 @@
 #include <vgui_controls/RichText.h>
 #include <vgui_controls/Label.h>
 #include <vgui_controls/Button.h>
-#include <vgui_controls/HTML.h>
+//#include <vgui_controls/HTML.h>
 
 #include "IGameUIFuncs.h" // for key bindings
 #include <igameresources.h>

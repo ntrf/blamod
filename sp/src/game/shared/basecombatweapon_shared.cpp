@@ -1736,7 +1736,7 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 			//			first shot.  Right now that's too much of an architecture change -- jdw
 			
 			// If the firing button was just pressed, or the alt-fire just released, reset the firing time
-			if ( ( pOwner->m_afButtonPressed & IN_ATTACK ) || ( pOwner->m_afButtonReleased & IN_ATTACK2 ) )
+			if ( ( pOwner->m_afButtonPressed & IN_ATTACK )/* || ( pOwner->m_afButtonReleased & IN_ATTACK2 ) */)
 			{
 				 m_flNextPrimaryAttack = gpGlobals->curtime;
 			}

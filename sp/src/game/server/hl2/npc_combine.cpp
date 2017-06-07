@@ -30,8 +30,13 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "npc_headcrab.h"
 
+#include "../blamod/blamodvar.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+
+static BlaConVar blamod_combine_grenadeonly("blamod_combine_grenadeonly", "0", FCVAR_NOTIFY);
 
 int g_fCombineQuestion;				// true if an idle grunt asked a question. Cleared when someone answers. YUCK old global from grunt code
 
@@ -1491,6 +1496,13 @@ int CNPC_Combine::SelectCombatSchedule()
 		return SCHED_NONE;
 	}
 
+	// ntrf: special grenade only mode
+	if (blamod_combine_grenadeonly.GetBool() && GetEnemy() != NULL) {
+		if (CanGrenadeEnemy()) {
+			return SCHED_COMBINE_FORCED_GRENADE_THROW;
+		}
+	}
+
 	// -----------
 	// new enemy
 	// -----------
@@ -1571,7 +1583,7 @@ int CNPC_Combine::SelectCombatSchedule()
 	// ---------------------
 	// no ammo
 	// ---------------------
-	if ( ( HasCondition ( COND_NO_PRIMARY_AMMO ) || HasCondition ( COND_LOW_PRIMARY_AMMO ) ) && !HasCondition( COND_CAN_MELEE_ATTACK1) )
+	if ( ( HasCondition ( COND_NO_PRIMARY_AMMO ) || HasCondition ( COND_LOW_PRIMARY_AMMO )) && !HasCondition( COND_CAN_MELEE_ATTACK1) )
 	{
 		return SCHED_HIDE_AND_RELOAD;
 	}
@@ -1922,6 +1934,9 @@ int CNPC_Combine::SelectScheduleAttack()
 		return SCHED_MELEE_ATTACK1;
 	}
 
+	if (blamod_combine_grenadeonly.GetBool() && GetEnemy() && CanGrenadeEnemy())
+		return SCHED_COMBINE_FORCED_GRENADE_THROW;
+
 	// If I'm fighting a combine turret (it's been hacked to attack me), I can't really
 	// hurt it with bullets, so become grenade happy.
 	if ( GetEnemy() && GetEnemy()->Classify() == CLASS_COMBINE && FClassnameIs(GetEnemy(), "npc_turret_floor") )
@@ -2178,10 +2193,11 @@ int CNPC_Combine::TranslateSchedule( int scheduleType )
 			// stand up, just in case
 			// Stand();
 			// DesireStand();
-			if( CanGrenadeEnemy() && OccupyStrategySlot( SQUAD_SLOT_GRENADE1 ) && random->RandomInt( 0, 100 ) < 20 )
-			{
-				// If I COULD throw a grenade and I need to reload, 20% chance I'll throw a grenade before I hide to reload.
-				return SCHED_COMBINE_GRENADE_AND_RELOAD;
+			if (CanGrenadeEnemy()) {
+				if (OccupyStrategySlot(SQUAD_SLOT_GRENADE1) && (random->RandomInt(0, 100) < 20)) {
+					// If I COULD throw a grenade and I need to reload, 20% chance I'll throw a grenade before I hide to reload.
+					return SCHED_COMBINE_GRENADE_AND_RELOAD;
+				}
 			}
 
 			// No running away in the citadel!
@@ -2401,7 +2417,8 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 				{
 					// Use the Velocity that AI gave us.
 					Fraggrenade_Create( vecStart, vec3_angle, m_vecTossVelocity, vecSpin, this, COMBINE_GRENADE_TIMER, true );
-					m_iNumGrenades--;
+					if (!blamod_combine_grenadeonly.GetBool())
+						m_iNumGrenades--;
 				}
 
 				// wait six seconds before even looking again to see if a grenade can be thrown.
@@ -2418,6 +2435,7 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 				pGrenade->KeyValue( "velocity", m_vecTossVelocity );
 				pGrenade->Spawn( );
 
+
 				if ( g_pGameRules->IsSkillLevel(SKILL_HARD) )
 					m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat( 2, 5 );// wait a random amount of time before shooting again
 				else
@@ -2432,7 +2450,8 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 				GetAttachment( "lefthand", vecStart );
 
 				Fraggrenade_Create( vecStart, vec3_angle, m_vecTossVelocity, vec3_origin, this, COMBINE_GRENADE_TIMER, true );
-				m_iNumGrenades--;
+				if (!blamod_combine_grenadeonly.GetBool())
+					m_iNumGrenades--;
 			}
 			handledEvent = true;
 			break;
@@ -2758,7 +2777,7 @@ bool CNPC_Combine::CanThrowGrenade( const Vector &vecTarget )
 		return false;
 	}
 
-	if (gpGlobals->curtime < m_flNextGrenadeCheck )
+	if (!blamod_combine_grenadeonly.GetBool() && gpGlobals->curtime < m_flNextGrenadeCheck )
 	{
 		// Not allowed to throw another grenade right now.
 		return false;
@@ -2767,7 +2786,9 @@ bool CNPC_Combine::CanThrowGrenade( const Vector &vecTarget )
 	float flDist;
 	flDist = ( vecTarget - GetAbsOrigin() ).Length();
 
-	if( flDist > 1024 || flDist < 128 )
+	bool cond = blamod_combine_grenadeonly.GetBool() ? (flDist > 4096 || flDist < 20) :
+		(flDist > 1024 || flDist < 128);
+	if (cond)
 	{
 		// Too close or too far!
 		m_flNextGrenadeCheck = gpGlobals->curtime + 1; // one full second.
@@ -2777,7 +2798,7 @@ bool CNPC_Combine::CanThrowGrenade( const Vector &vecTarget )
 	// -----------------------
 	// If moving, don't check.
 	// -----------------------
-	if ( m_flGroundSpeed != 0 )
+	if (!blamod_combine_grenadeonly.GetBool() && m_flGroundSpeed != 0)
 		return false;
 
 #if 0
@@ -2794,7 +2815,7 @@ bool CNPC_Combine::CanThrowGrenade( const Vector &vecTarget )
 	// ---------------------------------------------------------------------
 	// Are any of my squad members near the intended grenade impact area?
 	// ---------------------------------------------------------------------
-	if ( m_pSquad )
+	if (m_pSquad && !blamod_combine_grenadeonly.GetBool())
 	{
 		if (m_pSquad->SquadMemberInRange( vecTarget, COMBINE_MIN_GRENADE_CLEAR_DIST ))
 		{
@@ -2866,17 +2887,17 @@ bool CNPC_Combine::CanAltFireEnemy( bool bUseFreeKnowledge )
 	if (!IsElite() )
 		return false;
 
-	if (IsCrouching())
+	if (!GetEnemy())
 		return false;
 
-	if( gpGlobals->curtime < m_flNextAltFireTime )
-		return false;
+	if (!blamod_combine_grenadeonly.GetBool()) {
 
-	if( !GetEnemy() )
-		return false;
+		if (gpGlobals->curtime < m_flNextAltFireTime)
+			return false;
 
-	if (gpGlobals->curtime < m_flNextGrenadeCheck )
-		return false;
+		if (gpGlobals->curtime < m_flNextGrenadeCheck)
+			return false;
+	}
 
 	// See Steve Bond if you plan on changing this next piece of code!! (SJB) EP2_OUTLAND_10
 	if (m_iNumGrenades < 1)

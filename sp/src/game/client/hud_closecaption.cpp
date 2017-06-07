@@ -2254,6 +2254,13 @@ private:
 
 void CHudCloseCaption::ProcessAsyncWork()
 {
+	if (!closecaption.GetBool()) {
+		if (m_AsyncWork.Count() != 0)
+			Reset();
+
+		return;
+	}
+
 	int i;
 	for( i = m_AsyncWork.Head(); i != m_AsyncWork.InvalidIndex(); i = m_AsyncWork.Next( i ) )
 	{

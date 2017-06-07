@@ -46,6 +46,7 @@
 #include "gamestats.h"
 #include "filters.h"
 #include "tier0/icommandline.h"
+#include "gamevars_shared.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -155,8 +156,8 @@ static impactdamagetable_t gCappedPlayerImpactDamageTable =
 
 };
 
-ConVar bla_lagacy_flashlight("bla_lagacy_flashlight", "1",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+ConVar bla_lagacy_flashlight("blamod_lagacy_flashlight", "1",
+							 FCVAR_REPLICATED,
 							 "Set flashlight energy source.\n0: Separate, 1: AUX Power");
 
 // Flashlight utility
@@ -457,6 +458,12 @@ void CHL2_Player::EquipSuit( bool bPlayEffects )
 	if ( bPlayEffects == true )
 	{
 		StartAdmireGlovesAnimation();
+	}
+
+	if (blamod_giveubigun.GetInt() == 2) {
+		if (!Weapon_OwnsThisType("weapon_physcannon")) {
+			GiveNamedItem("weapon_physcannon");
+		}
 	}
 }
 
@@ -943,34 +950,10 @@ void CHL2_Player::HandleAdmireGlovesAnimation( void )
 		m_flAdmireGlovesAnimTime = 0.0f;
 }
 
-#define HL2PLAYER_RELOADGAME_ATTACK_DELAY 1.0f
-
 void CHL2_Player::Activate( void )
 {
 	BaseClass::Activate();
 	InitSprinting();
-
-#ifdef HL2_EPISODIC
-
-	// Delay attacks by 1 second after loading a game.
-	if ( GetActiveWeapon() )
-	{
-		float flRemaining = GetActiveWeapon()->m_flNextPrimaryAttack - gpGlobals->curtime;
-
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
-		{
-			GetActiveWeapon()->m_flNextPrimaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
-		}
-
-		flRemaining = GetActiveWeapon()->m_flNextSecondaryAttack - gpGlobals->curtime;
-
-		if ( flRemaining < HL2PLAYER_RELOADGAME_ATTACK_DELAY )
-		{
-			GetActiveWeapon()->m_flNextSecondaryAttack = gpGlobals->curtime + HL2PLAYER_RELOADGAME_ATTACK_DELAY;
-		}
-	}
-
-#endif
 
 	GetPlayerProxy();
 }
@@ -1104,10 +1087,8 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 void CHL2_Player::Spawn(void)
 {
 
-#ifndef HL2MP
-#ifndef PORTAL
+#if !defined(HL2MP) && !defined(PORTAL)
 	SetModel( "models/player.mdl" );
-#endif
 #endif
 
 	BaseClass::Spawn();
@@ -1130,22 +1111,24 @@ void CHL2_Player::Spawn(void)
 	InitSprinting();
 
 	// Setup our flashlight values
-#ifdef HL2_EPISODIC
 	m_HL2Local.m_flFlashBattery = 100.0f;
-#endif 
 
 	GetPlayerProxy();
 
 	SetFlashlightPowerDrainScale( 1.0f );
+
+	if (blamod_giveubigun.GetInt() == 3) {
+		if (!Weapon_OwnsThisType("weapon_physcannon")) {
+			GiveNamedItem("weapon_physcannon");
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CHL2_Player::UpdateLocatorPosition( const Vector &vecPosition )
 {
-#ifdef HL2_EPISODIC
 	m_HL2Local.m_vecLocatorOrigin = vecPosition;
-#endif//HL2_EPISODIC 
 }
 
 //-----------------------------------------------------------------------------
@@ -2579,8 +2562,8 @@ bool CHL2_Player::ShouldKeepLockedAutoaimTarget( EHANDLE hLockedTarget )
 //			bSuppressSound - 
 // Output : int
 //-----------------------------------------------------------------------------
-static ConVar bla_autowepswitch("bla_autowepswitch", "0",
-								FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_autowepswitch("blamod_autowepswitch", "0",
+								FCVAR_REPLICATED | FCVAR_ARCHIVE,
 								"Switch weapon on ammunition depletion.");
 int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 {
@@ -3155,8 +3138,8 @@ float CHL2_Player::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 //-----------------------------------------------------------------------------
 // Purpose: Force the player to drop any physics objects he's carrying
 //-----------------------------------------------------------------------------
-static ConVar bla_itemflying("bla_itemflying", "1",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_itemflying("blamod_itemflying", "1",
+							 FCVAR_REPLICATED,
 							 "Don't force the player to drop objects he is "
 							 "carrying. This allows to continuously jump on "
 							 "an object which causes the player to be boosted "
@@ -3256,7 +3239,6 @@ void CHL2_Player::UpdateClientData( void )
 	}
 
 	// Update Flashlight
-#ifdef HL2_EPISODIC
 	if ( Flashlight_UseLegacyVersion() == false )
 	{
 		if ( FlashlightIsOn() && sv_infinite_aux_power.GetBool() == false )
@@ -3281,7 +3263,6 @@ void CHL2_Player::UpdateClientData( void )
 	{
 		m_HL2Local.m_flFlashBattery = -1.0f;
 	}
-#endif // HL2_EPISODIC
 
 	BaseClass::UpdateClientData();
 }

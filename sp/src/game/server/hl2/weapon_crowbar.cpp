@@ -18,6 +18,7 @@
 #include "npcevent.h"
 #include "ai_basenpc.h"
 #include "weapon_crowbar.h"
+#include "gamevars_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -199,5 +200,19 @@ void CWeaponCrowbar::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 	default:
 		BaseClass::Operator_HandleAnimEvent( pEvent, pOperator );
 		break;
+	}
+}
+
+void CWeaponCrowbar::Equip(CBaseCombatCharacter *pOwner)
+{
+	BaseClass::Equip(pOwner);
+
+	if (!pOwner->IsPlayer()) return;
+
+	CBasePlayer * player = (CBasePlayer *)pOwner;
+
+	if (blamod_giveubigun.GetInt() == 1) {
+		if (!player->Weapon_OwnsThisType("weapon_physcannon"))
+			player->GiveNamedItem("weapon_physcannon");
 	}
 }

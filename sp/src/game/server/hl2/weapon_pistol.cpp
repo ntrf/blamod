@@ -106,6 +106,8 @@ public:
 
 	DECLARE_ACTTABLE();
 
+	bool ShouldBlockPrimaryFire() override { return true; }
+
 private:
 	float	m_flSoonestPrimaryAttack;
 	float	m_flLastAttackTime;

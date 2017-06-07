@@ -18,4 +18,8 @@ extern ConVar mp_allowspectators;
 extern ConVar friendlyfire;
 extern ConVar mp_fadetoblack;
 
+// Blamod specific
+
+extern ConVar blamod_giveubigun;
+
 #endif // CS_GAMEVARS_SHARED_H

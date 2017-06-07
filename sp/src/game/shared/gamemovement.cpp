@@ -15,6 +15,8 @@
 #include "coordsize.h"
 #include "rumble_shared.h"
 
+#include "../blamod/blamodvar.h"
+
 #if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
 	#include "hl_movedata.h"
 #endif
@@ -1376,6 +1378,102 @@ void CGameMovement::WaterMove( void )
 }
 
 //-----------------------------------------------------------------------------
+ConVar bla_displacement_stepsize("blamod_displacement_stepsize", "1.0", FCVAR_REPLICATED);
+
+void CGameMovement::FlyStepMove(Vector &vecDestination)
+{
+	float step = bla_displacement_stepsize.GetFloat();
+	if (step > 0) {
+
+		trace_t trace;
+
+		Vector vecEndPos;
+		VectorCopy(vecDestination, vecEndPos);
+
+		// Try sliding forward both on ground and up 16 pixels
+		//  take the move that goes farthest
+		Vector vecPos, vecVel;
+		VectorCopy(mv->GetAbsOrigin(), vecPos);
+		VectorCopy(mv->m_vecVelocity, vecVel);
+
+		// Slide move down.
+		TryPlayerMove();
+
+		// Down results.
+		Vector vecDownPos, vecDownVel;
+		VectorCopy(mv->GetAbsOrigin(), vecDownPos);
+		VectorCopy(mv->m_vecVelocity, vecDownVel);
+
+		// Reset original values.
+		mv->SetAbsOrigin(vecPos);
+		VectorCopy(vecVel, mv->m_vecVelocity);
+
+		// Move up a stair height.
+		VectorCopy(mv->GetAbsOrigin(), vecEndPos);
+		if (player->m_Local.m_bAllowAutoMovement) {
+			vecEndPos.z += step + DIST_EPSILON;
+		}
+
+		TracePlayerBBox(mv->GetAbsOrigin(), vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace);
+		if (!trace.startsolid && !trace.allsolid) {
+			mv->SetAbsOrigin(trace.endpos);
+		}
+
+		// Slide move up.
+		TryPlayerMove();
+
+		// Move down a stair (attempt to).
+		VectorCopy(mv->GetAbsOrigin(), vecEndPos);
+		if (player->m_Local.m_bAllowAutoMovement) {
+			vecEndPos.z -= step + DIST_EPSILON;
+		}
+
+		TracePlayerBBox(mv->GetAbsOrigin(), vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace);
+
+		// If we are not on the ground any more then use the original movement attempt.
+#if 0
+		if (trace.plane.normal[2] < 0.7) {
+			mv->SetAbsOrigin(vecDownPos);
+			VectorCopy(vecDownVel, mv->m_vecVelocity);
+			float flStepDist = mv->GetAbsOrigin().z - vecPos.z;
+			if (flStepDist > 0.0f) {
+				mv->m_outStepHeight += flStepDist;
+			}
+			return;
+		}
+#endif
+
+		// If the trace ended up in empty space, copy the end over to the origin.
+		if (!trace.startsolid && !trace.allsolid) {
+			mv->SetAbsOrigin(trace.endpos);
+		}
+
+		// Copy this origin to up.
+		Vector vecUpPos;
+		VectorCopy(mv->GetAbsOrigin(), vecUpPos);
+
+		// decide which one went farther
+
+
+		float flDownDist = (vecDownPos - vecPos).LengthSqr();
+		float flUpDist = (vecUpPos - vecPos).LengthSqr();
+		if (flDownDist >= flUpDist) {
+			mv->SetAbsOrigin(vecDownPos);
+			VectorCopy(vecDownVel, mv->m_vecVelocity);
+		}
+		/*
+		float flStepDist = mv->GetAbsOrigin().z - vecPos.z;
+		if (flStepDist > 0) {
+			mv->m_outStepHeight += flStepDist;
+		}
+		*/
+	} else {
+		// Slide move up.
+		TryPlayerMove();
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Does the basic move attempting to climb up step heights.  It uses
 //          the mv->GetAbsOrigin() and mv->m_vecVelocity.  It returns a new
 //          new mv->GetAbsOrigin(), mv->m_vecVelocity, and mv->m_outStepHeight.
@@ -1654,7 +1752,12 @@ void CGameMovement::AirMove( void )
 	// Add in any base velocity to the current velocity.
 	VectorAdd(mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
 
-	TryPlayerMove();
+	Vector dest;
+	// first try just moving to the destination	
+	VectorMA(mv->GetAbsOrigin(), gpGlobals->frametime, mv->m_vecVelocity, dest);
+
+	FlyStepMove(dest);
+	//TryPlayerMove();
 
 	// Now pull the base velocity back out.   Base velocity is set if you are on a moving object, like a conveyor (or maybe another monster?)
 	VectorSubtract( mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
@@ -2213,12 +2316,12 @@ void CGameMovement::PlaySwimSound()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-static ConVar bla_pogo("bla_pogo", "1",
-					   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_pogo("blamod_pogo", "1",
+					   FCVAR_REPLICATED | FCVAR_ARCHIVE,
 					   "Keep jumping when jump button is down. This removes "
 					   "the need for external scripts like AutoHotkey.");
-static ConVar bla_movement("bla_movement", "2",
-						   FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_movement("blamod_movement", "2",
+						   FCVAR_REPLICATED,
 						   "Set movement physics.\n0: ABH, 1: bunny-hopping, 2: mixed, 3: no boost");
 bool CGameMovement::CheckJumpButton( void )
 {
@@ -2367,12 +2470,16 @@ bool CGameMovement::CheckJumpButton( void )
 
 			vecForward *= flSpeedAddition;
 
+			VectorAdd(mv->m_vecVelocity, vecForward, mv->m_vecVelocity);
+
 		} else if (iMovement == 1) { // good ol' bunny-hopping
 
 			float flSpeedAddition = mv->m_flForwardMove * flBoost;
 
 			vecForward.x *= flSpeedAddition;
 			vecForward.y *= flSpeedAddition;
+
+			VectorAdd(mv->m_vecVelocity, vecForward, mv->m_vecVelocity);
 
 		} else if (iMovement == 2) { // mixed movement - whichever is faster wins :)
 			Vector velocity_bhop;
@@ -2954,6 +3061,9 @@ const char *DescribeAxis( int axis );
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+ConVar bla_velocity_limit("blamod_velocity_limit", "1", FCVAR_REPLICATED,
+						  "Describes how velocity limiter works:\n 0 - cube - X, Y and Z will be limited seperately\n 1 - cylinder - X & Y are limited combined, Z separately");
+
 void CGameMovement::CheckVelocity( void )
 {
 	int i;
@@ -2989,7 +3099,7 @@ void CGameMovement::CheckVelocity( void )
 		}
 
 		if (mv->m_vecVelocity.z > maxvel) {
-			DevMsg(1, "PM  Got a velocity too high on Z\n");
+			//DevMsg(1, "PM  Got a velocity too high on Z\n");
 			mv->m_vecVelocity.z = maxvel;
 		} else if (mv->m_vecVelocity.z < -maxfall) {
 			//DevMsg(1, "PM  Got a velocity too low on Z\n");
@@ -2999,13 +3109,25 @@ void CGameMovement::CheckVelocity( void )
 		float x = mv->m_vecVelocity.x;
 		float y = mv->m_vecVelocity.y;
 
-		float mag = x * x + y * y;
+		if (bla_velocity_limit.GetInt() == 1) {
 
-		if (mag > 0 && mag > maxvel * maxvel) {
-			DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+			float mag = x * x + y * y;
 
-			mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
-			mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
+			if (mag > 0 && mag > maxvel * maxvel) {
+				//DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+
+				mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
+				mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
+			}
+		} else {
+			if (x > maxvel)
+				mv->m_vecVelocity.x = maxvel;
+			else if (x < -maxvel)
+				mv->m_vecVelocity.x = -maxvel;
+			if (y > maxvel)
+				mv->m_vecVelocity.y = maxvel;
+			else if (y < -maxvel)
+				mv->m_vecVelocity.y = -maxvel;
 		}
 	}
 }

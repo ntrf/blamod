@@ -122,6 +122,10 @@ private:
 	bool						m_bIsParentedToClientDLLRootPanel;
 
 	CUtlVector< int >			m_HudRenderGroups;
+
+protected:
+	static Color TintUserColor(Color x);
+
 };
 
 #include "utlpriorityqueue.h"

@@ -297,21 +297,21 @@ public:
 class CViewRender : public IViewRender,
 					public IReplayScreenshotSystem
 {
-	DECLARE_CLASS_NOBASE( CViewRender );
+	DECLARE_CLASS_NOBASE(CViewRender);
 public:
-	virtual void	Init( void );
-	virtual void	Shutdown( void );
+	virtual void	Init(void) override;
+	virtual void	Shutdown(void) override;
 
-	const CViewSetup *GetPlayerViewSetup( ) const;
+	const CViewSetup *GetPlayerViewSetup() const override;
 
-	virtual void	StartPitchDrift( void );
-	virtual void	StopPitchDrift( void );
+	virtual void	StartPitchDrift(void) override;
+	virtual void	StopPitchDrift(void) override;
 
-	virtual float	GetZNear();
-	virtual float	GetZFar();
+	virtual float	GetZNear() override;
+	virtual float	GetZFar() override;
 
-	virtual void	OnRenderStart();
-	void			DriftPitch (void);
+	virtual void	OnRenderStart() override;
+	void			DriftPitch(void) override;
 
 	static CViewRender *	GetMainView() { return assert_cast<CViewRender *>( view ); }
 
@@ -324,19 +324,19 @@ protected:
 	void			SetUpOverView();
 
 	// generates a low-res screenshot for save games
-	virtual void	WriteSaveGameScreenshotOfSize( const char *pFilename, int width, int height, bool bCreatePowerOf2Padded = false, bool bWriteVTF = false );
-	void			WriteSaveGameScreenshot( const char *filename );
+	virtual void	WriteSaveGameScreenshotOfSize(const char *pFilename, int width, int height, bool bCreatePowerOf2Padded = false, bool bWriteVTF = false) override;
+	void			WriteSaveGameScreenshot(const char *filename) override;
 
-	virtual IReplayScreenshotSystem *GetReplayScreenshotSystem() { return this; }
+	virtual IReplayScreenshotSystem *GetReplayScreenshotSystem() override { return this; }
 
 	// IReplayScreenshot implementation
-	virtual void	WriteReplayScreenshot( WriteReplayScreenshotParams_t &params );
-	virtual void	UpdateReplayScreenshotCache();
+	virtual void	WriteReplayScreenshot(WriteReplayScreenshotParams_t &params) override;
+	virtual void	UpdateReplayScreenshotCache() override;
 
     StereoEye_t		GetFirstEye() const;
     StereoEye_t		GetLastEye() const;
     CViewSetup &    GetView(StereoEye_t eEye);
-    const CViewSetup &    GetView(StereoEye_t eEye) const ;
+    const CViewSetup &    GetView(StereoEye_t eEye) const;
 
 
 	// This stores all of the view setup parameters that the engine needs to know about.
@@ -349,18 +349,18 @@ protected:
 	CPitchDrift		m_PitchDrift;
 
 public:
-					CViewRender();
-	virtual			~CViewRender( void ) {}
+	CViewRender();
+	virtual			~CViewRender(void) { }
 
 // Implementation of IViewRender interface
 public:
 
-	void			SetupVis( const CViewSetup& view, unsigned int &visFlags, ViewCustomVisibility_t *pCustomVisibility = NULL );
+	void			SetupVis(const CViewSetup& view, unsigned int &visFlags, ViewCustomVisibility_t *pCustomVisibility = NULL);
 
 
 	// Render functions
-	virtual	void	Render( vrect_t *rect );
-	virtual void	RenderView( const CViewSetup &view, int nClearFlags, int whatToDraw );
+	virtual	void	Render(vrect_t *rect) override;
+	virtual void	RenderView(const CViewSetup &view, int nClearFlags, int whatToDraw) override;
 	virtual void	RenderPlayerSprites();
 	virtual void	Render2DEffectsPreHUD( const CViewSetup &view );
 	virtual void	Render2DEffectsPostHUD( const CViewSetup &view );
@@ -369,17 +369,17 @@ public:
 	void			DisableFog( void );
 
 	// Called once per level change
-	void			LevelInit( void );
-	void			LevelShutdown( void );
+	void			LevelInit(void) override;
+	void			LevelShutdown(void) override;
 
 	// Add entity to transparent entity queue
 
-	bool			ShouldDrawEntities( void );
-	bool			ShouldDrawBrushModels( void );
+	bool			ShouldDrawEntities(void);
+	bool			ShouldDrawBrushModels(void) override;
 
-	const CViewSetup *GetViewSetup( ) const;
+	const CViewSetup *GetViewSetup() const override;
 	
-	void			DisableVis( void );
+	void			DisableVis(void) override;
 
 	// Sets up the view model position relative to the local player
 	void			MoveViewModels( );
@@ -387,37 +387,37 @@ public:
 	// Gets the abs origin + angles of the view models
 	void			GetViewModelPosition( int nIndex, Vector *pPos, QAngle *pAngle );
 
-	void			SetCheapWaterStartDistance( float flCheapWaterStartDistance );
-	void			SetCheapWaterEndDistance( float flCheapWaterEndDistance );
+	void			SetCheapWaterStartDistance(float flCheapWaterStartDistance) override;
+	void			SetCheapWaterEndDistance(float flCheapWaterEndDistance) override;
 
-	void			GetWaterLODParams( float &flCheapWaterStartDistance, float &flCheapWaterEndDistance );
+	void			GetWaterLODParams( float &flCheapWaterStartDistance, float &flCheapWaterEndDistance ) override;
 
-	virtual void	QueueOverlayRenderView( const CViewSetup &view, int nClearFlags, int whatToDraw );
+	virtual void	QueueOverlayRenderView(const CViewSetup &view, int nClearFlags, int whatToDraw) override;
 
-	virtual void	GetScreenFadeDistances( float *min, float *max );
+	virtual void	GetScreenFadeDistances( float *min, float *max ) override;
 
-	virtual C_BaseEntity *GetCurrentlyDrawingEntity();
-	virtual void		  SetCurrentlyDrawingEntity( C_BaseEntity *pEnt );
+	virtual C_BaseEntity *GetCurrentlyDrawingEntity() override;
+	virtual void		  SetCurrentlyDrawingEntity(C_BaseEntity *pEnt) override;
 
-	virtual bool		UpdateShadowDepthTexture( ITexture *pRenderTarget, ITexture *pDepthTexture, const CViewSetup &shadowView );
+	virtual bool		UpdateShadowDepthTexture(ITexture *pRenderTarget, ITexture *pDepthTexture, const CViewSetup &shadowView) override;
 
 	int GetBaseDrawFlags() { return m_BaseDrawFlags; }
 	virtual bool ShouldForceNoVis()  { return m_bForceNoVis; }
 	int				BuildRenderablesListsNumber() const { return m_BuildRenderableListsNumber; }
 	int				IncRenderablesListsNumber()  { return ++m_BuildRenderableListsNumber; }
 
-	int				BuildWorldListsNumber() const;
+	int				BuildWorldListsNumber() const override;
 	int				IncWorldListsNumber() { return ++m_BuildWorldListsNumber; }
 
-	virtual VPlane*	GetFrustum() { return ( m_pActiveRenderer ) ? m_pActiveRenderer->GetFrustum() : m_Frustum; }
+	virtual VPlane*	GetFrustum() override { return (m_pActiveRenderer) ? m_pActiveRenderer->GetFrustum() : m_Frustum; }
 
 	// What are we currently rendering? Returns a combination of DF_ flags.
-	virtual int		GetDrawFlags() { return ( m_pActiveRenderer ) ? m_pActiveRenderer->GetDrawFlags() : 0; }
+	virtual int		GetDrawFlags() override { return (m_pActiveRenderer) ? m_pActiveRenderer->GetDrawFlags() : 0; }
 
 	CBase3dView *	GetActiveRenderer() { return m_pActiveRenderer; }
 	CBase3dView *	SetActiveRenderer( CBase3dView *pActiveRenderer ) { CBase3dView *pPrevious = m_pActiveRenderer; m_pActiveRenderer =  pActiveRenderer; return pPrevious; }
 
-	void			FreezeFrame( float flFreezeTime );
+	void			FreezeFrame(float flFreezeTime) override;
 
 	void SetWaterOverlayMaterial( IMaterial *pMaterial )
 	{
@@ -443,8 +443,8 @@ private:
 	void			PerformScreenSpaceEffects( int x, int y, int w, int h );
 
 	// Overlays
-	void			SetScreenOverlayMaterial( IMaterial *pMaterial );
-	IMaterial		*GetScreenOverlayMaterial( );
+	void			SetScreenOverlayMaterial(IMaterial *pMaterial) override;
+	IMaterial		*GetScreenOverlayMaterial() override;
 	void			PerformScreenOverlay( int x, int y, int w, int h );
 
 	void DrawUnderwaterOverlay( void );
@@ -521,7 +521,7 @@ private:
 	CBase3dView *m_pActiveRenderer;
 	CSimpleRenderExecutor m_SimpleExecutor;
 
-	bool			m_rbTakeFreezeFrame[ STEREO_EYE_MAX ];
+	bool			m_rbTakeFreezeFrame[STEREO_EYE_MAX];
 	float			m_flFreezeFrameUntil;
 
 #if defined( REPLAY_ENABLED )

@@ -28,6 +28,8 @@
 #include "rumble_shared.h"
 #include "gamestats.h"
 
+#include "../blamod/blamodvar.h"
+
 #ifdef PORTAL
 	#include "portal_util_shared.h"
 #endif
@@ -43,6 +45,8 @@
 
 static ConVar sk_apc_missile_damage("sk_apc_missile_damage", "15");
 ConVar rpg_missle_use_custom_detonators( "rpg_missle_use_custom_detonators", "1" );
+
+static BlaConVar blamod_turbo_rpg("blamod_turbo_rpg", "0", FCVAR_NOTIFY);
 
 #define APC_MISSILE_DAMAGE	sk_apc_missile_damage.GetFloat()
 
@@ -1566,10 +1570,10 @@ bool CWeaponRPG::HasAnyAmmo( void )
 bool CWeaponRPG::WeaponShouldBeLowered( void )
 {
 	// Lower us if we're out of ammo
-	if ( !HasAnyAmmo() )
-		return true;
+	//if ( !HasAnyAmmo() )
+	//	return true;
 	
-	return BaseClass::WeaponShouldBeLowered();
+	return CBaseHLCombatWeapon::WeaponShouldBeLowered();
 }
 
 //-----------------------------------------------------------------------------
@@ -1663,8 +1667,12 @@ void CWeaponRPG::PrimaryAttack( void )
 
 	// if not guiding - reload immediately
 	if (!m_bGuiding) {
+		// forget about non-guided missile
+		// allows another misile to be fired
 		m_hMissile = nullptr;
-		Reload();
+
+		if (!blamod_turbo_rpg.GetBool())
+			Reload();
 	}
 }
 

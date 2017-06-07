@@ -71,6 +71,7 @@
 #include "ai_speech.h"
 
 #include "bla/timer.h"
+#include "../blamod/blamodvar.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -1042,8 +1043,8 @@ bool CBasePlayer::ShouldTakeDamageInCommentaryMode( const CTakeDamageInfo &input
 	return true;
 }
 
-static ConVar bla_punchangle("bla_punchangle", "0",
-							 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_punchangle("blamod_punchangle", "0",
+							 FCVAR_REPLICATED,
 							 "Apply punch effect to view angle when player "
 							 "takes damage.");
 int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
@@ -1399,8 +1400,8 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 // Purpose: 
 // Input  : &info - 
 //-----------------------------------------------------------------------------
-ConVar bla_damagefx("bla_damagefx", "0", 
-				    FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+ConVar bla_damagefx("blamod_damagefx", "0", 
+				    FCVAR_REPLICATED,
 				    "Add effects like ear ringing when the player "
 				    "takes damage caused by an explosion.");
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
@@ -1578,8 +1579,8 @@ const impactdamagetable_t &CBasePlayer::GetPhysicsImpactDamageTable()
 
 
 static ConVar bla_damageforcelimit(
-	"bla_damageforcelimit", "650.0", 
-	FCVAR_ARCHIVE | FCVAR_DEMO | FCVAR_REPLICATED,
+	"blamod_damageforcelimit", "650.0", 
+	FCVAR_REPLICATED,
 	"Set the maximum force in z-direction applied to a player caused by "
 	"damage.");
 
@@ -4414,8 +4415,8 @@ void CBasePlayer::UpdatePlayerSound ( void )
 	//Msg( "%d/%d\n", iVolume, m_iTargetVolume );
 }
 
-ConVar bla_clipdirection("bla_clipdirection", "2",
-						 FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+ConVar bla_clipdirection("blamod_clipdirection", "2",
+						 FCVAR_REPLICATED,
 						 "Cliping direction switch:\n"
 						 "  0: Clip up, 1: Clip down, 2: Clip up when +jump is held, otherwise down, 3: Cliping disable");
 
@@ -4506,8 +4507,8 @@ void CBasePlayer::ForceOrigin( const Vector &vecOrigin )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-static ConVar bla_timerradius("bla_timerradius", "250.0",
-							  FCVAR_DEMO | FCVAR_REPLICATED | FCVAR_ARCHIVE,
+static ConVar bla_timerradius("blamod_timerradius", "250.0",
+							  FCVAR_REPLICATED,
 							  "Radius around the start/goal position in game "
 							  "units where the on-screen timer starts/stops.");
 void CBasePlayer::SetStartPosition(Vector start)
@@ -7676,8 +7677,14 @@ void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	}
 }
 
+static BlaConVar blamod_ignore_failures("blamod_ignore_failures", "1", 0,
+										"Ignore NPC death events and other failure conditions");
+
 void CRevertSaved::InputReload( inputdata_t &inputdata )
 {
+	if (blamod_ignore_failures.GetBool())
+		return;
+
 	UTIL_ScreenFadeAll( m_clrRender, Duration(), HoldTime(), FFADE_OUT );
 
 #ifdef HL1_DLL
@@ -8578,7 +8585,7 @@ bool CBasePlayer::IsFakeClient() const
 
 void CBasePlayer::EquipSuit( bool bPlayEffects )
 { 
-	m_Local.m_bWearingSuit = true; 
+	m_Local.m_bWearingSuit = true;
 }
 
 void CBasePlayer::RemoveSuit( void )
