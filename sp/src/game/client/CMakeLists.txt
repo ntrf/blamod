@@ -117,6 +117,7 @@ endif()
 
 # Blamod variables framework
 set(BLAMOD_FW_FILES
+	bla/bla_mount.cpp
 	../blamod/blamodvar.cpp
 	../blamod/blamodvar.h
 )

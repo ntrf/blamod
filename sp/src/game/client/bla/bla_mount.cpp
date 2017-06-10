@@ -19,15 +19,110 @@ extern void S_SoundEmitterSystemFlush(void);
 
 static bool mount_inited = false;
 
-static CUtlConstString game380path;
-static CUtlConstString game420path;
+extern bool SoundEmitter_ForceManifestReload;
+
+static CUtlConstString ep1path;
+static CUtlConstString ep2path;
+static CUtlConstString hl2path;
+static CUtlConstString hlspath;
 static CUtlConstString sdkpath;
 static CUtlConstString moddir;
 static CUtlConstString original_paths;
 
-void bla_mount_f(const CCommand & cmd)
+const char * const hlsMountPoints[] = {
+	"%s/hl1/hl1_sound_vo_english.vpk",
+	"%s/hl1/hl1_pak.vpk",
+	NULL
+};
+
+const char * const ep2MountPoints[] = {
+	"%s/ep2/ep2_sound_vo_english.vpk",
+	"%s/ep2/ep2_pak.vpk",
+	NULL
+};
+const char * const ep1MountPoints[] = {
+	"%s/episodic/ep1_sound_vo_english.vpk",
+	"%s/episodic/ep1_pak.vpk",
+	NULL
+};
+const char * const hl2MountPoints[] = {
+	"%s/hl2/hl2_sound_vo_english.vpk",
+	"%s/hl2/hl2_pak.vpk",
+	NULL
+};
+
+const char * const commonMountPoints[] = {
+	"%s/hl2/hl2_textures.vpk",
+	"%s/hl2/hl2_sound_misc.vpk",
+	"%s/hl2/hl2_misc.vpk",
+	NULL
+};
+
+const char * hlsFolderMount = "%s/hl1/";
+const char * ep2FolderMount = "%s/ep2/";
+const char * ep1FolderMount = "%s/episodic/";
+const char * hl2FolderMount = "%s/hl2/";
+
+const char * const commonFolderMounts[] = {
+	"%s/ep2/",
+	"%s/episodic/",
+	"%s/hl2/",
+	NULL
+};
+
+static void AppendMountPoint(CUtlVector < CUtlConstString > & list, const char * mount, const char *path)
 {
-	Warning("Not implemented\n");
+	CUtlString path_out;
+	path_out.Format(mount, path);
+	V_FixSlashes(path_out.Get());
+	list.AddToTail(CUtlConstString(path_out));
+}
+
+static void AppendMountPoints(CUtlVector < CUtlConstString > & list, const char * const * mounts, const char *path)
+{
+	const char * const * m = mounts;
+
+	CUtlString path_out;
+	
+	for (; *m; ++m) {
+		path_out.Format(*m, path);
+		V_FixSlashes(path_out.Get());
+
+		list.AddToTail(CUtlConstString(path_out));
+	}
+}
+
+enum class MountMode
+{
+	SDK_ONLY,
+	HL2,
+	HL2EP1,
+	HL2EP2,
+	HLS
+};
+
+static void bla_mount_f(const CCommand & cmd)
+{
+	MountMode mount = MountMode::SDK_ONLY;
+
+	if (cmd.ArgC() > 1) {
+		const char * mname = cmd.Arg(1);
+
+		if (stricmp(mname, "hl2") == 0) {
+			mount = MountMode::HL2;
+		} else if (stricmp(mname, "ep1") == 0) {
+			mount = MountMode::HL2EP1;
+		} else if (stricmp(mname, "ep2") == 0) {
+			mount = MountMode::HL2EP2;
+		} else if (stricmp(mname, "hls") == 0) {
+			mount = MountMode::HLS;
+		} else if (stricmp(mname, "sdk") == 0) {
+			mount = MountMode::SDK_ONLY;
+		} else {
+			Warning("Unknown mount mode : \"%s\"", mname);
+			return;
+		}
+	}
 
 	auto sapps = steamapicontext->SteamApps();
 
@@ -39,90 +134,116 @@ void bla_mount_f(const CCommand & cmd)
 	if (!mount_inited) {
 
 		namelen = sapps->GetAppInstallDir(380, name, sizeof(name));
-		if (namelen > 0) game380path = name;
+		if (namelen > 0) ep1path = name;
 
 		namelen = sapps->GetAppInstallDir(420, name, sizeof(name));
-		if (namelen > 0) game420path = name;
+		if (namelen > 0) ep2path = name;
+
+		namelen = sapps->GetAppInstallDir(220, name, sizeof(name));
+		if (namelen > 0) hl2path = name;
+
+		namelen = sapps->GetAppInstallDir(280, name, sizeof(name));
+		if (namelen > 0) hlspath = name;
 
 		namelen = sapps->GetAppInstallDir(243730, name, sizeof(name));
 		if (namelen > 0) sdkpath = name;
 
-		filesystem->GetSearchPath("MOD", false, name, sizeof(name));
+		filesystem->GetSearchPath("MOD", true, name, sizeof(name));
 		if (namelen > 0) moddir = name;
 
 		// Get list of all current paths
 		int res = filesystem->GetSearchPath("GAME", true, name, sizeof(name));
 		if (res > 0) original_paths = name;
 	}
-	
-	// Split the paths
-	CUtlVector< char * > paths;
-	V_SplitString(original_paths.Get(), ";", paths);
 
-	
-	// The path list will have the following structure:
-	//
-	// - mod path
-	// - ep1 vpk's
-	// - hl2 vpk's
-	// - sdk hl2 path
-	// - ep1 path
-	// - hl2 path
-
-	// Let's build:
 	CUtlVector < CUtlConstString > new_paths;
 
-	int i = 0;
-	size_t lim = 0;
+	size_t i;
 
-	// first copy everything we recognize as mod
-	lim = strlen(moddir.Get());
-	for (; i < paths.Count(); ++i) {
-		// check if
-		if (V_strnicmp(paths[i], moddir.Get(), lim) != 0) {
-			break; // something else
+	AppendMountPoint(new_paths, "%s", moddir.Get());
+
+	if (mount == MountMode::SDK_ONLY) {
+		// Only sdk paths
+		AppendMountPoints(new_paths, hl2MountPoints, sdkpath.Get());
+		AppendMountPoints(new_paths, commonMountPoints, sdkpath.Get());
+
+		AppendMountPoint(new_paths, hl2FolderMount, sdkpath.Get());
+
+	} else if (mount == MountMode::HL2EP2) {
+		// check if episode 2 is installed
+		if (ep2path.IsEmpty()) {
+			Warning("Unable to locate instalation of HL2 Episode 2. Aborting");
+			return;
 		}
-		new_paths.AddToTail(CUtlConstString(paths[i]));
-	}
 
-	// now tricky stuff - need to add all the stuff related to episodes
-	CUtlString ep1_path;
-	ep1_path.Format("%s\\episodic\\ep1_sound_vo_english.vpk", game380path.Get());
-	new_paths.AddToTail(CUtlConstString(ep1_path));
+		// EP2
+		AppendMountPoints(new_paths, ep2MountPoints, ep2path.Get());
+		AppendMountPoints(new_paths, ep1MountPoints, sdkpath.Get());
+		AppendMountPoints(new_paths, hl2MountPoints, sdkpath.Get());
+		AppendMountPoints(new_paths, commonMountPoints, sdkpath.Get());
 
-	ep1_path.Format("%s\\episodic\\ep1_pak.vpk", game380path.Get());
-	new_paths.AddToTail(CUtlConstString(ep1_path));
+		AppendMountPoint(new_paths, ep2FolderMount, ep2path.Get());
 
-	// now copy everything until we find sdk folder
-	lim = strlen(sdkpath.Get());
-	for (; i < paths.Count(); ++i) {
-		new_paths.AddToTail(CUtlConstString(paths[i]));
-		if (V_strnicmp(paths[i], sdkpath.Get(), lim) == 0 && !V_stristr(paths[i], ".vpk")) {
-			++i;
-			break;
+	} else if (mount == MountMode::HL2EP1) {
+		// check if episode 1 is installed
+		if (ep1path.IsEmpty()) {
+			Warning("Unable to locate instalation of HL2 Episode 1. Aborting");
+			return;
 		}
+
+		// EP1
+		AppendMountPoints(new_paths, ep1MountPoints, ep1path.Get());
+		AppendMountPoints(new_paths, hl2MountPoints, sdkpath.Get());
+		AppendMountPoints(new_paths, commonMountPoints, sdkpath.Get());
+
+		AppendMountPoint(new_paths, ep1FolderMount, ep1path.Get());
+	} else if (mount == MountMode::HL2) {
+		// check if hl2 is installed
+		if (ep1path.IsEmpty()) {
+			Warning("Unable to locate instalation of HL2. Aborting");
+			return;
+		}
+
+		// HL2
+		AppendMountPoints(new_paths, hl2MountPoints, hl2path.Get());
+		AppendMountPoints(new_paths, commonMountPoints, sdkpath.Get());
+
+		AppendMountPoint(new_paths, hl2FolderMount, hl2path.Get());
+	} else if (mount == MountMode::HLS) {
+		// check if episode 2 is installed
+		if (hlspath.IsEmpty()) {
+			Warning("Unable to locate instalation of HL:Source. Aborting");
+			return;
+		}
+
+		// HL:Source
+		AppendMountPoints(new_paths, hlsMountPoints, hlspath.Get());
+		AppendMountPoints(new_paths, hl2MountPoints, sdkpath.Get());
+		AppendMountPoints(new_paths, commonMountPoints, sdkpath.Get());
+
+		AppendMountPoint(new_paths, hlsFolderMount, hlspath.Get());
+	} else {
+		Warning("Unsupported mount mode");
+		Assert(false);
+		return;
 	}
 
-	// add loose episode files
-	ep1_path.Format("%s\\episodic", game380path.Get());
-	new_paths.AddToTail(CUtlConstString(ep1_path));
-
-	// copy the rest
-	for (; i < paths.Count(); ++i) {
-		new_paths.AddToTail(CUtlConstString(paths[i]));
-	}
-
+	AppendMountPoints(new_paths, commonFolderMounts, sdkpath.Get());
 
 	filesystem->RemoveSearchPaths("GAME");
 
 	for (i = 0; i < new_paths.Count(); ++i) {
-		DevMsg("[%d] => %s\n", i, new_paths[i]);
+		DevMsg("Mounts [%d] => %s\n", i, new_paths[i]);
 
 		filesystem->AddSearchPath(new_paths[i].Get(), "GAME");
 	}
 
+#if _DEBUG
 	// show result
 	int res = filesystem->GetSearchPath("GAME", true, name, sizeof(name));
+#endif
+
+	SoundEmitter_ForceManifestReload = true;
 
 	S_SoundEmitterSystemFlush();
 
@@ -130,11 +251,13 @@ void bla_mount_f(const CCommand & cmd)
 	mdlcache->Flush();
 
 	scenefilecache->Reload();
+
+	engine->ClientCmd_Unrestricted("snd_restart");
 }
 static ConCommand bla_mount("bla_mount", bla_mount_f, "Mount episodes data", FCVAR_CLIENTDLL);
 
 
-
+#if _DEBUG
 void bla_getmountslist_f(const CCommand & cmd)
 {
 	char name[2049];
@@ -143,3 +266,4 @@ void bla_getmountslist_f(const CCommand & cmd)
 	filesystem->GetSearchPath("GAME", true, name, 2048);
 }
 static ConCommand bla_getmounts("bla_getmounts", bla_getmountslist_f, "Gets mounts", FCVAR_CLIENTDLL);
+#endif
