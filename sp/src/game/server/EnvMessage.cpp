@@ -231,8 +231,13 @@ void CCredits::RollOutroCredits()
 
 void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 {
+	if (Q_stricmp(gpGlobals->mapname.ToCStr(), "d3_breen_01") == 0) {
+		engine->ServerCommand("wait;wait;disconnect;wait 2;bla_mount ep1;wait;map ep1_citadel_00\n");
+		return;
+	}
+
 	if (Q_stricmp(gpGlobals->mapname.ToCStr(), "ep1_c17_06") == 0) {
-		engine->ChangeLevel("ep2_outland_01", NULL);
+		engine->ServerCommand("wait;wait;disconnect;wait 2;bla_mount ep2;wait;map ep2_outland_01\n");
 		return;
 	}
 

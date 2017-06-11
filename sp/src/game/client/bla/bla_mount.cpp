@@ -199,7 +199,7 @@ static void bla_mount_f(const CCommand & cmd)
 		AppendMountPoint(new_paths, ep1FolderMount, ep1path.Get());
 	} else if (mount == MountMode::HL2) {
 		// check if hl2 is installed
-		if (ep1path.IsEmpty()) {
+		if (hl2path.IsEmpty()) {
 			Warning("Unable to locate instalation of HL2. Aborting");
 			return;
 		}
