@@ -499,7 +499,7 @@ void CPropGravityBall::DoExplosion( )
 			forward = end - start;
 
 			// Skew the z direction upward
-			//forward.z += 44.0f;
+			forward.z += 44.0f;
 
 			// normalizing the vector
 			forward /= gravityball_tracelength.GetFloat();
@@ -508,7 +508,7 @@ void CPropGravityBall::DoExplosion( )
 			UTIL_TraceLine(start, end, (MASK_SHOT | CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr);
 			// debugoverlay->AddLineOverlay( start, end, 0,255,0, true, 18.0 );
 
-			if (!gravityball_ignorewalls.GetBool() && tr.fraction != 1.0 && tr.m_pEnt != pEntity && !tr.allsolid)
+			if (!gravityball_ignorewalls.GetBool() && !pEntity->IsPlayer() && tr.fraction != 1.0 && tr.m_pEnt != pEntity && !tr.allsolid)
 				continue;
 
 			// Punt Non VPhysics Objects
