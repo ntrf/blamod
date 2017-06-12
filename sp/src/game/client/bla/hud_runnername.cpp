@@ -18,11 +18,11 @@ using namespace vgui;
 
 #define BUFSIZE 45
 
-ConVar bla_hud_name("bla_hud_name", "1",
+ConVar bla_hud_name("blamod_showname", "0",
 						FCVAR_CLIENTDLL | FCVAR_ARCHIVE,
 						"Turn the runner name display on/off");
 
-ConVar bla_runner_name("bla_name", "",
+ConVar bla_runner_name("blamod_name", "",
 							   FCVAR_CLIENTDLL | FCVAR_ARCHIVE,
 							   "Override displayed runner name");
 
