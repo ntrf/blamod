@@ -37,7 +37,7 @@
 #define PROP_GRAVITY_BALL_SPRITE_TRAIL "sprites/combineball_trail_black_1.vmt"
 
 ConVar gravityball_tracelength( "gravityball_tracelength", "128" );
-ConVar gravityball_magnitude( "gravityball_magnitude", "1.0f" );
+ConVar gravityball_magnitude( "gravityball_magnitude", "1.07f" );
 ConVar gravityball_knockback("gravityball_knockback", "26000.0f");
 
 ConVar gravityball_ignorewalls("gravityball_ignorewalls", "0", FCVAR_NOTIFY);
