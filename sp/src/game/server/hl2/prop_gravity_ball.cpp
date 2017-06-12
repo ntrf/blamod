@@ -510,7 +510,6 @@ void CPropGravityBall::DoExplosion( )
 			Vector fbellow = pEntity->GetAbsOrigin();
 			Vector fabove = fbellow;
 			fabove.z += 2.0f;
-			fbellow.z += 1.0f;
 
 			trace_t ptr;
 			UTIL_TraceLine(fbellow, fabove, MASK_PLAYERSOLID, pEntity, COLLISION_GROUP_NONE, &ptr);
