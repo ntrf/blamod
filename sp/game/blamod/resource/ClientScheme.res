@@ -548,6 +548,19 @@ Scheme
 				"outline"	"1"
 			}
 		}
+		"RunnerNameLabel"
+		{
+			"1"
+			{
+				"name"		"Verdana" [!$OSX]
+				"name"		"Helvetica Bold" [$OSX]
+				"tall"		"26" [!$OSX]
+				"tall"		"24" [$OSX]
+				"weight"	"500"
+				"antialias" "1"
+				"additive"	"1"
+			}
+		}
 		"CloseCaption_Normal"
 		{
 			"1"

@@ -725,6 +725,7 @@ add_library(client SHARED
 
 
     bla/hud_speedmeter.cpp
+	bla/hud_runnername.cpp
     bla/hud_timer.cpp
     hl2/c_prop_gravity_ball.cpp
     mp3player.cpp

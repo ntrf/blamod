@@ -1822,10 +1822,9 @@ void CWeaponPhysCannon::PuntConcussionNonVPhysics(CBaseEntity *pEntity, const Ve
 		CHL2_Player *pPlayer = static_cast<CHL2_Player *>(pEntity);
 
 		// Send the concussed post effect on
-		CEffectData	data;
-
-		data.m_flScale = 1.0;
-		DispatchEffect("CE_GravityBallFadeConcOn", data);
+//		CEffectData	data;
+//		data.m_flScale = 1.0;
+//		DispatchEffect("CE_GravityBallFadeConcOn", data);
 
 		Vector vForce = forward * physconcussion_gballforce.GetFloat();
 

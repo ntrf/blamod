@@ -37,9 +37,11 @@
 #define PROP_GRAVITY_BALL_SPRITE_TRAIL "sprites/combineball_trail_black_1.vmt"
 
 ConVar gravityball_tracelength( "gravityball_tracelength", "128" );
-ConVar gravityball_magnitude( "gravityball_magnitude", "26000.0f" );
+ConVar gravityball_magnitude( "gravityball_magnitude", "1.07f" );
+ConVar gravityball_knockback("gravityball_knockback", "26000.0f");
 
 ConVar gravityball_ignorewalls("gravityball_ignorewalls", "0", FCVAR_NOTIFY);
+ConVar gravityball_response("gravityball_response", "2", FCVAR_NOTIFY);
 
 // For our ring explosion
 int s_nExplosionGBTexture = -1;
@@ -485,69 +487,93 @@ void CPropGravityBall::DoExplosion( )
 		// Make sure its a gravity touchable entity
 		if ( (pEntity->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) || pEntity->GetMoveType() != MOVETYPE_VPHYSICS) && ( pEntity->m_takedamage == DAMAGE_NO ) )
 		{
-			//DevMsg("Found invalid gravity entity %s\n", pEntity->GetClassname() );
 			continue;
+		}
+
+		// Check that the explosion can 'see' this entity.
+		end = pEntity->BodyTarget(start, false);
+
+		// direction of flight
+		forward = end - start;
+
+		// Skew the z direction upward
+		//forward.z += 44.0f;
+
+		trace_t tr;
+		UTIL_TraceLine(start, end, (MASK_SHOT | CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr);
+		// debugoverlay->AddLineOverlay( start, end, 0,255,0, true, 18.0 );
+
+		if (!gravityball_ignorewalls.GetBool() && !pEntity->IsPlayer() && tr.fraction != 1.0 && tr.m_pEnt != pEntity && !tr.allsolid)
+			continue;
+
+		if (pEntity->IsPlayer()) {
+			Vector fbellow = pEntity->GetAbsOrigin();
+			Vector fabove = fbellow;
+			fabove.z += 2.0f;
+
+			trace_t ptr;
+			UTIL_TraceLine(fbellow, fabove, MASK_PLAYERSOLID, pEntity, COLLISION_GROUP_NONE, &ptr);
+			if (ptr.startsolid)
+				forward.z += 44.0f;
+		}
+
+		// normalizing the vector
+		float len = forward.Length();
+
+		if (gravityball_response.GetInt() == 1) {
+			float pow_x = clamp(len / gravityball_tracelength.GetFloat(), 0.0f, 1.0f);
+			float pow_y = 1.0f - pow_x * pow_x;
+
+			forward *= pow_y * gravityball_magnitude.GetFloat() / len;
+		} else if (gravityball_response.GetInt() == 2) {
+			float pow_x = clamp(len / gravityball_tracelength.GetFloat(), 0.5f, 1.0f);
+
+			forward *= pow_x / len;
+		} else {
+			forward /= gravityball_tracelength.GetFloat();
+		}
+
+		forward *= gravityball_magnitude.GetFloat();
+
+		DevMsg("Found valid gravity entity %s / forward %f %f %f\n", pEntity->GetClassname(),
+			   forward.x, forward.y, forward.z);
+
+		// Punt Non VPhysics Objects
+		if ( pEntity->GetMoveType() != MOVETYPE_VPHYSICS )
+		{
+			// Amplify the height of the push
+			forward.z *= 1.4f;
+
+			if ( pEntity->IsNPC() && !pEntity->IsEFlagSet( EFL_NO_MEGAPHYSCANNON_RAGDOLL ) && pEntity->MyNPCPointer()->CanBecomeRagdoll() )
+			{
+				// Necessary to cause it to do the appropriate death cleanup
+				Vector force = forward * gravityball_knockback.GetFloat();
+
+				CTakeDamageInfo ragdollInfo(pPlayer, pPlayer, force, end, 10000.0, DMG_PHYSGUN | DMG_BLAST);
+				pEntity->TakeDamage( ragdollInfo );
+			}
+			else if ( m_pWeaponPC )
+			{
+				PhysCannon_PuntConcussionNonVPhysics(m_pWeaponPC, pEntity, forward, tr);
+			}
 		}
 		else
 		{
-			//DevMsg("Found valid gravity entity %s\n", pEntity->GetClassname() );
-
-			// Check that the explosion can 'see' this entity.
-			end = pEntity->BodyTarget(start, false);
-
-			// direction of flight
-			forward = end - start;
-
-			// Skew the z direction upward
-			//forward.z += 44.0f;
-
-			// normalizing the vector
-			forward /= gravityball_tracelength.GetFloat();
-
-			trace_t tr;
-			UTIL_TraceLine(start, end, (MASK_SHOT | CONTENTS_GRATE), pEntity, COLLISION_GROUP_NONE, &tr);
-			// debugoverlay->AddLineOverlay( start, end, 0,255,0, true, 18.0 );
-
-			if (!gravityball_ignorewalls.GetBool() && tr.fraction != 1.0 && tr.m_pEnt != pEntity && !tr.allsolid)
+			if (PhysCannonEntityAllowsPunts(m_pWeaponPC, pEntity) == false )
+			{
 				continue;
+			}
 
-			// Punt Non VPhysics Objects
-			if ( pEntity->GetMoveType() != MOVETYPE_VPHYSICS )
+			if ( dynamic_cast<CRagdollProp*>(pEntity) )
 			{
 				// Amplify the height of the push
 				forward.z *= 1.4f;
-
-				if ( pEntity->IsNPC() && !pEntity->IsEFlagSet( EFL_NO_MEGAPHYSCANNON_RAGDOLL ) && pEntity->MyNPCPointer()->CanBecomeRagdoll() )
-				{
-					// Necessary to cause it to do the appropriate death cleanup
-					Vector force = forward * gravityball_magnitude.GetFloat();
-
-					CTakeDamageInfo ragdollInfo(pPlayer, pPlayer, force, end, 10000.0, DMG_PHYSGUN | DMG_BLAST);
-					pEntity->TakeDamage( ragdollInfo );
-				}
-				else if ( m_pWeaponPC )
-				{
-					PhysCannon_PuntConcussionNonVPhysics(m_pWeaponPC, pEntity, forward, tr);
-				}
+				if ( m_pWeaponPC )
+					PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pEntity, forward, tr);
 			}
-			else
+			else if ( m_pWeaponPC )
 			{
-				if (PhysCannonEntityAllowsPunts(m_pWeaponPC, pEntity) == false )
-				{
-					continue;
-				}
-
-				if ( dynamic_cast<CRagdollProp*>(pEntity) )
-				{
-					// Amplify the height of the push
-					forward.z *= 1.4f;
-					if ( m_pWeaponPC )
-						PhysCannon_PuntConcussionRagdoll(m_pWeaponPC, pEntity, forward, tr);
-				}
-				else if ( m_pWeaponPC )
-				{
-					PhysCannon_PuntConcussionVPhysics(m_pWeaponPC, pEntity, forward, tr);
-				}
+				PhysCannon_PuntConcussionVPhysics(m_pWeaponPC, pEntity, forward, tr);
 			}
 		}
 	}
