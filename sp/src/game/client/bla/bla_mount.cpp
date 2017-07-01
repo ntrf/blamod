@@ -254,7 +254,7 @@ static void bla_mount_f(const CCommand & cmd)
 
 	engine->ClientCmd_Unrestricted("snd_restart");
 }
-static ConCommand bla_mount("bla_mount", bla_mount_f, "Mount episodes data", FCVAR_CLIENTDLL);
+static ConCommand bla_mount("blamod_mount", bla_mount_f, "Mount episodes data", FCVAR_CLIENTDLL);
 
 
 #if _DEBUG
@@ -265,5 +265,5 @@ void bla_getmountslist_f(const CCommand & cmd)
 
 	filesystem->GetSearchPath("GAME", true, name, 2048);
 }
-static ConCommand bla_getmounts("bla_getmounts", bla_getmountslist_f, "Gets mounts", FCVAR_CLIENTDLL);
+static ConCommand bla_getmounts("blamod_getmounts", bla_getmountslist_f, "Gets mounts", FCVAR_CLIENTDLL);
 #endif

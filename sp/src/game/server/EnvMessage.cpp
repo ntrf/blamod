@@ -13,27 +13,31 @@
 #include "Color.h"
 #include "gamestats.h"
 
+#include "../blamod/blamodvar.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 LINK_ENTITY_TO_CLASS( env_message, CMessage );
 
-BEGIN_DATADESC( CMessage )
+BEGIN_DATADESC(CMessage)
 
-	DEFINE_KEYFIELD( m_iszMessage, FIELD_STRING, "message" ),
-	DEFINE_KEYFIELD( m_sNoise, FIELD_SOUNDNAME, "messagesound" ),
-	DEFINE_KEYFIELD( m_MessageAttenuation, FIELD_INTEGER, "messageattenuation" ),
-	DEFINE_KEYFIELD( m_MessageVolume, FIELD_FLOAT, "messagevolume" ),
+DEFINE_KEYFIELD(m_iszMessage, FIELD_STRING, "message"),
+DEFINE_KEYFIELD(m_sNoise, FIELD_SOUNDNAME, "messagesound"),
+DEFINE_KEYFIELD(m_MessageAttenuation, FIELD_INTEGER, "messageattenuation"),
+DEFINE_KEYFIELD(m_MessageVolume, FIELD_FLOAT, "messagevolume"),
 
-	DEFINE_FIELD( m_Radius, FIELD_FLOAT ),
+DEFINE_FIELD(m_Radius, FIELD_FLOAT),
 
-	DEFINE_INPUTFUNC( FIELD_VOID, "ShowMessage", InputShowMessage ),
+DEFINE_INPUTFUNC(FIELD_VOID, "ShowMessage", InputShowMessage),
 
-	DEFINE_OUTPUT(m_OnShowMessage, "OnShowMessage"),
+DEFINE_OUTPUT(m_OnShowMessage, "OnShowMessage"),
 
 END_DATADESC()
 
-
+BlaConVar blamod_trilogy_transfer("blamod_trilogy_transfer", "1", FCVAR_NOTIFY, 
+		"Instead of showing credits, start next episode\n 0 - Disable\n"
+		" 1 - Enabled between Ep1 -> Ep2\n 2 - Enable HL2 -> Ep1 and Ep1 -> Ep2");
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -231,13 +235,14 @@ void CCredits::RollOutroCredits()
 
 void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 {
-	if (Q_stricmp(gpGlobals->mapname.ToCStr(), "d3_breen_01") == 0) {
-		engine->ServerCommand("wait;wait;disconnect;wait 2;bla_mount ep1;wait;map ep1_citadel_00\n");
+	int transfer = blamod_trilogy_transfer.GetInt();
+	if (transfer >= 2 && Q_stricmp(gpGlobals->mapname.ToCStr(), "d3_breen_01") == 0) {
+		engine->ServerCommand("wait;wait;disconnect;wait 2;blamod_mount ep1;wait;map ep1_citadel_00\n");
 		return;
 	}
 
-	if (Q_stricmp(gpGlobals->mapname.ToCStr(), "ep1_c17_06") == 0) {
-		engine->ServerCommand("wait;wait;disconnect;wait 2;bla_mount ep2;wait;map ep2_outland_01\n");
+	if (transfer >= 1 && Q_stricmp(gpGlobals->mapname.ToCStr(), "ep1_c17_06") == 0) {
+		engine->ServerCommand("wait;wait;disconnect;wait 2;blamod_mount ep2;wait;map ep2_outland_01\n");
 		return;
 	}
 
