@@ -2971,7 +2971,7 @@ void CPhysicsProp::ComputeEnablingImpulse( int index, gamevcollisionevent_t *pEv
 //-----------------------------------------------------------------------------
 void CPhysicsProp::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 {
-	BaseClass::VPhysicsCollision( index, pEvent );
+	CBreakableProp::VPhysicsCollision(index, pEvent);
 
 	IPhysicsObject *pPhysObj = pEvent->pObjects[!index];
 
