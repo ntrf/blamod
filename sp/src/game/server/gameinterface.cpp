@@ -1580,145 +1580,146 @@ void CServerGameDLL::PreSave( CSaveRestoreData *s )
 // This little hack lets me marry BSP names to messages in titles.txt
 typedef struct
 {
+	const char *ModName;
 	const char *pBSPName;
 	const char *pTitleName;
+	int ChapterNumber;
 } TITLECOMMENT;
 
 // this list gets searched for the first partial match, so some are out of order
 static TITLECOMMENT gTitleComments[] =
 {
-#ifdef HL1_DLL
-	{ "t0a0", "#T0A0TITLE" },
-	{ "c0a0", "#HL1_Chapter1_Title" },
-	{ "c1a0", "#HL1_Chapter2_Title" },
-	{ "c1a1", "#HL1_Chapter3_Title" },
-	{ "c1a2", "#HL1_Chapter4_Title" },
-	{ "c1a3", "#HL1_Chapter5_Title" },
-	{ "c1a4", "#HL1_Chapter6_Title" },
-	{ "c2a1", "#HL1_Chapter7_Title" },
-	{ "c2a2", "#HL1_Chapter8_Title" },
-	{ "c2a3", "#HL1_Chapter9_Title" },
-	{ "c2a4d", "#HL1_Chapter11_Title" },	// These must appear before "C2A4" so all other map names starting with C2A4 get that title
-	{ "c2a4e", "#HL1_Chapter11_Title" },
-	{ "c2a4f", "#HL1_Chapter11_Title" },
-	{ "c2a4g", "#HL1_Chapter11_Title" },
-	{ "c2a4", "#HL1_Chapter10_Title" },
-	{ "c2a5", "#HL1_Chapter12_Title" },
-	{ "c3a1", "#HL1_Chapter13_Title" },
-	{ "c3a2", "#HL1_Chapter14_Title" },
-	{ "c4a1a", "#HL1_Chapter17_Title"  },	// Order is important, see above
-	{ "c4a1b", "#HL1_Chapter17_Title"  },
-	{ "c4a1c", "#HL1_Chapter17_Title"  },
-	{ "c4a1d", "#HL1_Chapter17_Title"  },
-	{ "c4a1e", "#HL1_Chapter17_Title"  },
-	{ "c4a1", "#HL1_Chapter15_Title" },
-	{ "c4a2", "#HL1_Chapter16_Title"  },
-	{ "c4a3", "#HL1_Chapter18_Title"  },
-	{ "c5a1", "#HL1_Chapter19_Title"  },
-#elif defined PORTAL
-	{ "testchmb_a_00",			"#Portal_Chapter1_Title"  },
-	{ "testchmb_a_01",			"#Portal_Chapter1_Title"  },
-	{ "testchmb_a_02",			"#Portal_Chapter2_Title"  },
-	{ "testchmb_a_03",			"#Portal_Chapter2_Title"  },
-	{ "testchmb_a_04",			"#Portal_Chapter3_Title"  },
-	{ "testchmb_a_05",			"#Portal_Chapter3_Title"  },
-	{ "testchmb_a_06",			"#Portal_Chapter4_Title"  },
-	{ "testchmb_a_07",			"#Portal_Chapter4_Title"  },
-	{ "testchmb_a_08_advanced",	"#Portal_Chapter5_Title"  },
-	{ "testchmb_a_08",			"#Portal_Chapter5_Title"  },
-	{ "testchmb_a_09_advanced",	"#Portal_Chapter6_Title"  },
-	{ "testchmb_a_09",			"#Portal_Chapter6_Title"  },
-	{ "testchmb_a_10_advanced",	"#Portal_Chapter7_Title"  },
-	{ "testchmb_a_10",			"#Portal_Chapter7_Title"  },
-	{ "testchmb_a_11_advanced",	"#Portal_Chapter8_Title"  },
-	{ "testchmb_a_11",			"#Portal_Chapter8_Title"  },
-	{ "testchmb_a_13_advanced",	"#Portal_Chapter9_Title"  },
-	{ "testchmb_a_13",			"#Portal_Chapter9_Title"  },
-	{ "testchmb_a_14_advanced",	"#Portal_Chapter10_Title"  },
-	{ "testchmb_a_14",			"#Portal_Chapter10_Title"  },
-	{ "testchmb_a_15",			"#Portal_Chapter11_Title"  },
-	{ "escape_",				"#Portal_Chapter11_Title"  },
-	{ "background2",			"#Portal_Chapter12_Title"  },
-#else
-	{ "intro", "#HL2_Chapter1_Title" },
+	{ "HL1", "t0a0", "#T0A0TITLE", 1 },
+	{ "HL1", "c0a0", "#HL1_Chapter1_Title", 1 },
+	{ "HL1", "c1a0", "#HL1_Chapter2_Title", 2 },
+	{ "HL1", "c1a1", "#HL1_Chapter3_Title", 3 },
+	{ "HL1", "c1a2", "#HL1_Chapter4_Title", 4 },
+	{ "HL1", "c1a3", "#HL1_Chapter5_Title", 5 },
+	{ "HL1", "c1a4", "#HL1_Chapter6_Title", 6 },
+	{ "HL1", "c2a1", "#HL1_Chapter7_Title", 7 },
+	{ "HL1", "c2a2", "#HL1_Chapter8_Title", 8 },
+	{ "HL1", "c2a3", "#HL1_Chapter9_Title", 9 },
+	{ "HL1", "c2a4d", "#HL1_Chapter11_Title", 11 },	// These must appear before "C2A4" so all other map names starting with C2A4 get that title
+	{ "HL1", "c2a4e", "#HL1_Chapter11_Title", 11 },
+	{ "HL1", "c2a4f", "#HL1_Chapter11_Title", 11 },
+	{ "HL1", "c2a4g", "#HL1_Chapter11_Title", 11 },
+	{ "HL1", "c2a4", "#HL1_Chapter10_Title", 10 },
+	{ "HL1", "c2a5", "#HL1_Chapter12_Title", 12 },
+	{ "HL1", "c3a1", "#HL1_Chapter13_Title", 13 },
+	{ "HL1", "c3a2", "#HL1_Chapter14_Title", 14 },
+	{ "HL1", "c4a1a", "#HL1_Chapter17_Title", 17 },	// Order is important, see above
+	{ "HL1", "c4a1b", "#HL1_Chapter17_Title", 17 },
+	{ "HL1", "c4a1c", "#HL1_Chapter17_Title", 17 },
+	{ "HL1", "c4a1d", "#HL1_Chapter17_Title", 17 },
+	{ "HL1", "c4a1e", "#HL1_Chapter17_Title", 17 },
+	{ "HL1", "c4a1", "#HL1_Chapter15_Title", 15 },
+	{ "HL1", "c4a2", "#HL1_Chapter16_Title", 16 },
+	{ "HL1", "c4a3", "#HL1_Chapter18_Title", 18 },
+	{ "HL1", "c5a1", "#HL1_Chapter19_Title", 19 },
 
-	{ "d1_trainstation_05", "#HL2_Chapter2_Title" },
-	{ "d1_trainstation_06", "#HL2_Chapter2_Title" },
-	
-	{ "d1_trainstation_", "#HL2_Chapter1_Title" },
+	{ "Portal", "testchmb_a_00", "#Portal_Chapter1_Title", 1 },
+	{ "Portal", "testchmb_a_01", "#Portal_Chapter1_Title", 1 },
+	{ "Portal", "testchmb_a_02", "#Portal_Chapter2_Title", 2 },
+	{ "Portal", "testchmb_a_03", "#Portal_Chapter2_Title", 2 },
+	{ "Portal", "testchmb_a_04", "#Portal_Chapter3_Title", 3 },
+	{ "Portal", "testchmb_a_05", "#Portal_Chapter3_Title", 3 },
+	{ "Portal", "testchmb_a_06", "#Portal_Chapter4_Title", 4 },
+	{ "Portal", "testchmb_a_07", "#Portal_Chapter4_Title", 4 },
+	{ "Portal", "testchmb_a_08_advanced", "#Portal_Chapter5_Title", 5 },
+	{ "Portal", "testchmb_a_08", "#Portal_Chapter5_Title", 5 },
+	{ "Portal", "testchmb_a_09_advanced", "#Portal_Chapter6_Title", 6 },
+	{ "Portal", "testchmb_a_09", "#Portal_Chapter6_Title", 6 },
+	{ "Portal", "testchmb_a_10_advanced", "#Portal_Chapter7_Title", 7 },
+	{ "Portal", "testchmb_a_10", "#Portal_Chapter7_Title", 7 },
+	{ "Portal", "testchmb_a_11_advanced", "#Portal_Chapter8_Title", 8 },
+	{ "Portal", "testchmb_a_11", "#Portal_Chapter8_Title", 8 },
+	{ "Portal", "testchmb_a_13_advanced", "#Portal_Chapter9_Title", 9 },
+	{ "Portal", "testchmb_a_13", "#Portal_Chapter9_Title", 9 },
+	{ "Portal", "testchmb_a_14_advanced", "#Portal_Chapter10_Title", 10 },
+	{ "Portal", "testchmb_a_14", "#Portal_Chapter10_Title", 10 },
+	{ "Portal", "testchmb_a_15", "#Portal_Chapter11_Title", 11 },
+	{ "Portal", "escape_", "#Portal_Chapter11_Title", 11 },
+	{ "Portal", "background2", "#Portal_Chapter12_Title", 12 },
 
-	{ "d1_canals_06", "#HL2_Chapter4_Title" },
-	{ "d1_canals_07", "#HL2_Chapter4_Title" },
-	{ "d1_canals_08", "#HL2_Chapter4_Title" },
-	{ "d1_canals_09", "#HL2_Chapter4_Title" },
-	{ "d1_canals_1", "#HL2_Chapter4_Title" },
-	
-	{ "d1_canals_0", "#HL2_Chapter3_Title" },
 
-	{ "d1_eli_", "#HL2_Chapter5_Title" },
+	{ "HL2", "intro", "#HL2_Chapter1_Title", 1},
 
-	{ "d1_town_", "#HL2_Chapter6_Title" },
+	{ "HL2", "d1_trainstation_05", "#HL2_Chapter2_Title", 2 },
+	{ "HL2", "d1_trainstation_06", "#HL2_Chapter2_Title", 2 },
 
-	{ "d2_coast_09", "#HL2_Chapter8_Title" },
-	{ "d2_coast_1", "#HL2_Chapter8_Title" },
-	{ "d2_prison_01", "#HL2_Chapter8_Title" },
+	{ "HL2", "d1_trainstation_", "#HL2_Chapter1_Title", 1 },
 
-	{ "d2_coast_", "#HL2_Chapter7_Title" },
+	{ "HL2", "d1_canals_06", "#HL2_Chapter4_Title", 4 },
+	{ "HL2", "d1_canals_07", "#HL2_Chapter4_Title", 4 },
+	{ "HL2", "d1_canals_08", "#HL2_Chapter4_Title", 4 },
+	{ "HL2", "d1_canals_09", "#HL2_Chapter4_Title", 4 },
+	{ "HL2", "d1_canals_1", "#HL2_Chapter4_Title", 4 },
 
-	{ "d2_prison_06", "#HL2_Chapter9a_Title" },
-	{ "d2_prison_07", "#HL2_Chapter9a_Title" },
-	{ "d2_prison_08", "#HL2_Chapter9a_Title" },
+	{ "HL2", "d1_canals_0", "#HL2_Chapter3_Title", 3 },
 
-	{ "d2_prison_", "#HL2_Chapter9_Title" },
+	{ "HL2", "d1_eli_", "#HL2_Chapter5_Title", 5 },
 
-	{ "d3_c17_01", "#HL2_Chapter9a_Title" },
-	{ "d3_c17_09", "#HL2_Chapter11_Title" },
-	{ "d3_c17_1", "#HL2_Chapter11_Title" },
+	{ "HL2", "d1_town_", "#HL2_Chapter6_Title", 6 },
 
-	{ "d3_c17_", "#HL2_Chapter10_Title" },
+	{ "HL2", "d2_coast_09", "#HL2_Chapter8_Title", 8 },
+	{ "HL2", "d2_coast_1", "#HL2_Chapter8_Title", 8 },
+	{ "HL2", "d2_prison_01", "#HL2_Chapter8_Title", 8 },
 
-	{ "d3_citadel_", "#HL2_Chapter12_Title" },
+	{ "HL2", "d2_coast_", "#HL2_Chapter7_Title", 7 },
 
-	{ "d3_breen_", "#HL2_Chapter13_Title" },
-	{ "credits", "#HL2_Chapter14_Title" },
+	{ "HL2", "d2_prison_06", "#HL2_Chapter9a_Title", 10 },
+	{ "HL2", "d2_prison_07", "#HL2_Chapter9a_Title", 10 },
+	{ "HL2", "d2_prison_08", "#HL2_Chapter9a_Title", 10 },
 
-	{ "ep1_citadel_00", "#episodic_Chapter1_Title" },
-	{ "ep1_citadel_01", "#episodic_Chapter1_Title" },
-	{ "ep1_citadel_02b", "#episodic_Chapter1_Title" },
-	{ "ep1_citadel_02", "#episodic_Chapter1_Title" },
-	{ "ep1_citadel_03", "#episodic_Chapter2_Title" },
-	{ "ep1_citadel_04", "#episodic_Chapter2_Title" },
-	{ "ep1_c17_00a", "#episodic_Chapter3_Title" },
-	{ "ep1_c17_00", "#episodic_Chapter3_Title" },
-	{ "ep1_c17_01", "#episodic_Chapter4_Title" },
-	{ "ep1_c17_02b", "#episodic_Chapter4_Title" },
-	{ "ep1_c17_02", "#episodic_Chapter4_Title" },
-	{ "ep1_c17_05", "#episodic_Chapter5_Title" },
-	{ "ep1_c17_06", "#episodic_Chapter5_Title" },
+	{ "HL2", "d2_prison_", "#HL2_Chapter9_Title", 9 },
 
-	{ "ep2_outland_01a", "#ep2_Chapter1_Title" },
-	{ "ep2_outland_01", "#ep2_Chapter1_Title" },
-	{ "ep2_outland_02", "#ep2_Chapter2_Title" },
-	{ "ep2_outland_03", "#ep2_Chapter2_Title" },
-	{ "ep2_outland_04", "#ep2_Chapter2_Title" },
-	{ "ep2_outland_05", "#ep2_Chapter3_Title" },
-	
-	{ "ep2_outland_06a", "#ep2_Chapter4_Title" },
-	{ "ep2_outland_06", "#ep2_Chapter3_Title" },
+	{ "HL2", "d3_c17_01", "#HL2_Chapter9a_Title", 10 },
+	{ "HL2", "d3_c17_09", "#HL2_Chapter11_Title", 12 },
+	{ "HL2", "d3_c17_1", "#HL2_Chapter11_Title", 12 },
 
-	{ "ep2_outland_07", "#ep2_Chapter4_Title" },
-	{ "ep2_outland_08", "#ep2_Chapter4_Title" },
-	{ "ep2_outland_09", "#ep2_Chapter5_Title" },
-	
-	{ "ep2_outland_10a", "#ep2_Chapter5_Title" },
-	{ "ep2_outland_10", "#ep2_Chapter5_Title" },
+	{ "HL2", "d3_c17_", "#HL2_Chapter10_Title", 11 },
 
-	{ "ep2_outland_11a", "#ep2_Chapter6_Title" },
-	{ "ep2_outland_11", "#ep2_Chapter6_Title" },
-	
-	{ "ep2_outland_12a", "#ep2_Chapter7_Title" },
-	{ "ep2_outland_12", "#ep2_Chapter6_Title" },
-#endif
+	{ "HL2", "d3_citadel_", "#HL2_Chapter12_Title", 13 },
+
+	{ "HL2", "d3_breen_", "#HL2_Chapter13_Title", 14 },
+	{ "HL2", "credits", "#HL2_Chapter14_Title", 15 },
+
+	{ "episodic", "ep1_citadel_00", "#episodic_Chapter1_Title", 1 },
+	{ "episodic", "ep1_citadel_01", "#episodic_Chapter1_Title", 1 },
+	{ "episodic", "ep1_citadel_02b", "#episodic_Chapter1_Title", 1 },
+	{ "episodic", "ep1_citadel_02", "#episodic_Chapter1_Title", 1 },
+	{ "episodic", "ep1_citadel_03", "#episodic_Chapter2_Title", 2 },
+	{ "episodic", "ep1_citadel_04", "#episodic_Chapter2_Title", 2 },
+	{ "episodic", "ep1_c17_00a", "#episodic_Chapter3_Title", 3 },
+	{ "episodic", "ep1_c17_00", "#episodic_Chapter3_Title", 3 },
+	{ "episodic", "ep1_c17_01", "#episodic_Chapter4_Title", 4 },
+	{ "episodic", "ep1_c17_02b", "#episodic_Chapter4_Title", 4 },
+	{ "episodic", "ep1_c17_02", "#episodic_Chapter4_Title", 4 },
+	{ "episodic", "ep1_c17_05", "#episodic_Chapter5_Title", 5 },
+	{ "episodic", "ep1_c17_06", "#episodic_Chapter5_Title", 5 },
+
+	{ "ep2", "ep2_outland_01a", "#ep2_Chapter1_Title", 1 },
+	{ "ep2", "ep2_outland_01", "#ep2_Chapter1_Title", 1 },
+	{ "ep2", "ep2_outland_02", "#ep2_Chapter2_Title", 2 },
+	{ "ep2", "ep2_outland_03", "#ep2_Chapter2_Title", 2 },
+	{ "ep2", "ep2_outland_04", "#ep2_Chapter2_Title", 2 },
+	{ "ep2", "ep2_outland_05", "#ep2_Chapter3_Title", 3 },
+
+	{ "ep2", "ep2_outland_06a", "#ep2_Chapter4_Title", 4 },
+	{ "ep2", "ep2_outland_06", "#ep2_Chapter3_Title", 3 },
+
+	{ "ep2", "ep2_outland_07", "#ep2_Chapter4_Title", 4 },
+	{ "ep2", "ep2_outland_08", "#ep2_Chapter4_Title", 4 },
+	{ "ep2", "ep2_outland_09", "#ep2_Chapter5_Title", 5 },
+
+	{ "ep2", "ep2_outland_10a", "#ep2_Chapter5_Title", 5 },
+	{ "ep2", "ep2_outland_10", "#ep2_Chapter5_Title", 5 },
+
+	{ "ep2", "ep2_outland_11a", "#ep2_Chapter6_Title", 6 },
+	{ "ep2", "ep2_outland_11", "#ep2_Chapter6_Title", 6 },
+
+	{ "ep2", "ep2_outland_12a", "#ep2_Chapter7_Title", 7 },
+	{ "ep2", "ep2_outland_12", "#ep2_Chapter6_Title", 6 }
 };
 
 #ifdef _XBOX
@@ -2037,92 +2038,40 @@ ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE | FCVAR_AR
 //-----------------------------------------------------------------------------
 // Purpose: Updates which chapters are unlocked
 //-----------------------------------------------------------------------------
-void UpdateChapterRestrictions( const char *mapname )
+void UpdateChapterRestrictions(const char *mapname)
 {
 	// look at the chapter for this map
 	char chapterTitle[64];
 	chapterTitle[0] = 0;
-	for ( int i = 0; i < ARRAYSIZE(gTitleComments); i++ )
-	{
-		if ( !Q_strnicmp( mapname, gTitleComments[i].pBSPName, strlen(gTitleComments[i].pBSPName) ) )
-		{
+
+	TITLECOMMENT * title = nullptr;
+
+	for (int i = 0; i < ARRAYSIZE(gTitleComments); i++) {
+		if (!Q_strnicmp(mapname, gTitleComments[i].pBSPName, strlen(gTitleComments[i].pBSPName))) {
 			// found
-			Q_strncpy( chapterTitle, gTitleComments[i].pTitleName, sizeof( chapterTitle ) );
-			int j = 0;
-			while ( j < 64 && chapterTitle[j] )
-			{
-				if ( chapterTitle[j] == '\n' || chapterTitle[j] == '\r' )
-					chapterTitle[j] = 0;
-				else
-					j++;
-			}
+			title = &gTitleComments[i];
 
 			break;
 		}
 	}
 
-	if ( !chapterTitle[0] )
+	if (!title)
 		return;
 
-	// make sure the specified chapter title is unlocked
-	strlwr( chapterTitle );
-	
-	// Get our active mod directory name
-	char modDir[MAX_PATH];
-	if ( UTIL_GetModDir( modDir, sizeof(modDir) ) == false )
-		return;
-
-	char chapterNumberPrefix[64];
-	Q_snprintf(chapterNumberPrefix, sizeof(chapterNumberPrefix), "#%s_chapter", modDir);
-
-	const char *newChapterNumber = strstr( chapterTitle, chapterNumberPrefix );
-	if ( newChapterNumber )
-	{
-		// cut off the front
-		newChapterNumber += strlen( chapterNumberPrefix );
-		char newChapter[32];
-		Q_strncpy( newChapter, newChapterNumber, sizeof(newChapter) );
-
-		// cut off the end
-		char *end = strstr( newChapter, "_title" );
-		if ( end )
-		{
-			*end = 0;
-		}
-
-		int nNewChapter = atoi( newChapter );
-
-		// HACK: HL2 added a zany chapter "9a" which wreaks
-		//       havoc in this stupid atoi-based chapter code.
-		if ( !Q_stricmp( modDir, "hl2" ) )
-		{
-			if ( !Q_stricmp( newChapter, "9a" ) )
-			{
-				nNewChapter = 10;
-			}
-			else if ( nNewChapter > 9 )
-			{
-				nNewChapter++;
-			}
-		}
-
+	int newChapterNumber = title->ChapterNumber;
+	if (newChapterNumber > 0) {
 		// ok we have the string, see if it's newer
 		const char *unlockedChapter = sv_unlockedchapters.GetString();
-		int nUnlockedChapter = atoi( unlockedChapter );
+		int nUnlockedChapter = atoi(unlockedChapter);
 
-		if ( nUnlockedChapter < nNewChapter )
-		{
+		if (nUnlockedChapter < newChapterNumber) {
 			// ok we're at a higher chapter, unlock
-			sv_unlockedchapters.SetValue( nNewChapter );
+			sv_unlockedchapters.SetValue(newChapterNumber);
 
-			// HACK: Call up through a better function than this? 7/23/07 - jdw
-			if ( IsX360() )
-			{
-				engine->ServerCommand( "host_writeconfig\n" );
-			}
+			engine->ServerCommand("host_writeconfig\n");
 		}
 
-		g_nCurrentChapterIndex = nNewChapter;
+		g_nCurrentChapterIndex = newChapterNumber;
 	}
 }
 

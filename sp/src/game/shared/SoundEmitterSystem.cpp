@@ -57,6 +57,37 @@ void ClearModelSoundsCache();
 
 #endif // !CLIENT_DLL
 
+#define MANIFEST_FILE "scripts/game_sounds_manifest.txt"
+
+bool SoundEmitter_ForceManifestReload = true;
+
+static void ReloadManifest()
+{
+	soundemitterbase->ClearSoundOverrides();
+
+	KeyValues *manifest = new KeyValues(MANIFEST_FILE);
+	if (manifest->LoadFromFile(filesystem, MANIFEST_FILE, "GAME")) {
+		for (KeyValues *sub = manifest->GetFirstSubKey(); sub != NULL; sub = sub->GetNextKey()) {
+			if (!Q_stricmp(sub->GetName(), "precache_file")) {
+				// Add and always precache
+				soundemitterbase->AddSoundOverrides(sub->GetString(), true);
+				continue;
+			} else if (!Q_stricmp(sub->GetName(), "declare_file")) {
+				// Add but don't precache
+				soundemitterbase->AddSoundOverrides(sub->GetString(), false);
+				continue;
+			}
+
+			Warning("CSoundEmitterSystemBase::BaseInit:  Manifest '%s' with bogus file type '%s', expecting 'declare_file' or 'precache_file'\n",
+					MANIFEST_FILE, sub->GetName());
+		}
+	}
+
+	SoundEmitter_ForceManifestReload = false;
+}
+
+
+
 void WaveTrace( char const *wavname, char const *funcname )
 {
 	if ( IsX360() && !IsDebug() )
@@ -224,6 +255,7 @@ public:
 #endif
 		g_pClosecaption = cvar->FindVar("closecaption");
 		Assert(g_pClosecaption);
+
 		return soundemitterbase->ModInit();
 	}
 
@@ -272,46 +304,15 @@ public:
 
 		// Load in any map specific overrides
 		char scriptfile[ 512 ];
-#if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
-		if( V_stristr( mapname, "mvm" ) )
-		{
-			V_strncpy( scriptfile, "scripts/mvm_level_sounds.txt", sizeof( scriptfile ) );
-			if ( filesystem->FileExists( "scripts/mvm_level_sounds.txt", "GAME" ) )
-			{
-				soundemitterbase->AddSoundOverrides( "scripts/mvm_level_sounds.txt" );
-			}
-			if ( filesystem->FileExists( "scripts/mvm_level_sound_tweaks.txt", "GAME" ) )
-			{
-				soundemitterbase->AddSoundOverrides( "scripts/mvm_level_sound_tweaks.txt" );
- 			}
-			if ( filesystem->FileExists( "scripts/game_sounds_vo_mvm.txt", "GAME" ) )
-			{
-				soundemitterbase->AddSoundOverrides( "scripts/game_sounds_vo_mvm.txt", true );
-			}
-			if ( filesystem->FileExists( "scripts/game_sounds_vo_mvm_mighty.txt", "GAME" ) )
-			{
-				soundemitterbase->AddSoundOverrides( "scripts/game_sounds_vo_mvm_mighty.txt", true );
-			}
-			g_pTFPlayerClassDataMgr->AddAdditionalPlayerDeathSounds();
-		}
-		else
-		{
-			Q_StripExtension( mapname, scriptfile, sizeof( scriptfile ) );
-			Q_strncat( scriptfile, "_level_sounds.txt", sizeof( scriptfile ), COPY_ALL_CHARACTERS );
-			if ( filesystem->FileExists( scriptfile, "GAME" ) )
-			{
-				soundemitterbase->AddSoundOverrides( scriptfile );
-			}
-		}
-#else
 		Q_StripExtension( mapname, scriptfile, sizeof( scriptfile ) );
 		Q_strncat( scriptfile, "_level_sounds.txt", sizeof( scriptfile ), COPY_ALL_CHARACTERS );
 
-		if ( filesystem->FileExists( scriptfile, "GAME" ) )
-		{
+		if ( filesystem->FileExists( scriptfile, "GAME" ) ) {
 			soundemitterbase->AddSoundOverrides( scriptfile );
+		} else if (SoundEmitter_ForceManifestReload) {
+			ReloadManifest();
 		}
-#endif
+
 
 #if !defined( CLIENT_DLL )
 		for ( int i=soundemitterbase->First(); i != soundemitterbase->InvalidIndex(); i=soundemitterbase->Next( i ) )
@@ -331,7 +332,7 @@ public:
 
 	virtual void LevelShutdownPostEntity()
 	{
-		soundemitterbase->ClearSoundOverrides();
+		//soundemitterbase->ClearSoundOverrides();
 
 #if !defined( CLIENT_DLL )
 		FinishLog();
@@ -1003,9 +1004,9 @@ void S_SoundEmitterSystemFlush( void )
 	// restart the system
 	g_SoundEmitterSystem.Init();
 
-#if !defined( CLIENT_DLL )
 	// Redo precache all wave files... (this should work now that we have dynamic string tables)
 	g_SoundEmitterSystem.LevelInitPreEntity();
+#if !defined( CLIENT_DLL )
 
 	// These store raw sound indices for faster precaching, blow them away.
 	ClearModelSoundsCache();
@@ -1493,6 +1494,9 @@ void CBaseEntity::EmitCloseCaption( IRecipientFilter& filter, int entindex, char
 //-----------------------------------------------------------------------------
 bool CBaseEntity::PrecacheSound( const char *name )
 {
+	if (!name || !*name)
+		return false;
+
 	if ( IsPC() && !g_bPermitDirectSoundPrecache )
 	{
 		Warning( "Direct precache of %s\n", name );

@@ -3436,6 +3436,9 @@
     <ClCompile Include="hl2\c_prop_gravity_ball.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="bla\bla_mount.cpp">
+      <Filter>Blamod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

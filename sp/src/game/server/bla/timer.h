@@ -60,14 +60,16 @@ public:
 
 	void Start()
 	{
+/*
 		m_ftTimer.Start();
 		m_bIsRunning = true;
 		DispatchStateChangeMessage();
+*/
 	}
 
 	void Stop()
 	{
-		m_ftTimer.End();
+/*		m_ftTimer.End();
 		m_bIsRunning = false;
 		DispatchStateChangeMessage();
 		float flSecondsTime = GetCurrentTime();
@@ -76,7 +78,7 @@ public:
 			m_flSecondsRecord = flSecondsTime;
 			DevMsg("New map record: %.4f seconds\n", m_flSecondsRecord);
 			WriteMapFile();
-		}
+		}*/
 	}
 
 	bool IsRunning()
@@ -96,34 +98,42 @@ public:
 
 	void DispatchTimeToBeatMessage()
 	{
+/*
 		CSingleUserRecipientFilter user(UTIL_GetLocalPlayer());
 		user.MakeReliable();
 		UserMessageBegin(user, "BlaTimer_TimeToBeat");
 			WRITE_FLOAT(m_flSecondsRecord);
 		MessageEnd();
+*/
 	}
 
 	void DispatchTimeMessage()
 	{
+/*
 		CSingleUserRecipientFilter user(UTIL_GetLocalPlayer());
 		user.MakeReliable();
 		UserMessageBegin(user, "BlaTimer_Time");
 			WRITE_FLOAT(GetCurrentTime());
 		MessageEnd();
+*/
 	}
 
 	void SetStartPosition(Vector start)
 	{
+/*
 		UTIL_GetLocalPlayer()->SetStartPosition(start);
 		m_vStart = start;
 		WriteMapFile();
+*/
 	}
 
 	void SetGoalPosition(Vector goal)
 	{
+/*
 		UTIL_GetLocalPlayer()->SetGoalPosition(goal);
 		m_vGoal = goal;
 		WriteMapFile();
+*/
 	}
 
 private:

@@ -17,6 +17,7 @@
 #include <vgui/ILocalize.h>
 #include "KeyValues.h"
 #include "filesystem.h"
+#include <string.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -132,7 +133,12 @@ private:
 	char m_szLogo[256];
 	char m_szLogo2[256];
 
+	char m_szLogo2_ep1[256];
+	char m_szLogo2_ep2[256];
+
 	Color m_cColor;
+
+	int   logoSelect = 0;
 };	
 
 
@@ -252,6 +258,9 @@ void CHudCredits::ReadParams( KeyValues *pKeyValue )
 
 	Q_strncpy( m_szLogo, pKeyValue->GetString( "logo", "HALF-LIFE'" ), sizeof( m_szLogo ) );
 	Q_strncpy( m_szLogo2, pKeyValue->GetString( "logo2", "" ), sizeof( m_szLogo2 ) );
+
+	Q_strncpy(m_szLogo2_ep1, pKeyValue->GetString("logo2_ep1", ""), sizeof(m_szLogo2_ep1));
+	Q_strncpy(m_szLogo2_ep2, pKeyValue->GetString("logo2_ep2", ""), sizeof(m_szLogo2_ep2));
 }
 
 int CHudCredits::GetStringPixelWidth( wchar_t *pString, vgui::HFont hFont )
@@ -449,14 +458,20 @@ void CHudCredits::DrawLogo( void )
 	surface()->DrawSetTextPos( ( iWidth / 2 ) - ( iStringWidth / 2 ), ( iTall / 2 ) - ( iFontTall / 2 ) );
 	surface()->DrawUnicodeString( unicode );
 
-	if ( Q_strlen( m_szLogo2 ) > 0 )
-	{
-		g_pVGuiLocalize->ConvertANSIToUnicode( m_szLogo2, unicode, sizeof( unicode ) );
+	if (Q_strlen(m_szLogo2) > 0 || logoSelect > 0) {
+		// Select logo based on episode
+		const char * text = m_szLogo2;
+		if (logoSelect == 1)
+			text = m_szLogo2_ep1;
+		else if (logoSelect == 2)
+			text = m_szLogo2_ep2;
 
-		iStringWidth = GetStringPixelWidth( unicode, m_hTFont ); 
+		g_pVGuiLocalize->ConvertANSIToUnicode(text, unicode, sizeof(unicode));
 
-		surface()->DrawSetTextPos( ( iWidth / 2 ) - ( iStringWidth / 2 ), ( iTall / 2 ) + ( iFontTall / 2 ));
-		surface()->DrawUnicodeString( unicode );
+		iStringWidth = GetStringPixelWidth(unicode, m_hTFont);
+
+		surface()->DrawSetTextPos((iWidth / 2) - (iStringWidth / 2), (iTall / 2) + (iFontTall / 2));
+		surface()->DrawUnicodeString(unicode);
 	}
 }
 
@@ -597,6 +612,14 @@ void CHudCredits::PrepareLogo( float flTime )
 {
 	// Only showing the logo. Just load the CreditsParams section.
 	PrepareCredits( NULL );
+
+	const char * level = engine->GetLevelName();
+	if (V_stristr(level, "ep1_") != nullptr)
+		logoSelect = 1;
+	else if (V_stristr(level, "ep2_") != nullptr)
+		logoSelect = 2;
+	else
+		logoSelect = 0;
 
 	m_Alpha = 0;
 	m_flLogoDesiredLength = flTime;

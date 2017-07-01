@@ -100,6 +100,12 @@
 {
 	"logo" "HALF-LIFE'"
 	
+	"logo_ep2" "HALF-LIFE'"
+	"logo2_ep2" "== episode two=="
+
+	"logo_ep1" "HALF-LIFE'"
+	"logo2_ep1" "== episode one=="
+	
 	"fadeintime"	"2.5"
 	"fadeouttime"	"1"
 	"fadeholdtime"	"1.0"
