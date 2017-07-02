@@ -13,4 +13,4 @@ exec userconfig.cfg
 stuffcmds
 
 hl2_episodic 1
-startupmenu 
+// startupmenu 
