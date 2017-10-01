@@ -120,6 +120,10 @@ set(BLAMOD_FW_FILES
 	bla/bla_mount.cpp
 	../blamod/blamodvar.cpp
 	../blamod/blamodvar.h
+
+	../blamod/blamod_gamerules.cpp
+
+	# ../blamod/ent_blamod_timer.cpp
 )
 source_group(Blamod FILES ${BLAMOD_FW_FILES})
 

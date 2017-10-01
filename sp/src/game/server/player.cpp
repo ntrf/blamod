@@ -70,8 +70,9 @@
 #include "vote_controller.h"
 #include "ai_speech.h"
 
-#include "bla/timer.h"
+//#include "bla/timer.h"
 #include "../blamod/blamodvar.h"
+#include "../blamod/blamod_timer.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -1727,7 +1728,7 @@ void CBasePlayer::Event_Killed( const CTakeDamageInfo &info )
 
 	ClearLastKnownArea();
 
-	BaseClass::Event_Killed( info );
+	CBaseCombatCharacter::Event_Killed(info);
 }
 
 void CBasePlayer::Event_Dying( const CTakeDamageInfo& info )
@@ -2162,7 +2163,7 @@ void CBasePlayer::PlayerDeathThink(void)
 
 	//Msg( "Respawn\n");
 
-	respawn( this, !IsObserver() );// don't copy a corpse if we're in deathcam.
+	respawn(this, !IsObserver() && !g_pGameRules->IsCoOp());// don't copy a corpse if we're in deathcam.
 	SetNextThink( TICK_NEVER_THINK );
 }
 
@@ -4504,23 +4505,6 @@ void CBasePlayer::ForceOrigin( const Vector &vecOrigin )
 	m_vForcedOrigin = vecOrigin;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-static ConVar bla_timerradius("blamod_timerradius", "250.0",
-							  FCVAR_REPLICATED,
-							  "Radius around the start/goal position in game "
-							  "units where the on-screen timer starts/stops.");
-void CBasePlayer::SetStartPosition(Vector start)
-{
-	m_vecStartPosition = start;
-	Vector origin = GetLocalOrigin();
-	float radius = clamp(bla_timerradius.GetFloat(), 100.0f, 1000.0f);
-	m_bSpawnedInsideTimerRadius = origin.DistTo(start) <= radius;
-	DevMsg("ClientActive: start position is %.2f, %.2f, %.2f\n", 
-	       start.x, start.y, start.z);
-}
-
 void CBasePlayer::PostThink()
 {
 	m_vecSmoothedVelocity = m_vecSmoothedVelocity * SMOOTHING_FACTOR + GetAbsVelocity() * ( 1 - SMOOTHING_FACTOR );
@@ -4623,23 +4607,6 @@ void CBasePlayer::PostThink()
 			SetLocalAngles( m_Local.m_vecPunchAngle );
 			m_Local.m_vecPunchAngle = RandomAngle( -25, 25 );
 			m_Local.m_vecPunchAngleVel.Init();
-		}
-
-		// Check if we went outside the start position hull radius or if we
-		// entered the goal hull radius. In every session the timer can always
-		// only be started once. 
-		Vector origin = GetLocalOrigin();
-		float radius = clamp(bla_timerradius.GetFloat(), 100.0f, 1000.0f);
-		if (!BlaTimer::timer()->IsRunning())
-		{
-			vec_t distStart = origin.DistTo(m_vecStartPosition);
-			if ((distStart > radius && m_bSpawnedInsideTimerRadius) ||
-		     	(distStart <= radius && !m_bSpawnedInsideTimerRadius))
-				BlaTimer::timer()->Start();
-		}
-		else if (origin.DistTo(m_vecGoalPosition) < radius &&
-				 BlaTimer::timer()->IsRunning()) {
-			BlaTimer::timer()->Stop();
 		}
 
 		VPROF_SCOPE_BEGIN( "CBasePlayer::PostThink-PostThinkVPhysics" );
@@ -6814,7 +6781,9 @@ void CBasePlayer::UpdateClientData( void )
 		m_Local.m_iHideHUD &= ~HIDEHUD_BONUS_PROGRESS;
 
 	// Send timer update to the HUD.
-	BlaTimer::timer()->DispatchTimeMessage();
+	if (blaActiveTimer) {
+		Blamod::DispatchTimerMessage(blaActiveTimer, this);
+	}
 
 	// Let any global rules update the HUD, too
 	g_pGameRules->UpdateClientData( this );
@@ -9334,3 +9303,14 @@ uint64 CBasePlayer::GetSteamIDAsUInt64( void )
 	return 0;
 }
 #endif // NO_STEAM
+
+
+void CBasePlayer::StartTimer(class CBlamodTimer * t)
+{
+	blaActiveTimer = t;
+}
+
+void CBasePlayer::StopTimer()
+{
+	blaActiveTimer = nullptr;
+}

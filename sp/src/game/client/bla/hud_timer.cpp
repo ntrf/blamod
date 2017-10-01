@@ -103,9 +103,9 @@ void CHudTimer::Reset()
 void CHudTimer::MsgFunc_BlaTimer_TimeToBeat(bf_read &msg)
 {
 	m_flSecondsRecord = msg.ReadFloat();
-	DevMsg("CHudTimer: map record is %02d:%02d.%04d\n",
+	DevMsg("CHudTimer: map record is %02d:%02d.%03d\n",
            (int)(m_flSecondsRecord / 60), ((int)m_flSecondsRecord) % 60,
-           (int)((m_flSecondsRecord - (int)m_flSecondsRecord) * 10000));
+           (int)((m_flSecondsRecord - (int)m_flSecondsRecord) * 1000));
 }
 
 void CHudTimer::MsgFunc_BlaTimer_Time(bf_read &msg)
@@ -139,9 +139,9 @@ void CHudTimer::MsgFunc_BlaTimer_StateChange(bf_read &msg)
 void CHudTimer::Paint(void)
 {
 	// Convert the current time to a string.
-	Q_snprintf(m_pszString, sizeof(m_pszString), "%02d:%02d.%04d",
+	Q_snprintf(m_pszString, sizeof(m_pszString), "%02d:%02d.%03d",
 	           (int)(m_flSecondsTime / 60), ((int)m_flSecondsTime) % 60,
-	           (int)((m_flSecondsTime - (int)m_flSecondsTime) * 10000));
+	           (int)((m_flSecondsTime - (int)m_flSecondsTime) * 1000));
 
 	// msg.ReadString(m_pszString, sizeof(m_pszString));
 	g_pVGuiLocalize->ConvertANSIToUnicode(

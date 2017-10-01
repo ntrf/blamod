@@ -1596,15 +1596,14 @@ void CBaseCombatCharacter::Event_Killed( const CTakeDamageInfo &info )
 
 	CBaseCombatWeapon *pDroppedWeapon = m_hActiveWeapon.Get();
 
-	// Drop any weapon that I own
-	if ( VPhysicsGetObject() )
-	{
-		Vector weaponForce = forceVector * VPhysicsGetObject()->GetInvMass();
-		Weapon_Drop( m_hActiveWeapon, NULL, &weaponForce );
-	}
-	else
-	{
-		Weapon_Drop( m_hActiveWeapon );
+	if (!IsPlayer() || !g_pGameRules->IsCoOp()) {
+		// Drop any weapon that I own
+		if (VPhysicsGetObject()) {
+			Vector weaponForce = forceVector * VPhysicsGetObject()->GetInvMass();
+			Weapon_Drop(m_hActiveWeapon, NULL, &weaponForce);
+		} else {
+			Weapon_Drop(m_hActiveWeapon);
+		}
 	}
 	
 	// if flagged to drop a health kit

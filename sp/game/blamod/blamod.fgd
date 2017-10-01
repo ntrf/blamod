@@ -1,0 +1,10 @@
+@include "halflife2.fgd"
+@include "base.fgd"
+
+@PointClass base(Targetname) = blamod_timer : 
+	"Blamod timer node. Rout event to start and end timer here"
+[
+	input Start(void) : "Start the timer"
+	input Finish(void) : "Stop the timer and consider level complete"
+	input Fail(void) : "Stop the timer and respawn player"
+]

@@ -1128,22 +1128,6 @@ private:
 	// Player name
 	char					m_szNetname[MAX_PLAYER_NAME_LENGTH];
 
-	// blamod
-	Vector m_vecStartPosition;
-	Vector m_vecGoalPosition;
-	bool m_bSpawnedInsideTimerRadius;
-	CNetworkVar(int, m_fBlaFlags);
-
-public:
-	int GetBlaFlags() const;
-	void ToggleBlaFlag(int flagToToggle)
-	{
-		m_fBlaFlags ^= flagToToggle;
-	}
-
-	void SetStartPosition(Vector start);
-	void SetGoalPosition(Vector goal) { m_vecGoalPosition = goal; }
-
 protected:
 	// HACK FOR TF2 Prediction
 	friend class CTFGameMovementRecon;
@@ -1227,6 +1211,23 @@ private:
 public:
 	virtual unsigned int PlayerSolidMask( bool brushOnly = false ) const;	// returns the solid mask for the given player, so bots can have a more-restrictive set
 
+	//-----------------------
+	// Blamod specific
+public:
+	
+	CNetworkVar(int, m_fBlaFlags);
+
+public:
+	int GetBlaFlags() const;
+	void ToggleBlaFlag(int flagToToggle)
+	{
+		m_fBlaFlags ^= flagToToggle;
+	}
+
+	void StartTimer(class CBlamodTimer * t);
+	void StopTimer();
+
+	class CBlamodTimer * blaActiveTimer = nullptr;
 };
 
 typedef CHandle<CBasePlayer> CBasePlayerHandle;

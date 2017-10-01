@@ -1113,54 +1113,6 @@ void CC_Infammo_f()
 static ConCommand bla_infammo(
 	"blamod_infammo", CC_Infammo_f, "Toggle: infinite ammo");
 
-
-//-----------------------------------------------------------------------------
-// Place start trigger for the map timer.
-//-----------------------------------------------------------------------------
-static Vector TraceBrush(CBasePlayer *pPlayer)
-{
-	// Get the entity under my crosshair
-	trace_t tr;
-	edict_t *pWorld = engine->PEntityOfEntIndex( 0 );
-	Vector start = pPlayer->EyePosition(), forward;
-	pPlayer->EyeVectors(&forward);
-	Vector end = start + forward * 1024;
-	UTIL_TraceLine(start, end, MASK_SOLID_BRUSHONLY, pPlayer, 
-	               COLLISION_GROUP_NONE, &tr);
-	if (tr.m_pEnt)
-		return tr.endpos;
-	return vec3_invalid;
-}
-
-void CC_SetStart_f()
-{
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (!pPlayer)
-		return;
-	BlaTimer::timer()->SetStartPosition(TraceBrush(pPlayer));
-}
-
-static ConCommand bla_setstart("blamod_setstart", CC_SetStart_f, 
-                               "Place the start trigger for the timer at the "
-                               "position the player is looking at.");
-
-
-//-----------------------------------------------------------------------------
-// Place goal trigger for the map timer.
-//-----------------------------------------------------------------------------
-void CC_SetGoal_f()
-{
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (!pPlayer)
-		return;
-	BlaTimer::timer()->SetGoalPosition(TraceBrush(pPlayer));
-}
-
-static ConCommand bla_setgoal("blamod_setgoal", CC_SetGoal_f, "Place the goal "
-                              "trigger for the timer at the position the "
-                              "player is looking at.");
-
-
 //------------------------------------------------------------------------------
 // Sets client to godmode
 //------------------------------------------------------------------------------

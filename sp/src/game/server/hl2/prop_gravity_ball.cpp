@@ -535,8 +535,8 @@ void CPropGravityBall::DoExplosion( )
 
 		forward *= gravityball_magnitude.GetFloat();
 
-		DevMsg("Found valid gravity entity %s / forward %f %f %f\n", pEntity->GetClassname(),
-			   forward.x, forward.y, forward.z);
+//		DevMsg("Found valid gravity entity %s / forward %f %f %f\n", pEntity->GetClassname(),
+//			   forward.x, forward.y, forward.z);
 
 		// Punt Non VPhysics Objects
 		if ( pEntity->GetMoveType() != MOVETYPE_VPHYSICS )

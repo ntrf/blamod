@@ -1822,6 +1822,7 @@ void CBasePlayer::SharedSpawn()
 	SetMoveType( MOVETYPE_WALK );
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
+	RemoveSolidFlags(FSOLID_NOT_SOLID);
 	SetFriction( 1.0f );
 
 	pl.deadflag	= false;

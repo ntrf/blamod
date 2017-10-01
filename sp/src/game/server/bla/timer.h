@@ -17,68 +17,12 @@ extern IFileSystem *filesystem;
 class BlaTimer
 {
 public:
-	BlaTimer() : m_bIsRunning(false), m_flSecondsRecord(0.0f)
-	{
-		m_vStart.Init();
-		m_vGoal.Init();
-	}
+	BlaTimer() {}
 	~BlaTimer() {}
 
 	void Init()
 	{
-		m_ftTimer.End();
-		m_ftTimer = CFastTimer(); // CFastTimer has no reset method.
 		m_bIsRunning = false;
-
-#if 0
-		// Make sure the maps directory is there (you never know...).
-		filesystem->CreateDirHierarchy("maps", "MOD");
-
-		CUtlBuffer buffer;
-		char *pszPath = GetMapFilePath();
-		DevMsg("Trying to get record: %s\n", pszPath);
-		if (filesystem->ReadFile(pszPath, "MOD", buffer))
-		{
-			char *pszRecord = new char[buffer.Size() + 1];
-			buffer.GetString(pszRecord);
-			pszRecord[buffer.Size()] = '\0';
-			if (sscanf(pszRecord, "%f %f %f" NEWLINE "%f %f %f" NEWLINE "%f", 
-			    	   &m_vStart.x, &m_vStart.y, &m_vStart.z,
-			    	   &m_vGoal.x, &m_vGoal.y, &m_vGoal.z,
-			    	   &m_flSecondsRecord) != 7)
-				Warning("Record file %s is malformed\n", pszPath);
-			delete[] pszRecord;
-		}
-		delete[] pszPath;
-#endif
-		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-		if (!pPlayer)
-			return;
-		pPlayer->SetStartPosition(m_vStart);
-		pPlayer->SetGoalPosition(m_vGoal);
-	}
-
-	void Start()
-	{
-/*
-		m_ftTimer.Start();
-		m_bIsRunning = true;
-		DispatchStateChangeMessage();
-*/
-	}
-
-	void Stop()
-	{
-/*		m_ftTimer.End();
-		m_bIsRunning = false;
-		DispatchStateChangeMessage();
-		float flSecondsTime = GetCurrentTime();
-		if (flSecondsTime < m_flSecondsRecord || m_flSecondsRecord == 0.0f)
-		{
-			m_flSecondsRecord = flSecondsTime;
-			DevMsg("New map record: %.4f seconds\n", m_flSecondsRecord);
-			WriteMapFile();
-		}*/
 	}
 
 	bool IsRunning()
@@ -88,12 +32,7 @@ public:
 
 	float GetCurrentTime()
 	{
-		CCycleCount ccCycles;
-		if (m_bIsRunning)
-			ccCycles = m_ftTimer.GetDurationInProgress();
-		else
-			ccCycles = m_ftTimer.GetDuration();
-		return static_cast<float>(ccCycles.GetSeconds());;
+		return gpGlobals->curtime;
 	}
 
 	void DispatchTimeToBeatMessage()
@@ -137,10 +76,6 @@ public:
 	}
 
 private:
-	Vector m_vStart;
-	Vector m_vGoal;
-	CFastTimer m_ftTimer;
-	CCycleCount m_ccCycles;
 	bool m_bIsRunning;
 	bool m_IsPaused;
 	float m_flSecondsRecord;

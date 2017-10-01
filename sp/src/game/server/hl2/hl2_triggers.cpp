@@ -597,7 +597,7 @@ public:
 	// Ignore non-living entities
 	virtual bool PassesTriggerFilters(CBaseEntity *pOther)
 	{
-		if ( !BaseClass::PassesTriggerFilters(pOther) )
+		if (!CBaseTrigger::PassesTriggerFilters(pOther))
 			return false;
 
 		return (pOther->m_takedamage == DAMAGE_YES);
@@ -733,7 +733,7 @@ void CTriggerWateryDeath::Touch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 void CTriggerWateryDeath::StartTouch(CBaseEntity *pOther)
 {
-	BaseClass::StartTouch( pOther );
+	CBaseTrigger::StartTouch(pOther);
 
 	m_flPainValue = 0.0f;
 
@@ -822,7 +822,7 @@ void CTriggerWateryDeath::EndTouch( CBaseEntity *pOther )
 	}
 #endif
 
-	BaseClass::EndTouch( pOther );
+	CBaseTrigger::EndTouch(pOther);
 }
 
 

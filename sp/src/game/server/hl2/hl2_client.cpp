@@ -146,11 +146,12 @@ void ClientGamePrecache( void )
 	CBaseEntity::PrecacheScriptSound("blamod.StopTimer");
 }
 
+extern ConVar blamod_challengemode;
 
 // called by ClientKill and DeadThink
 void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 {
-	if (gpGlobals->coop || gpGlobals->deathmatch)
+	if (g_pGameRules->IsCoOp() || gpGlobals->coop || gpGlobals->deathmatch)
 	{
 		if ( fCopyCorpse )
 		{
@@ -180,22 +181,17 @@ void GameStartFrame( void )
 extern ConVar gamerules_survival;
 #endif
 
+extern ConVar blamod_challengemode;
+
 //=========================================================
 // instantiate the proper game rules object
 //=========================================================
 void InstallGameRules()
 {
-#ifdef HL2_EPISODIC
-	if ( gamerules_survival.GetBool() )
-	{
-		// Survival mode
-		CreateGameRulesObject( "CHalfLife2Survival" );
-	}
+	if (blamod_challengemode.GetBool())
+		CreateGameRulesObject("CBlamodChallenge");
 	else
-#endif
-	{
 		// generic half-life
 		CreateGameRulesObject( "CHalfLife2" );
-	}
 }
 
