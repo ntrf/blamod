@@ -22,8 +22,13 @@
 #include <KeyValues.h>
 #include <vgui_controls/AnimationController.h>
 
+#include "view.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+static ConVar blamod_showpos_super("blamod_showpos_super", "1", FCVAR_ARCHIVE | FCVAR_CLIENTDLL,
+								   "Displays players heading angles on zoom-in screen");
 
 //-----------------------------------------------------------------------------
 // Purpose: Draws the zoom screen
@@ -43,6 +48,8 @@ protected:
 	virtual void ApplySchemeSettings(vgui::IScheme *scheme);
 	virtual void Paint( void );
 
+	void OnThink() override;
+
 private:
 	bool	m_bZoomOn;
 	float	m_flZoomStartTime;
@@ -54,6 +61,10 @@ private:
 	CPanelAnimationVarAliasType( float, m_flDashHeight, "DashHeight", "4", "proportional_float" );
 
 	CMaterialReference m_ZoomMaterial;
+
+	QAngle plr_angles;
+
+	vgui::HFont m_hTextFont;
 };
 
 DECLARE_HUDELEMENT( CHudZoom );
@@ -106,6 +117,8 @@ void CHudZoom::ApplySchemeSettings( vgui::IScheme *scheme )
 	int screenWide, screenTall;
 	surface()->GetFullscreenViewport( x, y, screenWide, screenTall );
 	SetBounds(0, 0, screenWide, screenTall);
+
+	m_hTextFont = scheme->GetFont("SuperShowpos");
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +131,7 @@ bool CHudZoom::ShouldDraw( void )
 	bool bNeedsDraw = false;
 
 	C_BaseHLPlayer *pPlayer = dynamic_cast<C_BaseHLPlayer *>(C_BasePlayer::GetLocalPlayer());
-	if ( pPlayer == NULL )
+	if ( pPlayer == NULL || !pPlayer->IsAlive() )
 		return false;
 
 	if ( pPlayer->m_HL2Local.m_bZooming )
@@ -268,5 +281,30 @@ void CHudZoom::Paint( void )
 	meshBuilder.End();
 	pMesh->Draw();
 
+	if (blamod_showpos_super.GetBool()) {
+
+		wchar_t unicode[40];
+
+		surface()->DrawSetTextFont(m_hTextFont);
+		surface()->DrawSetTextColor(255, 255, 255, 255.0f * alpha);
+
+		V_snwprintf(unicode, ARRAYSIZE(unicode), L"%.02f", plr_angles.y);
+		surface()->DrawSetTextPos(xCrosshair, yCrosshair + m_flCircle2Radius * scale + 20.0f);
+		surface()->DrawUnicodeString(unicode);
+
+		V_snwprintf(unicode, ARRAYSIZE(unicode), L"%.02f", plr_angles.x);
+		surface()->DrawSetTextPos(xCrosshair + m_flCircle2Radius * scale + 20.0f, yCrosshair);
+		surface()->DrawUnicodeString(unicode);
+	}
+
 	m_bPainted = true;
+}
+
+void CHudZoom::OnThink()
+{
+	Vector velocity(0, 0, 0);
+	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
+	if (!player) return;
+
+	plr_angles = MainViewAngles();
 }

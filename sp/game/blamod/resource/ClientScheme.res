@@ -834,6 +834,20 @@ Scheme
 			}
 			
 		}
+		
+		"SuperShowpos"
+		{
+			"1"
+			{
+				"name"		"Verdana" [!$OSX]
+				"name"		"Helvetica Bold" [$OSX]
+				"tall"		"26" [!$OSX]
+				"tall"		"24" [$OSX]
+				"weight"	"500"
+				"antialias" "1"
+				"outline"	"1"
+			}
+		}
 	}
 
 	
