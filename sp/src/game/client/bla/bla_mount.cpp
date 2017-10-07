@@ -16,6 +16,7 @@ extern ISceneFileCache *scenefilecache;
 extern IMDLCache *mdlcache;
 
 extern void S_SoundEmitterSystemFlush(void);
+extern void ParseParticleEffects(bool bLoadSheets, bool bPrecache);
 
 static bool mount_inited = false;
 
@@ -69,6 +70,8 @@ const char * const commonFolderMounts[] = {
 	"%s/hl2/",
 	NULL
 };
+
+const char * skill_exec = "exec skill_manifest.cfg";
 
 static void AppendMountPoint(CUtlVector < CUtlConstString > & list, const char * mount, const char *path)
 {
@@ -253,6 +256,10 @@ static void bla_mount_f(const CCommand & cmd)
 	scenefilecache->Reload();
 
 	engine->ClientCmd_Unrestricted("snd_restart");
+
+	engine->ClientCmd_Unrestricted(skill_exec);
+
+	ParseParticleEffects(true, true);
 }
 static ConCommand bla_mount("blamod_mount", bla_mount_f, "Mount episodes data", FCVAR_CLIENTDLL);
 
