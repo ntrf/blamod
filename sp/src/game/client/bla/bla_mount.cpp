@@ -260,6 +260,14 @@ static void bla_mount_f(const CCommand & cmd)
 	engine->ClientCmd_Unrestricted(skill_exec);
 
 	ParseParticleEffects(true, true);
+
+	// ntrf: i hope this will force CCs to be reloaded
+	auto cc_lang = cvar->FindVar("cc_lang");
+	if (cc_lang) {
+		CUtlConstString cc_language = CUtlConstString(cc_lang->GetString());
+
+		cc_lang->SetValue(cc_language.Get());
+	}
 }
 static ConCommand bla_mount("blamod_mount", bla_mount_f, "Mount episodes data", FCVAR_CLIENTDLL);
 
