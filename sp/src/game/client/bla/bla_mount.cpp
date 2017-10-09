@@ -73,6 +73,9 @@ const char * const commonFolderMounts[] = {
 
 const char * skill_exec = "exec skill_manifest.cfg";
 
+extern CUtlString BlamodMountName;
+extern CUtlString BlamodCategoryName;
+
 static void AppendMountPoint(CUtlVector < CUtlConstString > & list, const char * mount, const char *path)
 {
 	CUtlString path_out;
@@ -104,6 +107,17 @@ enum class MountMode
 	HLS
 };
 
+static const char * GetMountName(MountMode mount)
+{
+	switch (mount) {
+	case MountMode::HL2: return "hl2";
+	case MountMode::HL2EP1: return "ep1";
+	case MountMode::HL2EP2: return "ep2";
+	case MountMode::HLS: return "hls";
+	default: return "";
+	}
+}
+
 static void bla_mount_f(const CCommand & cmd)
 {
 	MountMode mount = MountMode::SDK_ONLY;
@@ -129,7 +143,12 @@ static void bla_mount_f(const CCommand & cmd)
 
 	auto sapps = steamapicontext->SteamApps();
 
-	const char * language = sapps->GetCurrentGameLanguage();
+	if (!sapps) {
+		Error("You need to have steam running!");
+		return;
+	}
+
+	//const char * language = sapps->GetCurrentGameLanguage();
 
 	char name[2049];
 	int namelen = 0;
@@ -235,7 +254,7 @@ static void bla_mount_f(const CCommand & cmd)
 
 	filesystem->RemoveSearchPaths("GAME");
 
-	for (i = 0; i < new_paths.Count(); ++i) {
+	for (i = 0; i < (unsigned)new_paths.Count(); ++i) {
 		DevMsg("Mounts [%d] => %s\n", i, new_paths[i]);
 
 		filesystem->AddSearchPath(new_paths[i].Get(), "GAME");
@@ -245,6 +264,8 @@ static void bla_mount_f(const CCommand & cmd)
 	// show result
 	int res = filesystem->GetSearchPath("GAME", true, name, sizeof(name));
 #endif
+
+	BlamodMountName = GetMountName(mount);
 
 	SoundEmitter_ForceManifestReload = true;
 
@@ -256,6 +277,11 @@ static void bla_mount_f(const CCommand & cmd)
 	scenefilecache->Reload();
 
 	engine->ClientCmd_Unrestricted("snd_restart");
+
+	// Set second argument as a category name
+	if (cmd.ArgC() > 2) {
+		BlamodCategoryName = cmd.Arg(2);
+	}
 
 	engine->ClientCmd_Unrestricted(skill_exec);
 
