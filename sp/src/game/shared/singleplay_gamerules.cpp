@@ -135,6 +135,12 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 	return ( ( iDmgType & ( DMG_POISON | DMG_ACID ) ) != 0 );
 }
 
+ConVar cl_autowepswitch(
+	"cl_autowepswitch",
+	"1",
+	FCVAR_ARCHIVE | FCVAR_USERINFO,
+	"Automatically switch to picked up weapons (if more powerful)");
+
 #ifdef CLIENT_DLL
 
 #else
@@ -194,6 +200,10 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 		//Don't switch if our current gun doesn't want to be holstered
 		if ( pPlayer->GetActiveWeapon()->CanHolster() == false )
+			return false;
+
+		// Player has an active item, so let's check cl_autowepswitch.
+		if ( !cl_autowepswitch.GetBool() )
 			return false;
 
 		//Only switch if the weapon is better than what we're using

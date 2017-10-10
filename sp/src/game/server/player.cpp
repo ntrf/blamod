@@ -6525,6 +6525,8 @@ extern bool UTIL_ItemCanBeTouchedByPlayer( CBaseEntity *pItem, CBasePlayer *pPla
 // Input  : pWeapon - the weapon that the player bumped into.
 // Output : Returns true if player picked up the weapon
 //-----------------------------------------------------------------------------
+extern ConVar cl_autowepswitch;
+
 bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 {
 	CBaseCombatCharacter *pOwner = pWeapon->GetOwner();
@@ -6609,6 +6611,9 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 				{
 					pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
 				}
+
+				if (!cl_autowepswitch.GetBool())
+					return false;
 
 				Weapon_Switch( pWeapon );
 			}

@@ -204,7 +204,8 @@ extern ConVar sv_noclipduringpause;
 ConVar sv_massreport( "sv_massreport", "0" );
 ConVar sv_force_transmit_ents( "sv_force_transmit_ents", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Will transmit all entities to client, regardless of PVS conditions (will still skip based on transmit flags, however)." );
 
-ConVar sv_autosave( "sv_autosave", "1", 0, "Set to 1 to autosave game on level transition. Does not affect autosave triggers." );
+ConVar sv_autosave( "sv_autosave", "1", FCVAR_ARCHIVE, "Set to 1 to autosave game on level transition. Does not affect autosave triggers." );
+ConVar sv_autosave_timeout("sv_autosave_timeout", "1.0", FCVAR_ARCHIVE, "How long to wait after the map loads before autosaving.");
 ConVar *sv_maxreplay = NULL;
 static ConVar  *g_pcv_commentary = NULL;
 static ConVar *g_pcv_ThreadMode = NULL;
@@ -1019,8 +1020,10 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 			CBaseEntity *pAutosave = CBaseEntity::Create( "logic_autosave", vec3_origin, vec3_angle, NULL );
 			if ( pAutosave )
 			{
-				g_EventQueue.AddEvent( pAutosave, "Save", 1.0, NULL, NULL );
-				g_EventQueue.AddEvent( pAutosave, "Kill", 1.1, NULL, NULL );
+				float astm = sv_autosave_timeout.GetFloat();
+
+				g_EventQueue.AddEvent(pAutosave, "Save", astm, NULL, NULL);
+				g_EventQueue.AddEvent(pAutosave, "Kill", astm + 0.1f, NULL, NULL);
 			}
 		}
 	}
