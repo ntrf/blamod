@@ -1226,6 +1226,8 @@ add_library(server SHARED
 
 
 	${BLAMOD_FW_FILES}
+
+	../shared/hl2/weapon_brgauss.cpp
 )
 
 target_link_libraries(server

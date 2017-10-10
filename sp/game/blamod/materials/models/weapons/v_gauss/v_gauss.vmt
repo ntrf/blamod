@@ -1,0 +1,18 @@
+VertexLitGeneric
+{
+	"$basetexture" "models/weapons/v_gauss/v_gauss_diff"
+	"$bumpmap" "models/Weapons/v_gauss/v_gauss_normal3"
+	"$surfaceprop" "metal"
+//	"$selfillum" "1"
+
+// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+	"$phong" "0"
+	"$phongexponent" "50"
+	"$phongfresnelranges"	"[.04 0.1 0.2]"
+	
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+	"$envmapsaturation" 1.0
+	"$envmapcontrast" 0.6
+	"$model" 1
+}
