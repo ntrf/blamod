@@ -17,9 +17,9 @@
 
 #define GAUSS_BEAM_SPRITE "sprites/laserbeam.vmt"
 
-BlaConVar gauss_maxpunch("blamod_gauss_maxpunch", "300", FCVAR_REPLICATED | FCVAR_HIDDEN);
+BlaConVar gauss_maxpunch("blamod_gauss_maxpass", "300", FCVAR_REPLICATED | FCVAR_HIDDEN);
 BlaConVar gauss_damage("blamod_gauss_damagemod", "200.0", FCVAR_REPLICATED | FCVAR_HIDDEN);
-BlaConVar gauss_knockback("blamod_gauss_knockback", "8.0", FCVAR_REPLICATED | FCVAR_HIDDEN);
+BlaConVar gauss_knockback("blamod_gauss_knockback", "6.0", FCVAR_REPLICATED | FCVAR_HIDDEN);
 BlaConVar gauss_shot_damage("blamod_gauss_damage", "20.0", FCVAR_REPLICATED | FCVAR_HIDDEN);
 
 class CWeaponBrGauss : public CBaseHLCombatWeapon
