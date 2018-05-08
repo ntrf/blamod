@@ -6,6 +6,12 @@ add_subdirectory(tier1)
 
 add_subdirectory(vgui2/vgui_controls)
 
+configure_file(
+	"${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" 
+	"${CMAKE_BINARY_DIR}/blamod_config.h")
+	
+include_directories("${CMAKE_BINARY_DIR}")
+
 add_subdirectory(game/client)
 add_subdirectory(game/server)
 

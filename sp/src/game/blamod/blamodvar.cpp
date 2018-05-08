@@ -17,6 +17,8 @@ limitations under the License.
 #include "cbase.h"
 #include "blamodvar.h"
 
+#include "blamod_config.h"
+
 #include "filesystem.h"
 
 extern ConVar blamod_sandbox;
@@ -172,3 +174,9 @@ ConVar blamod_sandbox("blamod_sandbox", "1",
 
 ConVar blamod_category_name("blamod_category_name", "", FCVAR_DEMO | FCVAR_NOTIFY,
 							"Category name. Used only as displayed name.");
+
+static void BlamodVersion(const CCommand &command)
+{
+	Msg("Blamod Reborn\n version %s", BLAMOD_VERSION);
+}
+ConCommand blamod_version("blamod_version", &BlamodVersion);
