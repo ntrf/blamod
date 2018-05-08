@@ -13,8 +13,6 @@
 #include "Color.h"
 #include "gamestats.h"
 
-#include "../blamod/blamodvar.h"
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -34,10 +32,6 @@ DEFINE_INPUTFUNC(FIELD_VOID, "ShowMessage", InputShowMessage),
 DEFINE_OUTPUT(m_OnShowMessage, "OnShowMessage"),
 
 END_DATADESC()
-
-BlaConVar blamod_trilogy_transfer("blamod_trilogy_transfer", "1", FCVAR_NOTIFY, 
-		"Instead of showing credits, start next episode\n 0 - Disable\n"
-		" 1 - Enabled between Ep1 -> Ep2\n 2 - Enable HL2 -> Ep1 and Ep1 -> Ep2");
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -235,17 +229,6 @@ void CCredits::RollOutroCredits()
 
 void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 {
-	int transfer = blamod_trilogy_transfer.GetInt();
-	if (transfer >= 2 && Q_stricmp(gpGlobals->mapname.ToCStr(), "d3_breen_01") == 0) {
-		engine->ServerCommand("wait;wait;disconnect;wait 2;blamod_mount ep1;wait;map ep1_citadel_00\n");
-		return;
-	}
-
-	if (transfer >= 1 && Q_stricmp(gpGlobals->mapname.ToCStr(), "ep1_c17_06") == 0) {
-		engine->ServerCommand("wait;wait;disconnect;wait 2;blamod_mount ep2;wait;map ep2_outland_01\n");
-		return;
-	}
-
 	RollOutroCredits();
 
 	// In case we save restore

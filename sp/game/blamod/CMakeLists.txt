@@ -16,7 +16,7 @@ install(
 )
 
 install(
-	DIRECTORY materials media particles resource scripts sound
+	DIRECTORY models materials media particles resource scripts sound
 	DESTINATION blamod
 )
 

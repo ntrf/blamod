@@ -5146,7 +5146,7 @@ void CBasePlayer::ForceRespawn( void )
 
 int CBasePlayer::Save( ISave &save )
 {
-	if ( !BaseClass::Save(save) )
+	if ( !CBaseCombatCharacter::Save(save) )
 		return 0;
 
 	return 1;

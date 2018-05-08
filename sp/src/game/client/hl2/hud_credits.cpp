@@ -19,6 +19,9 @@
 #include "filesystem.h"
 #include <string.h>
 
+
+#include "../blamod/blamodvar.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -52,6 +55,10 @@ enum
 bool g_bRollingCredits = false;
 
 int g_iCreditsPixelHeight = 0;
+
+BlaConVar blamod_trilogy_transfer("blamod_trilogy_transfer", "1", FCVAR_NOTIFY,
+								  "Instead of showing credits, start next episode\n 0 - Disable\n"
+								  " 1 - Enabled between Ep1 -> Ep2\n 2 - Enable HL2 -> Ep1 and Ep1 -> Ep2");
 
 //-----------------------------------------------------------------------------
 // Purpose: Shows the flashlight icon
@@ -335,7 +342,8 @@ void CHudCredits::DrawOutroCreditsName( void )
 						if ( m_Alpha <= 0 )
 						{
 							pCredit->bActive = false;
-							engine->ClientCmd( "creditsdone" );
+
+							engine->ClientCmd("creditsdone");
 						}
 					}
 				}
@@ -726,6 +734,22 @@ void CHudCredits::PrepareIntroCredits( void )
 	SetActive( true );
 }
 
+static void BlamodAttemptTransfer()
+{
+	const char * level = engine->GetLevelName();
+
+	int transfer = blamod_trilogy_transfer.GetInt();
+	if (transfer >= 2 && Q_stricmp(level, "maps/d3_breen_01.bsp") == 0) {
+		engine->ClientCmd_Unrestricted("wait;wait;disconnect;wait 2;blamod_mount ep1;wait;map ep1_citadel_00\n");
+		return;
+	}
+	
+	if (transfer >= 1 && Q_stricmp(level, "maps/ep1_c17_06.bsp") == 0) {
+		engine->ClientCmd_Unrestricted("wait;wait;disconnect;wait 2;blamod_mount ep2;wait;map ep2_outland_01\n");
+		return;
+	}
+}
+
 void CHudCredits::MsgFunc_CreditsMsg( bf_read &msg )
 {
 	m_iCreditsType = msg.ReadByte();
@@ -744,6 +768,7 @@ void CHudCredits::MsgFunc_CreditsMsg( bf_read &msg )
 		}
 		case CREDITS_OUTRO:
 		{
+			BlamodAttemptTransfer();
 			PrepareOutroCredits();
 			break;
 		}
