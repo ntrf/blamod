@@ -1252,8 +1252,13 @@ int CHLClient::HudVidInit( void )
 // Method used to allow the client to filter input messages before the 
 // move record is transmitted to the server
 //-----------------------------------------------------------------------------
+extern void BlamodTriggerDelay_TickFrame();
+
 void CHLClient::HudProcessInput( bool bActive )
 {
+	// This is going to be weird, but i guess it's ok
+	BlamodTriggerDelay_TickFrame();
+
 	g_pClientMode->ProcessInput( bActive );
 }
 
@@ -1407,6 +1412,8 @@ void CHLClient::IN_OnMouseWheeled( int nDelta )
 #endif
 }
 
+extern int BlamodTriggerDelay_HandleInput(int down, ButtonCode_t key, const char *kb);
+
 //-----------------------------------------------------------------------------
 // Purpose: Engine can issue a key event
 // Input  : eventcode - 
@@ -1416,7 +1423,10 @@ void CHLClient::IN_OnMouseWheeled( int nDelta )
 //-----------------------------------------------------------------------------
 int CHLClient::IN_KeyEvent( int eventcode, ButtonCode_t keynum, const char *pszCurrentBinding )
 {
-	return input->KeyEvent( eventcode, keynum, pszCurrentBinding );
+	if (!input->KeyEvent(eventcode, keynum, pszCurrentBinding))
+		return 0;
+
+	return BlamodTriggerDelay_HandleInput(eventcode, keynum, pszCurrentBinding);
 }
 
 void CHLClient::ExtraMouseSample( float frametime, bool active )

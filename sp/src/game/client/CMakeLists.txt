@@ -126,6 +126,8 @@ set(BLAMOD_FW_FILES
 	# ../blamod/ent_blamod_timer.cpp
 
 	../shared/hl2/weapon_brgauss.cpp
+
+	../blamod/blamod_triggerdelay.cpp
 )
 source_group(Blamod FILES ${BLAMOD_FW_FILES})
 

@@ -119,11 +119,15 @@ static void ApplyCategory()
 	// make sure we can safely reconfigure
 	blamod_sandbox.SetValue(1);
 
-	engine->ExecuteClientCmd(cmd);
-	//engine->ExecuteClientCmd("disconnect");
+	disable_callback = true;
 
 	// drop out of sandbox
 	blamod_sandbox.SetValue(0);
+
+	engine->ExecuteClientCmd(cmd);
+	//engine->ExecuteClientCmd("disconnect");
+
+	disable_callback = false;
 }
 
 static void SetCategoryCommand(const CCommand &command)
@@ -177,6 +181,6 @@ ConVar blamod_category_name("blamod_category_name", "", FCVAR_DEMO | FCVAR_NOTIF
 
 static void BlamodVersion(const CCommand &command)
 {
-	Msg("Blamod Reborn\n version %s", BLAMOD_VERSION);
+	Msg("Blamod Reborn\n version %s\n", BLAMOD_VERSION);
 }
 ConCommand blamod_version("blamod_version", &BlamodVersion);

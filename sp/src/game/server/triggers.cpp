@@ -1534,6 +1534,8 @@ void CChangeLevel::WarnAboutActiveLead( void )
 	}
 }
 
+extern void BlamodTriggerDelay_DelayTransition(CBaseEntity *player, const char * level, const char * landmark);
+
 void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 {
 	CBaseEntity	*pLandmark;
@@ -1614,7 +1616,7 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 	// If we're debugging, don't actually change level
 	if ( g_debug_transitions.GetInt() == 0 )
 	{
-		engine->ChangeLevel( st_szNextMap, st_szNextSpot );
+		BlamodTriggerDelay_DelayTransition(pPlayer, st_szNextMap, st_szNextSpot);
 	}
 	else
 	{

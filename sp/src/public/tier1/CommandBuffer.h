@@ -86,7 +86,7 @@ public:
 	int GetArgumentBufferSize() { return m_nArgSBufferSize; }
 	int GetMaxArgumentBufferSize() { return m_nMaxArgSBufferLength; }
 
-private:
+protected:
 	enum
 	{
 		ARGS_BUFFER_LENGTH = 8192,
