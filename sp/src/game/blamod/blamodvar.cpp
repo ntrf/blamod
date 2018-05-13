@@ -33,6 +33,7 @@ static void ResetSandboxVariables(IConVar *var, const char *pOldValue, float flO
 	// Don't do anything when entering sandbox
 	if (blamod_sandbox.GetInt() != 0) return;
 
+#if 0
 	disable_callback = true;
 
 	// Reset all vars to their default values
@@ -41,6 +42,7 @@ static void ResetSandboxVariables(IConVar *var, const char *pOldValue, float flO
 	}
 
 	disable_callback = false;
+#endif
 }
 
 // This will be called every time blamod variable gets modified
@@ -105,6 +107,11 @@ CUtlString BlamodCategoryName;
 
 static void ApplyCategory()
 {
+	// Don't reset sandbox vars
+	if (blamod_sandbox.GetBool())
+		return;
+
+	// if there is no category - drop into sandbox
 	if (BlamodMountName.IsEmpty() || BlamodCategoryName.IsEmpty()) {
 		// drop into sandbox
 		blamod_sandbox.SetValue(1);
@@ -121,11 +128,11 @@ static void ApplyCategory()
 
 	disable_callback = true;
 
-	// drop out of sandbox
-	blamod_sandbox.SetValue(0);
-
 	engine->ExecuteClientCmd(cmd);
 	//engine->ExecuteClientCmd("disconnect");
+
+	// register as out-of-sandbox
+	blamod_sandbox.SetValue(0);
 
 	disable_callback = false;
 }
