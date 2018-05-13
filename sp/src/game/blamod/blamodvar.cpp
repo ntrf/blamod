@@ -107,14 +107,15 @@ CUtlString BlamodCategoryName;
 
 static void ApplyCategory()
 {
-	// Don't reset sandbox vars
-	if (blamod_sandbox.GetBool())
-		return;
-
 	// if there is no category - drop into sandbox
 	if (BlamodMountName.IsEmpty() || BlamodCategoryName.IsEmpty()) {
 		// drop into sandbox
 		blamod_sandbox.SetValue(1);
+	}
+
+	// Don't reset sandbox vars
+	if (blamod_sandbox.GetBool()) {
+		Msg(">>>> Samdbox mode %s\n", BlamodMountName.String());
 		return;
 	}
 
