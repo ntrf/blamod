@@ -143,7 +143,9 @@ int BlamodTriggerDelay_HandleInput(int down, ButtonCode_t key, const char *kb)
 	char cmd[1024];
 
 	// Don't delay Escape key!
-	if (key == KEY_ESCAPE || !blamod_triggerdelay.GetBool())
+	if (key == KEY_ESCAPE || !blamod_triggerdelay.GetBool() || 
+		engine->IsPlayingDemo() || engine->IsInEditMode() || 
+		(!g_pGameRules || g_pGameRules->IsMultiplayer()))
 		return 1;
 
 	// Only keybinds
