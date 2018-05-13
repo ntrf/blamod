@@ -150,6 +150,10 @@ int BlamodTriggerDelay_HandleInput(int down, ButtonCode_t key, const char *kb)
 	if (!kb || !*kb)
 		return 1;
 
+	// Don't intercept console command if there are no pending waits
+	if (cmd_buffer.GetDelay() <= 0 && strcmpi(kb, "toggleconsole") == 0)
+		return 1;
+
 	if (kb[0] == '+') {
 		// Special handling for binds with press-release format
 		if (down) {
