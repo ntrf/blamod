@@ -130,7 +130,6 @@ static void ApplyCategory()
 	disable_callback = true;
 
 	engine->ExecuteClientCmd(cmd);
-	//engine->ExecuteClientCmd("disconnect");
 
 	// register as out-of-sandbox
 	blamod_sandbox.SetValue(0);
@@ -159,6 +158,8 @@ static void SetCategoryCommand(const CCommand &command)
 	BlamodCategoryName = arg;
 
 	ApplyCategory();
+
+	engine->ExecuteClientCmd("disconnect");
 }
 
 ////////////////////////
