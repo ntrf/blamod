@@ -75,6 +75,7 @@ const char * skill_exec = "exec skill_manifest.cfg";
 
 extern CUtlString BlamodMountName;
 extern CUtlString BlamodCategoryName;
+extern ConVar blamod_sandbox;
 
 static void AppendMountPoint(CUtlVector < CUtlConstString > & list, const char * mount, const char *path)
 {
@@ -280,6 +281,7 @@ static void bla_mount_f(const CCommand & cmd)
 
 	// Set second argument as a category name
 	if (cmd.ArgC() > 2) {
+		blamod_sandbox.SetValue(0);
 		BlamodCategoryName = cmd.Arg(2);
 	}
 

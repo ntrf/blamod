@@ -149,13 +149,14 @@ static void SetCategoryCommand(const CCommand &command)
 	CUtlString path_out;
 
 	path_out.Format("cfg/cat/%s.%s.cfg", BlamodMountName.String(), arg);
-
+	
 	if (!filesystem->FileExists(path_out.String(), "MOD")) {
 		Warning("Category file [%s] is not found\n", path_out.String());
 		return;
 	}
 
 	BlamodCategoryName = arg;
+	blamod_sandbox.SetValue(0);
 
 	ApplyCategory();
 
