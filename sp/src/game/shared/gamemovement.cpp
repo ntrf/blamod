@@ -3074,61 +3074,58 @@ void CGameMovement::CheckVelocity( void )
 
 	Vector org = mv->GetAbsOrigin();
 
-	for (i=0; i < 3; i++)
-	{
+	for (i = 0; i < 3; i++) {
 		// See if it's bogus.
-		if (IS_NAN(mv->m_vecVelocity[i]))
-		{
-			DevMsg( 1, "PM  Got a NaN velocity %s\n", DescribeAxis( i ) );
+		if (IS_NAN(mv->m_vecVelocity[i])) {
+			DevMsg(1, "PM  Got a NaN velocity %s\n", DescribeAxis(i));
 			mv->m_vecVelocity[i] = 0;
 		}
 
-		if (IS_NAN(org[i]))
-		{
-			DevMsg( 1, "PM  Got a NaN origin on %s\n", DescribeAxis( i ) );
-			org[ i ] = 0;
-			mv->SetAbsOrigin( org );
+		if (IS_NAN(org[i])) {
+			DevMsg(1, "PM  Got a NaN origin on %s\n", DescribeAxis(i));
+			org[i] = 0;
+			mv->SetAbsOrigin(org);
 		}
+	}
 
-		// Bound it.
-		float maxvel = sv_maxvelocity.GetFloat();
-		float maxfall = sv_fallvelocity.GetFloat();
+	// Bound it.
+	float maxvel = sv_maxvelocity.GetFloat();
+	float maxfall = sv_fallvelocity.GetFloat();
 
-		if (maxfall == 0) {
-			maxfall = maxvel;
+	if (maxfall == 0) {
+		maxfall = maxvel;
+	}
+
+	if (mv->m_vecVelocity.z > maxvel) {
+		//DevMsg(1, "PM  Got a velocity too high on Z\n");
+		mv->m_vecVelocity.z = maxvel;
+	} else if (mv->m_vecVelocity.z < -maxfall) {
+		//DevMsg(1, "PM  Got a velocity too low on Z\n");
+		mv->m_vecVelocity.z = -maxfall;
+	}
+
+	float x = mv->m_vecVelocity.x;
+	float y = mv->m_vecVelocity.y;
+
+	if (bla_velocity_limit.GetInt() == 1) {
+
+		float mag = x * x + y * y;
+
+		if (mag > 0 && mag > maxvel * maxvel) {
+			//DevMsg(1, "PM  Got a velocity too high on X & Y\n");
+
+			mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
+			mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
 		}
-
-		if (mv->m_vecVelocity.z > maxvel) {
-			//DevMsg(1, "PM  Got a velocity too high on Z\n");
-			mv->m_vecVelocity.z = maxvel;
-		} else if (mv->m_vecVelocity.z < -maxfall) {
-			//DevMsg(1, "PM  Got a velocity too low on Z\n");
-			mv->m_vecVelocity.z = -maxfall;
-		}
-
-		float x = mv->m_vecVelocity.x;
-		float y = mv->m_vecVelocity.y;
-
-		if (bla_velocity_limit.GetInt() == 1) {
-
-			float mag = x * x + y * y;
-
-			if (mag > 0 && mag > maxvel * maxvel) {
-				//DevMsg(1, "PM  Got a velocity too high on X & Y\n");
-
-				mv->m_vecVelocity.x = x * sqrtf(maxvel * maxvel / mag);
-				mv->m_vecVelocity.y = y * sqrtf(maxvel * maxvel / mag);
-			}
-		} else {
-			if (x > maxvel)
-				mv->m_vecVelocity.x = maxvel;
-			else if (x < -maxvel)
-				mv->m_vecVelocity.x = -maxvel;
-			if (y > maxvel)
-				mv->m_vecVelocity.y = maxvel;
-			else if (y < -maxvel)
-				mv->m_vecVelocity.y = -maxvel;
-		}
+	} else {
+		if (x > maxvel)
+			mv->m_vecVelocity.x = maxvel;
+		else if (x < -maxvel)
+			mv->m_vecVelocity.x = -maxvel;
+		if (y > maxvel)
+			mv->m_vecVelocity.y = maxvel;
+		else if (y < -maxvel)
+			mv->m_vecVelocity.y = -maxvel;
 	}
 }
 
