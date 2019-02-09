@@ -119,10 +119,11 @@ static const char * GetMountName(MountMode mount)
 	}
 }
 
+static MountMode currentMountMode = MountMode::SDK_ONLY;
+
 static void bla_mount_f(const CCommand & cmd)
 {
 	MountMode mount = MountMode::SDK_ONLY;
-
 	if (cmd.ArgC() > 1) {
 		const char * mname = cmd.Arg(1);
 
@@ -148,6 +149,9 @@ static void bla_mount_f(const CCommand & cmd)
 		Error("You need to have steam running!");
 		return;
 	}
+
+	if (currentMountMode == mount)
+		return;
 
 	//const char * language = sapps->GetCurrentGameLanguage();
 
@@ -177,6 +181,8 @@ static void bla_mount_f(const CCommand & cmd)
 		// Get list of all current paths
 		int res = filesystem->GetSearchPath("GAME", true, name, sizeof(name));
 		if (res > 0) original_paths = name;
+
+		mount_inited = true;
 	}
 
 	CUtlVector < CUtlConstString > new_paths;
@@ -266,6 +272,7 @@ static void bla_mount_f(const CCommand & cmd)
 	int res = filesystem->GetSearchPath("GAME", true, name, sizeof(name));
 #endif
 
+	currentMountMode = mount;
 	BlamodMountName = GetMountName(mount);
 
 	SoundEmitter_ForceManifestReload = true;
