@@ -829,7 +829,7 @@ void CViewRender::SetUpViews()
 void CViewRender::WriteSaveGameScreenshotOfSize( const char *pFilename, int width, int height, bool bCreatePowerOf2Padded/*=false*/,
 												 bool bWriteVTF/*=false*/ )
 {
-#ifndef _X360
+#if !defined(_X360) && false
 	CMatRenderContextPtr pRenderContext( materials );
 	pRenderContext->MatrixMode( MATERIAL_PROJECTION );
 	pRenderContext->PushMatrix();
