@@ -11,6 +11,10 @@
 
 #include "soundenvelope.h"
 
+#ifndef CLIENT_DLL
+#include "../server/hl2/cbasehelicopter.h"
+#endif
+
 #if defined( CLIENT_DLL )
 #define CWeaponBrGauss C_WeaponBrGauss
 #endif
@@ -141,10 +145,10 @@ float CWeaponBrGauss::GetFullChargeTime(void)
 {
 	if (g_pGameRules->IsMultiplayer())
 	{
-		return 1.5;
+		return 1.5f;
 	}
 
-	return 4;
+	return 2.0f;
 }
 
 #ifdef CLIENT_DLL
@@ -449,15 +453,16 @@ void CWeaponBrGauss::StartFire()
 		//ALERT ( at_console, "Time:%f Damage:%f\n", gpGlobals->time - m_pPlayer->m_flStartCharge, flDamage );
 
 #ifndef CLIENT_DLL
-		Vector velocity = player->GetAbsVelocity();
-		if (!m_fPrimaryFire)
+		if (!m_fPrimaryFire) {
+			Vector velocity = player->GetAbsVelocity();
 			velocity -= vecAiming * damage * gauss_knockback.GetFloat();
 
-		// in deathmatch, gauss can pop you up into the air. Not in single play.
-		if (!g_pGameRules->IsMultiplayer())
-			velocity.z = 0;
+			// in deathmatch, gauss can pop you up into the air. Not in single play.
+			if (!g_pGameRules->IsMultiplayer())
+				velocity.z = 0;
 
-		player->SetAbsVelocity(velocity);
+			player->SetAbsVelocity(velocity);
+		}
 #endif
 		// player "shoot" animation
 		player->SetAnimation(PLAYER_ATTACK1);
@@ -547,7 +552,11 @@ void CWeaponBrGauss::Fire(Vector vecOrigSrc, Vector vecDir, float flDamage)
 
 		Vector force = vecDir * flDamage * 40.0f;
 
-		CTakeDamageInfo dmg(player, player, this, force, tr.endpos, flDamage, DMG_BULLET);
+		// Damage anything flying with gauss
+		CBaseHelicopter * heli = dynamic_cast<CBaseHelicopter *>(pEntity);
+		int dmgType = (heli == nullptr) ? DMG_BULLET : DMG_BLAST;
+
+		CTakeDamageInfo dmg(player, player, this, force, tr.endpos, flDamage, dmgType);
 
 		pEntity->DispatchTraceAttack(dmg, vecDir, &tr);
 		ApplyMultiDamage();
@@ -603,16 +612,16 @@ void CWeaponBrGauss::Fire(Vector vecOrigSrc, Vector vecDir, float flDamage)
 
 				So ray passes through the wall
 
-				| / / / / |
+				.                  | / / / / |
 				-------------------X  / / /  |
-				| / / / / |
+				.                  | / / / / |
 
 				First step is to try to continue trace with a slight offset. But the end point of trace (8192 units from start)
 				is the same
 
-				| / / / / |                     |
+				.                  | / / / / |                     |
 				-------------------X  O------>---------------------X
-				| / / / / |                     |
+				.                  | / / / / |                     |
 
 				Then it hits something else. Now this is the point where i'm starting to loose the picture.
 
