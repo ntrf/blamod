@@ -123,7 +123,7 @@ void UpdatePerfStats( void )
 }
 
 CBaseGameStats_Driver::CBaseGameStats_Driver( void ) :
-	BaseClass( "CGameStats" ),
+	//BaseClass( "CGameStats" ),
 	m_iLoadedVersion( -1 ),
 	m_bEnabled( false ),
 	m_bShuttingDown( false ),
@@ -961,6 +961,7 @@ void CBaseGameStats_Driver::OnSave()
 
 void CBaseGameStats_Driver::CollectData( StatSendType_t sendType )
 {
+#if 0
 	CGamestatsData *pGamestatsData = NULL;
 #ifdef GAME_DLL
 	// for server, check with the engine to see if there already a gamestats data container registered.  (There will be if there is a client
@@ -1033,6 +1034,7 @@ void CBaseGameStats_Driver::CollectData( StatSendType_t sendType )
 // Need to initialiate a reset since cs isn't using the gamestat system to add data
 #if defined(CSTRIKE_DLL) && defined(CLIENT_DLL)
 	ResetData();
+#endif
 #endif
 }
 

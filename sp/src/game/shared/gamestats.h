@@ -357,12 +357,12 @@ inline void CBaseGameStats::LoadLump( CUtlBuffer &LoadBuffer, unsigned short iLu
 extern CBaseGameStats *gamestats; //starts out pointing at a singleton of the class above, overriding this in any constructor should work for replacing it
 
 //used to drive most of the game stat event handlers as well as track basic stats under the hood of CBaseGameStats
-class CBaseGameStats_Driver : public CAutoGameSystemPerFrame
+class CBaseGameStats_Driver /*: public CAutoGameSystemPerFrame*/
 {
 public:
 	CBaseGameStats_Driver( void );
 
-	typedef CAutoGameSystemPerFrame BaseClass;
+//	typedef CAutoGameSystemPerFrame BaseClass;
 
 	// IGameSystem overloads
 	virtual bool Init();
