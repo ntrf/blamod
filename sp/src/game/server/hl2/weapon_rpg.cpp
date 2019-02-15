@@ -2134,6 +2134,8 @@ void CWeaponRPG::StartLaserEffects( void )
 		return;
 
 	CBaseViewModel *pBeamEnt = static_cast<CBaseViewModel *>(pOwner->GetViewModel());
+	if (pBeamEnt == NULL)
+		return;
 
 	if ( m_hLaserBeam == NULL )
 	{
