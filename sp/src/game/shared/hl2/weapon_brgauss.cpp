@@ -554,7 +554,7 @@ void CWeaponBrGauss::Fire(Vector vecOrigSrc, Vector vecDir, float flDamage)
 
 		// Damage anything flying with gauss
 		CBaseHelicopter * heli = dynamic_cast<CBaseHelicopter *>(pEntity);
-		int dmgType = (heli == nullptr) ? DMG_BULLET : DMG_BLAST;
+		int dmgType = ((heli == nullptr) ? DMG_BULLET : DMG_BLAST) | DMG_ENERGYBEAM;
 
 		CTakeDamageInfo dmg(player, player, this, force, tr.endpos, flDamage, dmgType);
 
