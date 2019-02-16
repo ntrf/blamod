@@ -156,34 +156,27 @@ void C_TEPlayerDecal::Precache( void )
 //-----------------------------------------------------------------------------
 IMaterial *CreateTempMaterialForPlayerLogo( int iPlayerIndex, player_info_t *info, char *texname, int nchars )
 {
-	// Doesn't have a logo?
-	if ( !info->customFiles[0] )	
-		return NULL;
-
-	IMaterial *logo = materials->FindMaterial( VarArgs("decals/playerlogo%2.2d", iPlayerIndex), TEXTURE_GROUP_DECAL );
+	IMaterial *logo = materials->FindMaterial( "decals/playerlogo01", TEXTURE_GROUP_DECAL );
 	if ( IsErrorMaterial( logo ) )
 		return NULL;
 
-	char logohex[ 16 ];
-	Q_binarytohex( (byte *)&info->customFiles[0], sizeof( info->customFiles[0] ), logohex, sizeof( logohex ) );
-
 	// See if logo has been downloaded.
-	Q_snprintf( texname, nchars, "temp/%s", logohex );
+	Q_snprintf(texname, nchars, "userlogo");
 	char fulltexname[ 512 ];
-	Q_snprintf( fulltexname, sizeof( fulltexname ), "materials/temp/%s.vtf", logohex );
+	Q_snprintf(fulltexname, sizeof(fulltexname), "materials/%s.vtf", texname);
 
 	if ( !filesystem->FileExists( fulltexname ) )
 	{
-		char custname[ 512 ];
-		Q_snprintf( custname, sizeof( custname ), "download/user_custom/%c%c/%s.dat", logohex[0], logohex[1], logohex );
-		// it may have been downloaded but not copied under materials folder
-		if ( !filesystem->FileExists( custname ) )
-			return NULL; // not downloaded yet
+//		char custname[ 512 ];
+//		Q_snprintf( custname, sizeof( custname ), "download/user_custom/%c%c/%s.dat", logohex[0], logohex[1], logohex );
+//		// it may have been downloaded but not copied under materials folder
+//		if ( !filesystem->FileExists( custname ) )
+//			return NULL; // not downloaded yet
 
 		// copy from download folder to materials/temp folder
 		// this is done since material system can access only materials/*.vtf files
 
-		if ( !engine->CopyLocalFile( custname, fulltexname) )
+//		if ( !engine->CopyLocalFile( custname, fulltexname) )
 			return NULL;
 	}
 

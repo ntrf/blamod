@@ -430,9 +430,6 @@ void CPlayerLogoProxy::OnLogoBindInternal( int playerindex )
 	player_info_t info;
 	engine->GetPlayerInfo( playerindex, &info );
 
-	if ( !info.customFiles[0] ) 
-		return;
-
 	// So we don't trash this too hard
 
 	ITexture *texture = NULL;
@@ -445,10 +442,7 @@ void CPlayerLogoProxy::OnLogoBindInternal( int playerindex )
 	if ( lookup == m_Logos.InvalidIndex() )
 	{
 		char crcfilename[ 512 ];
-		char logohex[ 16 ];
-		Q_binarytohex( (byte *)&info.customFiles[0], sizeof( info.customFiles[0] ), logohex, sizeof( logohex ) );
-
-		Q_snprintf( crcfilename, sizeof( crcfilename ), "temp/%s", logohex );
+		Q_snprintf( crcfilename, sizeof( crcfilename ), "userlogo");
 
 		texture = materials->FindTexture( crcfilename, TEXTURE_GROUP_DECAL, false );
 		if ( texture )
