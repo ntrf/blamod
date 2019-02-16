@@ -3468,7 +3468,7 @@ int CGameMovement::CheckStuck( void )
 	// Too soon?
 	if ( m_flStuckCheckTime[ player->entindex() ][ idx ] >=  fTime - CHECKSTUCK_MINTIME )
 	{
-		return 1;
+	//	return 1;
 	}
 	m_flStuckCheckTime[ player->entindex() ][ idx ] = fTime;
 
@@ -4557,7 +4557,7 @@ void CGameMovement::Duck( void )
 	}
 }
 
-static ConVar sv_optimizedmovement( "sv_optimizedmovement", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+static ConVar sv_optimizedmovement( "sv_optimizedmovement", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -4585,7 +4585,7 @@ void CGameMovement::PlayerMove( void )
 		 player->GetMoveType() != MOVETYPE_OBSERVER && 
 		 !player->pl.deadflag )
 	{
-		if ( CheckInterval( STUCK ) )
+//		if ( CheckInterval( STUCK ) )
 		{
 			if ( CheckStuck() )
 			{

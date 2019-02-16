@@ -4652,7 +4652,7 @@ void CBasePlayer::PostThinkVPhysics( void )
 
 	IPhysicsObject *pPhysGround = GetGroundVPhysics();
 
-	if ( !pPhysGround && m_touchedPhysObject && g_pMoveData->m_outStepHeight <= 0.f && (GetFlags() & FL_ONGROUND) )
+	if ( !pPhysGround && m_touchedPhysObject && g_pMoveData->m_outStepHeight <= 0.f )
 	{
 		newPosition = m_oldOrigin + frametime * g_pMoveData->m_outWishVel;
 		newPosition = (GetAbsOrigin() * 0.5f) + (newPosition * 0.5f);
@@ -8204,7 +8204,7 @@ void CBasePlayer::VPhysicsShadowUpdate( IPhysicsObject *pPhysics )
 		}
 		else
 		{
-			bCheckStuck = true;
+			//bCheckStuck = true;
 		}
 	}
 	else
@@ -8221,14 +8221,14 @@ void CBasePlayer::VPhysicsShadowUpdate( IPhysicsObject *pPhysics )
 			if ( trace.allsolid || trace.startsolid )
 			{
 				// no use the final stuck check to move back to old if this stuck fix didn't work
-				bCheckStuck = true;
+				//bCheckStuck = true;
 				lastValidPosition = m_oldOrigin;
 				SetAbsOrigin( newPosition );
 			}
 		}
 	}
 
-	if ( bCheckStuck )
+	if (bCheckStuck)
 	{
 		trace_t trace;
 		UTIL_TraceEntity( this, GetAbsOrigin(), GetAbsOrigin(), MASK_PLAYERSOLID, this, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
