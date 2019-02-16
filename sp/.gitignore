@@ -17,5 +17,6 @@ Release_mod_episodic
 tier1.lib
 
 build/
+build-release/
 
 packs/
