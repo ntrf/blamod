@@ -2395,8 +2395,12 @@ bool CGameMovement::CheckJumpButton( void )
 		flGroundFactor = player->m_pSurfaceData->game.jumpFactor; 
 	}
 
+	float grav = GetCurrentGravity();
 	float flMul;
-	flMul = sqrt(2 * GetCurrentGravity() * GAMEMOVEMENT_JUMP_HEIGHT);
+	if (grav == 600.0f)
+		flMul = 160.0f;
+	else
+		flMul = sqrt(2 * grav * GAMEMOVEMENT_JUMP_HEIGHT);
 
 	// Acclerate upward
 	// If we are ducking...
