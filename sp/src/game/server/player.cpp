@@ -4652,7 +4652,7 @@ void CBasePlayer::PostThinkVPhysics( void )
 
 	IPhysicsObject *pPhysGround = GetGroundVPhysics();
 
-	if ( !pPhysGround && m_touchedPhysObject && g_pMoveData->m_outStepHeight <= 0.f )
+	if (!pPhysGround && m_touchedPhysObject && g_pMoveData->m_outStepHeight <= 0.f && (GetFlags() & FL_ONGROUND))
 	{
 		newPosition = m_oldOrigin + frametime * g_pMoveData->m_outWishVel;
 		newPosition = (GetAbsOrigin() * 0.5f) + (newPosition * 0.5f);
