@@ -2648,7 +2648,7 @@ int CGameMovement::TryPlayerMove( Vector *pFirstDest, trace_t *pFirstTrace )
 				// If we detect getting stuck, don't allow the movement
 				trace_t stuck;
 				TracePlayerBBox( pm.endpos, pm.endpos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, stuck );
-				if ((stuck.startsolid || stuck.fraction != 1.0f) && (stuck.contents != 0 || (mv->m_nButtons & IN_WALK)))
+				if ((stuck.startsolid || stuck.fraction != 1.0f) && (stuck.contents != 0) && (mv->m_nButtons & IN_WALK))
 				{
 					//Msg( "Player will become stuck!!!\n" );
 					VectorCopy (vec3_origin, mv->m_vecVelocity);
@@ -3468,15 +3468,16 @@ int CGameMovement::CheckStuck( void )
 	// Only an issue on the client.
 	idx = player->IsServer() ? 0 : 1;
 
+	MoveHelper()->AddToTouched(traceresult, mv->m_vecVelocity);
+
 	fTime = engine->Time();
 	// Too soon?
 	if ( m_flStuckCheckTime[ player->entindex() ][ idx ] >=  fTime - CHECKSTUCK_MINTIME )
 	{
-	//	return 1;
+		return 1;
 	}
 	m_flStuckCheckTime[ player->entindex() ][ idx ] = fTime;
 
-	MoveHelper( )->AddToTouched( traceresult, mv->m_vecVelocity );
 	GetRandomStuckOffsets( player, offset );
 	VectorAdd( base, offset, test );
 
@@ -3872,6 +3873,11 @@ void CGameMovement::CategorizePosition( void )
 	{
 		// Try and move down.
 		TryTouchGround( bumpOrigin, point, GetPlayerMins(), GetPlayerMaxs(), MASK_PLAYERSOLID, COLLISION_GROUP_PLAYER_MOVEMENT, pm );
+
+		//ntrf: if there is a free spot btween out position and ground - we're good
+		if (!pm.allsolid) {
+			ResetStuckOffsets(player);
+		}
 		
 		// Was on ground, but now suddenly am not.  If we hit a steep plane, we are not on ground
 		if ( !pm.m_pEnt || pm.plane.normal[2] < 0.7 )
@@ -4561,7 +4567,7 @@ void CGameMovement::Duck( void )
 	}
 }
 
-static ConVar sv_optimizedmovement( "sv_optimizedmovement", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+static ConVar sv_optimizedmovement( "sv_optimizedmovement", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -4589,13 +4595,12 @@ void CGameMovement::PlayerMove( void )
 		 player->GetMoveType() != MOVETYPE_OBSERVER && 
 		 !player->pl.deadflag )
 	{
-//		if ( CheckInterval( STUCK ) )
+		int oldStuck = player->m_StuckLast;
+		int stuck = CheckStuck();
+
+		if (!CheckInterval(STUCK) && stuck)
 		{
-			if ( CheckStuck() )
-			{
-				// Can't move, we're stuck
-				return;  
-			}
+			player->m_StuckLast = oldStuck;
 		}
 	}
 

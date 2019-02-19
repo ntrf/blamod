@@ -8204,7 +8204,7 @@ void CBasePlayer::VPhysicsShadowUpdate( IPhysicsObject *pPhysics )
 		}
 		else
 		{
-			//bCheckStuck = true;
+			bCheckStuck = true;
 		}
 	}
 	else
