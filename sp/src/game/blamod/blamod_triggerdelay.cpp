@@ -45,7 +45,7 @@ limitations under the License.
 #include "utlbuffer.h"
 #include "inputsystem/ButtonCode.h"
 
-static BlaConVar blamod_triggerdelay("blamod_triggerdelay", "0", FCVAR_REPLICATED);
+static BlaConVar blamod_triggerdelay("blamod_triggerdelay", "1", FCVAR_REPLICATED);
 
 #ifdef CLIENT_DLL
 

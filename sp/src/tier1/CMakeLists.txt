@@ -23,6 +23,7 @@ include_directories(
 
 add_definitions(
 	"-D_HAS_ITERATOR_DEBUGGING=0"
+	"-D_CRT_SECURE_NO_WARNINGS"
 )
 
 add_library(tier1 STATIC

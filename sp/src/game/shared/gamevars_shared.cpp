@@ -57,5 +57,5 @@ ConVar mp_fadetoblack(
 
 ConVar sv_hudhint_sound( "sv_hudhint_sound", "1", FCVAR_REPLICATED );
 
-ConVar blamod_giveubigun("blamod_giveubigun", "2", FCVAR_GAMEDLL | FCVAR_REPLICATED | FCVAR_NOTIFY, 
+ConVar blamod_giveubigun("blamod_giveubigun", "0", FCVAR_GAMEDLL | FCVAR_REPLICATED | FCVAR_NOTIFY, 
 					  "Give player ubigun:\n 1 = with crowbar\n 2 = with suit\n 3 = on spawn");

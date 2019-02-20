@@ -56,7 +56,7 @@ bool g_bRollingCredits = false;
 
 int g_iCreditsPixelHeight = 0;
 
-BlaConVar blamod_trilogy_transfer("blamod_trilogy_transfer", "1", FCVAR_NOTIFY,
+BlaConVar blamod_trilogy_transfer("blamod_trilogy_transfer", "0", FCVAR_NOTIFY,
 								  "Instead of showing credits, start next episode\n 0 - Disable\n"
 								  " 1 - Enabled between Ep1 -> Ep2\n 2 - Enable HL2 -> Ep1 and Ep1 -> Ep2");
 
