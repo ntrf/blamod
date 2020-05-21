@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - .github/workflows/CI.yml
+      - sp/src/**
+      - sp/CMakeLists.txt
+      - Makefile
+  pull_request:
+    paths:
+      - .github/workflows/CI.yml
+      - sp/src/**
+      - sp/CMakeLists.txt
+      - Makefile
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolset: [v120_xp, v120]
+    steps:
+    - name: Cache VS2013
+      uses: actions/cache@v2
+      id: cache
+      with:
+         path: D:\vs2013
+         key: vs2013
+    - name: Download VS2013
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -vb \vs2013
+        iwr https://download.microsoft.com/download/7/1/B/71BA74D8-B9A0-4E6C-9159-A8335D54437E/vs_community.exe -OutFile \vs2013\vs_community.exe
+        Start-Process \vs2013\vs_community "/Passive /NoRestart /Layout \vs2013" -Wait -vb
+        rm -Recurse -Force                          `
+          \vs2013\packages\*AdsSDK10*              ,`
+          \vs2013\packages\*arm*                   ,`
+          \vs2013\packages\*Blend*                 ,`
+          \vs2013\packages\*Bliss*                 ,`
+          \vs2013\packages\*chs*                   ,`
+          \vs2013\packages\*cht*                   ,`
+          \vs2013\packages\*deu*                   ,`
+          \vs2013\packages\*Dotfuscator*           ,`
+          \vs2013\packages\*esn*                   ,`
+          \vs2013\packages\*fra*                   ,`
+          \vs2013\packages\*IISExpress*            ,`
+          \vs2013\packages\*IntelliTrace*          ,`
+          \vs2013\packages\*ita*                   ,`
+          \vs2013\packages\*jpn*                   ,`
+          \vs2013\packages\*kor*                   ,`
+          \vs2013\packages\*mobile*                ,`
+          \vs2013\packages\*MemoryProfiler*        ,`
+          \vs2013\packages\*Perf*                  ,`
+          \vs2013\packages\*Phone*                 ,`
+          \vs2013\packages\*ptb*                   ,`
+          \vs2013\packages\*rus                    ,`
+          \vs2013\packages\*Silverlight*           ,`
+          \vs2013\packages\*sql*                   ,`
+          \vs2013\packages\*TeamExplorer*          ,`
+          \vs2013\packages\*TypeScript*            ,`
+          \vs2013\packages\*UnitTest*              ,`
+          \vs2013\packages\*WP*                    ,`
+          \vs2013\packages\AppInsights             ,`
+          \vs2013\packages\Behaviors*              ,`
+          \vs2013\packages\CoreCon*                ,`
+          \vs2013\packages\cpp_rest*               ,`
+          \vs2013\packages\CT*                     ,`
+          \vs2013\packages\dac*                    ,`
+          \vs2013\packages\EspC*                   ,`
+          \vs2013\packages\EFTools*                ,`
+          \vs2013\packages\fsharp*                 ,`
+          \vs2013\packages\Help                    ,`
+          \vs2013\packages\kb2900961               ,`
+          \vs2013\packages\lightswitch*            ,`
+          \vs2013\packages\netfx*                  ,`
+          \vs2013\packages\PythonTools*            ,`
+          \vs2013\packages\ReleaseManagement*      ,`
+         "\vs2013\packages\Reporting Services"     ,`
+          \vs2013\packages\RIA                     ,`
+          \vs2013\packages\sdk_tools*              ,`
+          \vs2013\packages\sptools*                ,`
+          \vs2013\packages\SharedManagementObjects*,`
+          \vs2013\packages\SSCE40                  ,`
+          \vs2013\packages\SSDT*                   ,`
+          \vs2013\packages\TFS*                    ,`
+          \vs2013\packages\WcfDataServices         ,`
+          \vs2013\packages\WebDeploy               ,`
+          \vs2013\packages\Windows_SDK\*Metro*     ,`
+          \vs2013\packages\Windows_SDK\*Remote*    ,`
+          \vs2013\packages\Windows_SDK\Orca*       ,`
+          \vs2013\packages\WinACK                  ,`
+          \vs2013\packages\WinLibJS_CORE           ,`
+          \vs2013\packages\Verification*           ,`
+          \vs2013\packages\VSTO*                   ,`
+          \vs2013\packages\**\*arm*                ,`
+          \vs2013\packages\**\*chs*                ,`
+          \vs2013\packages\**\*cht*                ,`
+          \vs2013\packages\**\*csy*                ,`
+          \vs2013\packages\**\*deu*                ,`
+          \vs2013\packages\**\*esn*                ,`
+          \vs2013\packages\**\*fra*                ,`
+          \vs2013\packages\**\*ita*                ,`
+          \vs2013\packages\**\*jpn*                ,`
+          \vs2013\packages\**\*kor*                ,`
+          \vs2013\packages\**\*plk*                ,`
+          \vs2013\packages\**\*ptb*                ,`
+          \vs2013\packages\**\*rus*                ,`
+          \vs2013\packages\**\*trk*                ,`
+         "\vs2013\Standalone Profiler"             ,`
+          \vs2013\AdminDeployment.xml              ,`
+          \vs2013\autorun.inf
+    - name: Install VS2013
+      run: Start-Process \vs2013\vs_community "/Passive /NoRestart /NoRefresh /NoWeb" -Wait -vb
+    - uses: actions/checkout@v2
+    - name: CMake generate
+      run: |
+        mkdir -vb build
+        cd build
+        cmake -G "Visual Studio 12 2013" -T ${{ matrix.toolset }} ..\sp
+    - name: Build
+      working-directory: build
+      run: cmake --build . --config Release -j $env:NUMBER_OF_PROCESSORS
+    - name: Prepare artifacts
+      run: |
+        mkdir -vb artifacts
+        mv -vb build\src\game\client\Release\*.dll, build\src\game\server\Release\*.dll artifacts
+    - uses: actions/upload-artifact@v2
+      with:
+        name: bin
+        path: artifacts
